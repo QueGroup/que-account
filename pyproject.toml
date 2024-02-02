@@ -1,0 +1,81 @@
+[tool.poetry]
+name = "que-account"
+version = "0.1.0"
+description = "Account abstraction service for que"
+authors = ["David Dzhalaev <72649244+DavidRomanovizc@users.noreply.github.com>"]
+license = "GPL-2.0 license"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+environs = "^10.3.0"
+fastapi = "^0.109.0"
+mkdocs-material = "^9.5.6"
+uvicorn = "^0.27.0.post1"
+sqlalchemy = "2.0.25"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+mypy = "^1.8.0"
+black = "^23.12.1"
+isort = "^5.13.2"
+deptry = "^0.12.0"
+ruff = "^0.1.14"
+pip-audit = "^2.7.0"
+httpx = "^0.26.0"
+pytest-asyncio = "^0.23.3"
+aiosqlite = "^0.19.0"
+
+[tool.black]
+line-length = 99
+exclude = "venv"
+target-version = ['py311']
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+ignore_missing_imports = true
+strict_optional = false
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+warn_redundant_casts = true
+warn_unused_configs = true
+strict_equality = true
+
+[tool.isort]
+profile = "black"
+force_grid_wrap = 1
+multi_line_output = 3
+honor_noqa = true
+float_to_top = true
+combine_as_imports = true
+force_sort_within_sections = true
+include_trailing_comma = true
+line_length = 99
+use_parentheses = true
+known_third_party = ["asyncpg", "fastapi", "pytest", "sqlalchemy"]
+skip = ["__init__.py", "migrations"]
+
+[tool.ruff]
+line-length = 99
+
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "api_v1",
+]
+asyncio_mode = "auto"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"**/{tests,docs,tools,migrations}/*" = ["F401"]
+
+[tool.deptry]
+ignore = ["DEP002"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

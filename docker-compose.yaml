@@ -1,1 +1,44 @@
 version: "3.9"
+
+
+services:
+  db:
+    container_name: que
+    image: postgres:15.3-alpine
+    ports:
+      - "5439:5432"
+    restart: always
+    volumes:
+      - ./postgres:/var/lib/postgresql
+    env_file:
+      - '.env'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+    networks:
+      - custom
+  mkdocs:
+    build:
+      context: docs
+      dockerfile: Dockerfile
+    container_name: "mkdocs_container"
+    volumes:
+      - ./docs:/usr/src/mkdocs
+  rabbitmq:
+    image: rabbitmq:3.11-management-alpine
+    restart: unless-stopped
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-admin} 
+
+networks:
+  custom:
+    driver: bridge

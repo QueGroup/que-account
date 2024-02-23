@@ -4,9 +4,8 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-
-
 <!-- PROJECT LOGO -->
+
 <br />
 <div align="center">
   <a href="https://github.com/QueGroup">
@@ -15,7 +14,7 @@
 
 <h3 align="center">Que account</h3>
 
-  <p align="center">
+<p align="center">
     Account abstraction service for que
     <br />
     <a href="https://github.com/QueGroup/que-account/tree/main/docs"><strong>Explore the docs »</strong></a>
@@ -28,8 +27,6 @@
     <a href="https://github.com/QueGroup/que-account/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 
@@ -53,8 +50,6 @@ single and universal access to all our applications, with a minimum amount of ef
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)\
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)\
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-
-
 
 <!-- GETTING STARTED -->
 
@@ -85,23 +80,13 @@ Don't forget to give the project a star! Thanks again!
 
 Distributed under the GPL-2.0 license. See [LICENSE](LICENSE) for more information.
 
-
 [contributors-shield]: https://img.shields.io/github/contributors/QueGroup/que-account.svg?style=for-the-badge
-
 [contributors-url]: https://github.com/QueGroup/que-account/graphs/contributors
-
 [forks-shield]: https://img.shields.io/github/forks/QueGroup/que-account.svg?style=for-the-badge
-
 [forks-url]: https://github.com/QueGroup/que-account/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/QueGroup/que-account.svg?style=for-the-badge
-
-[stars-url]: https://github.com/QueGroup/que-account/stargazers
-
 [issues-shield]: https://img.shields.io/github/issues/QueGroup/que-account.svg?style=for-the-badge
-
 [issues-url]: https://github.com/QueGroup/que-account/issues
-
 [license-shield]: https://img.shields.io/github/license/QueGroup/que-account.svg?style=for-the-badge
-
 [license-url]: https://github.com/QueGroup/que-account/blob/master/LICENSE
+[stars-shield]: https://img.shields.io/github/stars/QueGroup/que-account.svg?style=for-the-badge
+[stars-url]: https://github.com/QueGroup/que-account/stargazers

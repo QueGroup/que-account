@@ -33,3 +33,7 @@ audit:
 # Run black linter
 black:
     @poetry run black $(git ls-files '*.py')
+
+# Run pre-commit lint
+lint:
+    @pre-commit run --all-files

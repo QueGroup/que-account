@@ -1,9 +1,13 @@
 import logging
+from typing import (
+    Any,
+    Callable,
+)
 
 import structlog
 
 
-def _extract_from_record(_, __, event_dict):
+def _extract_from_record(_: Any, __: Any, event_dict: dict[str, Any]) -> dict[str, Any]:
     # Extract thread and process names and add them to the event dict.
     record = event_dict["_record"]
     event_dict["thread_name"] = record.threadName
@@ -11,7 +15,7 @@ def _extract_from_record(_, __, event_dict):
     return event_dict
 
 
-def _configure_default_logging_by_custom(shared_processors, logs_render):
+def _configure_default_logging_by_custom(shared_processors: list[Callable[..., Any]], logs_render: Any) -> None:
     handler = logging.StreamHandler()
 
     formatter = structlog.stdlib.ProcessorFormatter(

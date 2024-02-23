@@ -20,7 +20,7 @@ class Base(DeclarativeBase):
 
     @staticmethod
     def _insert_underscore(class_name: str) -> str:
-        return re.sub(r'(?<=.)([A-Z])', r'_\1', class_name)
+        return re.sub(r"(?<=.)([A-Z])", r"_\1", class_name)
 
     @declared_attr.directive
     def __tablename__(cls) -> str:

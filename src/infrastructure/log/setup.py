@@ -9,7 +9,7 @@ from .configuration import (
 )
 
 
-def configure_logging(enable_json_logs: bool = False):
+def configure_logging(enable_json_logs: bool = False) -> None:
     timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
 
     shared_processors = [

@@ -1,3 +1,7 @@
+from typing import (
+    AsyncGenerator,
+)
+
 from mypy.typeshed.stdlib.contextlib import (
     asynccontextmanager,
 )
@@ -19,7 +23,7 @@ class DBConnector:
             echo=False,
             max_overflow=200,
             pool_size=20,
-            query_cache_size=1200
+            query_cache_size=1200,
         )
         self.session_factory = async_sessionmaker(
             bind=self.engine,
@@ -29,7 +33,7 @@ class DBConnector:
         )
 
     @asynccontextmanager
-    async def get_db_session(self):
+    async def get_db_session(self) -> AsyncGenerator[AsyncSession, None]:
         from sqlalchemy import (
             exc,
         )
@@ -37,13 +41,13 @@ class DBConnector:
         session: AsyncSession = self.session_factory()
         try:
             yield session
-        except exc.SQLAlchemyError as e:
+        except exc.SQLAlchemyError:
             await session.rollback()
             raise
         finally:
             await session.close()
 
-    async def get_session(self):
+    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
         from sqlalchemy import (
             exc,
         )
@@ -52,7 +56,7 @@ class DBConnector:
 
         try:
             yield session
-        except exc.SQLAlchemyError as e:
+        except exc.SQLAlchemyError:
             await session.rollback()
             raise
         finally:

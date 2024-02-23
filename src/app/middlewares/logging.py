@@ -1,12 +1,18 @@
-from typing import Callable, Awaitable
+from typing import (
+    Awaitable,
+    Callable,
+)
 
+from fastapi import (
+    Request,
+    Response,
+)
 import structlog
-from fastapi import Request, Response
 
 
 async def logging_middleware(
         request: Request,
-        call_next: Callable[[Request], Awaitable[Response]]
+        call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
     req_id = request.headers.get("request-id")
 

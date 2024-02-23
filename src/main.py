@@ -1,13 +1,17 @@
 import asyncio
 
+from fastapi import (
+    FastAPI,
+)
 import structlog
 import uvicorn
-from fastapi import (
-    FastAPI
-)
 
-from src.app.middlewares import setup_middlewares
-from src.infrastructure.log import configure_logging
+from src.app.middlewares import (
+    setup_middlewares,
+)
+from src.infrastructure.log import (
+    configure_logging,
+)
 
 logger = structlog.stdlib.get_logger()
 

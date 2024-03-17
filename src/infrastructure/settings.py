@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class DbConfig:
     """
     Database configuration class.
@@ -36,6 +36,11 @@ class DbConfig:
     database: str
     port: int = 5432
 
+    redis_host: str = ""
+    redis_password: str = ""
+    redis_database: str = ""
+    redis_port: int = 0
+
     def construct_sqlalchemy_url(
             self,
             driver: str = "asyncpg",
@@ -60,6 +65,28 @@ class DbConfig:
         )
         return uri.render_as_string(hide_password=False)
 
+    def construct_psql_dns(self) -> str:
+        uri = URL.create(
+            drivername="postgresql",
+            username=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            database=self.database,
+        )
+        return uri.render_as_string(hide_password=False)
+
+    def construct_redis_dsn(self) -> str:
+        uri = URL.create(
+            drivername="redis",
+            username=None,
+            password=self.redis_password,
+            host=self.redis_host,
+            port=self.redis_port,
+            database=self.redis_database,
+        )
+        return uri.render_as_string(hide_password=False)
+
     @staticmethod
     def from_env(env: Env) -> "DbConfig":
         """
@@ -70,12 +97,39 @@ class DbConfig:
         user = env.str("POSTGRES_USER")
         database = env.str("POSTGRES_DB")
         port = env.int("DB_PORT", 5432)
-        return DbConfig(host=host, password=password, user=user, database=database, port=port)
+        return DbConfig(
+            host=host,
+            password=password,
+            user=user,
+            database=database,
+            port=port,
+        )
 
 
 @dataclass(slots=True, frozen=True)
-class SwaggerConfig:
-    pass
+class Security:
+    secret_key: str
+    public_key: str
+    algorithm: str = "HS256"
+    access_expire_time_in_seconds: int = 60 * 60 * 24
+    refresh_expire_time_in_seconds: int = 60 * 60 * 24 * 14
+    access_token_cookie_samesite: str = "lax"
+    access_token_cookie_httponly: bool = True
+    access_token_cookie_secure: bool = True
+    sessions_cookie_name: str = "access_token"
+
+    @staticmethod
+    def from_env(env: Env) -> "Security":
+        secret_key = env.str("SECRET_JWT_KEY")
+        public_key = env.str("PUBLIC_KEY")
+        # access_expire_time_in_seconds = env.int("ACCESS_EXPIRE_TIMEIN_SECONDS")
+        # refresh_expire_time_in_seconds = env.int("REFRESH_EXPIRE_TIMEIN_SECONDS")
+        return Security(
+            secret_key=secret_key,
+            public_key=public_key,
+            # access_expire_time_in_seconds=access_expire_time_in_seconds,
+            # refresh_expire_time_in_seconds=refresh_expire_time_in_seconds,
+        )
 
 
 @dataclass(slots=True, frozen=True)
@@ -88,11 +142,14 @@ class Config:
 
     Attributes
     ----------
-    db : Optional[DbConfig]
+    db: Optional[DbConfig]
         Holds the settings specific to the database (default is None).
+    security: Optional[Security]
+        Holds the settings specific to the jwt
     """
 
     db: DbConfig
+    security: Security
 
 
 def load_config(path: str = None) -> Config:
@@ -108,4 +165,5 @@ def load_config(path: str = None) -> Config:
 
     return Config(
         db=DbConfig.from_env(env),
+        security=Security.from_env(env),
     )

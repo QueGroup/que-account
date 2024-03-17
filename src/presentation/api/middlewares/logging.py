@@ -1,3 +1,4 @@
+import time
 from typing import (
     Awaitable,
     Callable,
@@ -21,6 +22,20 @@ async def logging_middleware(
         request_id=req_id,
     )
 
+    start_time = time.time()
+
     response: Response = await call_next(request)
+
+    end_time = time.time()
+    response_time = end_time - start_time
+
+    await structlog.get_logger().info(
+        "Request processed",
+        request_id=req_id,
+        method=request.method,
+        path=request.url.path,
+        status_code=response.status_code,
+        response_time=response_time
+    )
 
     return response

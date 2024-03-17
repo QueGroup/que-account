@@ -24,7 +24,7 @@ class Base(DeclarativeBase):
 
     @declared_attr.directive
     def __tablename__(cls) -> str:
-        name = cls._insert_underscore(cls.__name__).lower()
+        name = cls._insert_underscore(class_name=cls.__name__[:-5]).lower()
 
         if name.endswith("y") and name[-2] not in "aeiou":
             pl_name = name[:-1] + "ies"

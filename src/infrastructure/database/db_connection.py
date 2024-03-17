@@ -1,25 +1,21 @@
+from contextlib import (
+    asynccontextmanager,
+)
 from typing import (
     AsyncGenerator,
 )
 
-from mypy.typeshed.stdlib.contextlib import (
-    asynccontextmanager,
-)
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
 
-from src.app.config import (
-    DbConfig,
-)
-
 
 class DBConnector:
-    def __init__(self, db: DbConfig):
+    def __init__(self, db_url: str):
         self.engine = create_async_engine(
-            url=db.construct_sqlalchemy_url(),
+            url=db_url,
             echo=False,
             max_overflow=200,
             pool_size=20,

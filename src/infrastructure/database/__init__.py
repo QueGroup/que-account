@@ -1,14 +1,11 @@
-from typing import Final
-
-from src.app import (
-    config,
-)
-from .db_helper import (
+from .db_connection import (
     DBConnector,
 )
-
-db_conn: Final[DBConnector] = DBConnector(config.db)
+from .redis import (
+    RedisUserSignatureBlacklist,
+)
 
 __all__ = (
-    "db_conn",
+    "DBConnector",
+    "RedisUserSignatureBlacklist",
 )

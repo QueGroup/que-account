@@ -6,11 +6,13 @@ from fastapi import (
 import structlog
 import uvicorn
 
-from src.app.middlewares import (
-    setup_middlewares,
-)
 from src.infrastructure.log import (
     configure_logging,
+)
+from src.presentation import (
+    Container,
+    setup_middlewares,
+    setup_routes,
 )
 
 logger = structlog.stdlib.get_logger()
@@ -42,7 +44,10 @@ async def run_server(app: FastAPI) -> None:
 
 
 async def main() -> None:
+    container = Container()
     app = await init_api()
+    app.container = container
+    setup_routes(app)
     await run_server(app)
 
 

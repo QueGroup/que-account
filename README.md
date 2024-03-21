@@ -15,7 +15,7 @@
 <h3 align="center">Que account</h3>
 
 <p align="center">
-    Account abstraction service for que
+    Account service for que
     <br />
     <a href="https://github.com/QueGroup/que-account/tree/main/docs"><strong>Explore the docs »</strong></a>
     <br />

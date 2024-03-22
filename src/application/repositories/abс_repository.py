@@ -131,7 +131,11 @@ class CRUDMixin(
             await session.commit()
 
 
-class AuthMixin(QueryMixin, abc.ABC, Generic[ModelT, CreateSchemaT]):
+class AuthMixin(
+    QueryMixin,
+    abc.ABC,
+    Generic[ModelT, CreateSchemaT]
+):
     def __init__(
             self, session: Callable[[], AsyncSession], model: Type[ModelT]
     ):

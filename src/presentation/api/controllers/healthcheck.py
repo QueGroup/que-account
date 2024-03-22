@@ -16,7 +16,7 @@ from pydantic import (
 from src.infrastructure import (
     Config,
 )
-from src.presentation.api.di_containers import (
+from src.presentation.api.providers import (
     Container,
 )
 

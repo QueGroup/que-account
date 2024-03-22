@@ -8,13 +8,14 @@ from starlette.middleware.base import (
 from .api import (
     auth_router,
     healthcheck_router,
+    role_router,
     user_router,
-)
-from .api.di_containers import (
-    Container,
 )
 from .api.middlewares import (
     logging_middleware,
+)
+from .api.providers import (
+    Container,
 )
 
 
@@ -23,6 +24,7 @@ def setup_routes(app: FastAPI) -> None:
     app.include_router(router=user_router, prefix=f"{prefix}/user", tags=["User"])
     app.include_router(router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"])
     app.include_router(router=auth_router, prefix=f"{prefix}/auth", tags=["Authorization"])
+    app.include_router(router=role_router, prefix=f"{prefix}/role", tags=["Role"])
 
 
 # noinspection PyTypeChecker

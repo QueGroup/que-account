@@ -1,11 +1,11 @@
-from .auth_repository import (
-    SQLAlchemyAuthRepository,
+from .auth import (
+    AuthRepository,
 )
-from .user_repository import (
-    SQLAlchemyUserRepository,
+from .user import (
+    UserRepository,
 )
 
 __all__ = (
-    "SQLAlchemyUserRepository",
-    "SQLAlchemyAuthRepository",
+    "UserRepository",
+    "AuthRepository",
 )

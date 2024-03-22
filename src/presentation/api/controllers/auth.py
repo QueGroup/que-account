@@ -32,7 +32,7 @@ from src.infrastructure import (
 from src.infrastructure.database.models import (
     UserModel,
 )
-from src.presentation.api.di_containers import (
+from src.presentation.api.providers import (
     Container,
 )
 
@@ -42,6 +42,7 @@ auth_router = APIRouter()
 @auth_router.post(
     "/",
     response_model=UserResponseSchema,
+    response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
 )
@@ -66,7 +67,7 @@ async def signin_telegram(
         request: Request,
         response: Response,
         user_service: Any,
-):
+) -> None:
     pass
 
 
@@ -114,7 +115,7 @@ async def login(
     status_code=status.HTTP_200_OK,
 
 )
-async def send_otp_code(user_in: UserLoginWithOTP):
+async def send_otp_code(user_in: UserLoginWithOTP) -> None:
     pass
 
 
@@ -129,7 +130,7 @@ async def confirm_otp_code(
         otp_in: ConfirmOtpSchema,
         request: Request,
         response: Response,
-):
+) -> None:
     pass
 
 
@@ -139,7 +140,7 @@ async def confirm_otp_code(
     summary="Write out new pair of jwt tokens",
     status_code=status.HTTP_200_OK
 )
-async def refresh_token():
+async def refresh_token() -> None:
     pass
 
 
@@ -148,7 +149,7 @@ async def refresh_token():
     summary="Verification of the transmitted access_token",
     status_code=status.HTTP_200_OK
 )
-async def verify_token():
+async def verify_token() -> None:
     pass
 
 
@@ -157,7 +158,7 @@ async def verify_token():
     summary="Logout from  the current session",
     status_code=status.HTTP_200_OK
 )
-async def logout():
+async def logout() -> None:
     pass
 
 
@@ -166,5 +167,5 @@ async def logout():
     summary="Logout from the all session",
     status_code=status.HTTP_200_OK
 )
-async def logout_all():
+async def logout_all() -> None:
     pass

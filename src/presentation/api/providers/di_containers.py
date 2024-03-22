@@ -5,6 +5,7 @@ from dependency_injector import (
 
 from src.application.service import (
     AuthService,
+    RoleService,
     UserService,
 )
 from src.infrastructure import (
@@ -15,8 +16,11 @@ from src.infrastructure.database import (
     RedisUserSignatureBlacklist,
 )
 from src.infrastructure.database.repositories import (
-    SQLAlchemyAuthRepository,
-    SQLAlchemyUserRepository,
+    AuthRepository,
+    UserRepository,
+)
+from src.infrastructure.database.repositories.role import (
+    RoleRepository,
 )
 
 
@@ -26,6 +30,7 @@ class Container(containers.DeclarativeContainer):
             "src.presentation.api.controllers.users",
             "src.presentation.api.controllers.auth",
             "src.presentation.api.controllers.healthcheck",
+            "src.presentation.api.controllers.role",
         ]
     )
 
@@ -35,7 +40,7 @@ class Container(containers.DeclarativeContainer):
     redis = providers.Singleton(RedisUserSignatureBlacklist, url=config().db.construct_redis_dsn())
 
     user_repository = providers.Factory(
-        SQLAlchemyUserRepository,
+        UserRepository,
         session_factory=db.provided.get_db_session,
     )
     user_service = providers.Factory(
@@ -44,10 +49,19 @@ class Container(containers.DeclarativeContainer):
     )
 
     auth_repository = providers.Factory(
-        SQLAlchemyAuthRepository,
+        AuthRepository,
         session_factory=db.provided.get_db_session,
     )
     auth_service = providers.Factory(
         AuthService,
         auth_repository=auth_repository,
+    )
+
+    role_repository = providers.Factory(
+        RoleRepository,
+        session_factory=db.provided.get_db_session,
+    )
+    role_service = providers.Factory(
+        RoleService,
+        role_repository=role_repository,
     )

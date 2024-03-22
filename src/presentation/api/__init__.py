@@ -1,13 +1,9 @@
-from src.presentation.api.controllers.auth import (
+from .controllers import (
     auth_router,
-)
-from src.presentation.api.controllers.healthcheck import (
     healthcheck_router,
-)
-from src.presentation.api.controllers.users import (
+    role_router,
     user_router,
 )
-
 from .exceptions import (
     InvalidTokenError,
     UserAlreadyExistsError,
@@ -19,4 +15,5 @@ __all__ = (
     "healthcheck_router",
     "UserAlreadyExistsError",
     "InvalidTokenError",
+    "role_router",
 )

@@ -42,18 +42,3 @@ class DBConnector:
             raise
         finally:
             await session.close()
-
-    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
-        from sqlalchemy import (
-            exc,
-        )
-
-        session: AsyncSession = self.session_factory()
-
-        try:
-            yield session
-        except exc.SQLAlchemyError:
-            await session.rollback()
-            raise
-        finally:
-            await session.close()

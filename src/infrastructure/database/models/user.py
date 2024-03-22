@@ -2,12 +2,10 @@ import datetime
 from typing import (
     TYPE_CHECKING,
 )
-import uuid
 
 from sqlalchemy import (
     BIGINT,
     TIMESTAMP,
-    UUID,
     Boolean,
     DateTime,
     ForeignKey,
@@ -76,8 +74,7 @@ class UserSignatureModel(Base):
 
 
 class UserLoginModel(Base):
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True,
-                                     unique=True, nullable=False, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, unique=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE", onupdate="CASCADE"))
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="logins")
     ip_address: Mapped[str] = mapped_column(String(128))

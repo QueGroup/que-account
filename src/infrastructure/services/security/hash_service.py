@@ -2,6 +2,9 @@ from datetime import (
     datetime,
     timedelta,
 )
+from typing import (
+    Any,
+)
 
 from argon2 import (
     PasswordHasher,
@@ -40,7 +43,7 @@ class SignatureService:
 
     @staticmethod
     def create_access_token(
-            data: dict,
+            data: dict[str, Any],
             expires_delta: timedelta = None,
     ) -> str:
         to_encode = data.copy()
@@ -54,7 +57,7 @@ class SignatureService:
 
     @staticmethod
     def create_refresh_token(
-            data: dict,
+            data: dict[str, Any],
     ) -> str:
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(minutes=jwt_config.refresh_expire_time_in_seconds)

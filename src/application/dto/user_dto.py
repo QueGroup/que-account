@@ -5,6 +5,7 @@ from fastapi import (
 )
 from pydantic import (
     BaseModel,
+    ConfigDict,
     field_validator,
 )
 
@@ -21,7 +22,7 @@ class UserUpdateSchema(UserBaseSchema):
     language: str | None = None
 
     @field_validator("username")
-    def validate_name(cls, value) -> str:
+    def validate_name(cls, value: str) -> str:
         match_pattern = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
         if not match_pattern.match(value):
             raise HTTPException(
@@ -32,3 +33,7 @@ class UserUpdateSchema(UserBaseSchema):
 
 class UserResponseSchema(UserBaseSchema):
     user_id: int
+
+    model_config = ConfigDict(
+        from_attributes=True,
+    )

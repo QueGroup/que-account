@@ -1,4 +1,5 @@
 import abc
+import dataclasses
 import logging
 from typing import (
     Any,
@@ -48,7 +49,7 @@ UpdateSchemaT = TypeVar("UpdateSchemaT", bound=BaseModel)
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 
-class AbstractQueryBuilder(abc.ABC):
+class QueryMixin(abc.ABC):
     @abc.abstractmethod
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         """
@@ -84,8 +85,8 @@ class AbstractQueryBuilder(abc.ABC):
         raise NotImplementedError()
 
 
-class AbstractCRUDRepository(
-    AbstractQueryBuilder,
+class CRUDMixin(
+    QueryMixin,
     Generic[ModelT, CreateSchemaT, UpdateSchemaT],
     abc.ABC,
 ):
@@ -95,15 +96,18 @@ class AbstractCRUDRepository(
         self._session_factory = session
         self.model = model
 
-    async def create(self, data: CreateSchemaT) -> ModelT:
+    async def create(self, data_in: CreateSchemaT) -> ModelT:
         async with self._session_factory() as session:
-            instance = self.model(**data.__dict__)
+            if dataclasses.is_dataclass(data_in):
+                instance = self.model(**data_in.__dict__)
+            elif issubclass(type(data_in), BaseModel):
+                instance = self.model(**data_in.model_dump())
             session.add(instance)
             await session.commit()
             await session.refresh(instance)
             return instance
 
-    async def get_single(self, *args: Any, **kwargs: Any) -> ModelT:
+    async def get_single(self, *args: Any, **kwargs: Any) -> ModelT | None:
         async with self._session_factory() as session:
             row = await session.execute(self._get_query(*args, **kwargs))
             return row.scalar_one_or_none()
@@ -140,7 +144,7 @@ class AbstractCRUDRepository(
             await session.commit()
 
 
-class AbstractAuthRepository(AbstractQueryBuilder, abc.ABC, Generic[ModelT, CreateSchemaT]):
+class AuthMixin(QueryMixin, abc.ABC, Generic[ModelT, CreateSchemaT]):
     def __init__(
             self, session: Callable[[], AsyncSession], model: Type[ModelT]
     ):
@@ -166,6 +170,7 @@ class AbstractAuthRepository(AbstractQueryBuilder, abc.ABC, Generic[ModelT, Crea
             stmt = self._get_query(*args, **kwargs)
             result: Result = await session.execute(stmt)
             user: ModelT = result.scalar_one_or_none()
+            print(user)
             if not user:
                 raise UserNotFoundError()
             if user_in.password and not HashService.verify_password(user.password, user_in.password):
@@ -184,7 +189,7 @@ class AbstractAuthRepository(AbstractQueryBuilder, abc.ABC, Generic[ModelT, Crea
 
 # TODO: [WIP]
 class AbstractRefreshTokenRepository(
-    AbstractQueryBuilder,
+    QueryMixin,
     abc.ABC,
     Generic[ModelT],
 ):

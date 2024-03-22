@@ -1,11 +1,15 @@
-from .auth_service import (
+from .auth import (
     AuthService,
 )
-from .user_service import (
+from .role import (
+    RoleService,
+)
+from .user import (
     UserService,
 )
 
 __all__ = (
     "UserService",
     "AuthService",
+    "RoleService",
 )

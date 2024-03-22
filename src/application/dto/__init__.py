@@ -7,6 +7,11 @@ from .auth_dto import (
     UserRegistrationSchema,
     UserTMELoginSchema,
 )
+from .role_dto import (
+    RoleCreateSchema,
+    RoleResponseSchema,
+    RoleUpdateSchema,
+)
 from .user_dto import (
     UserResponseSchema,
     UserUpdateSchema,
@@ -22,4 +27,7 @@ __all__ = (
     "UserLoginWithOTP",
     "ConfirmOtpSchema",
     "TokenData",
+    "RoleCreateSchema",
+    "RoleUpdateSchema",
+    "RoleResponseSchema",
 )

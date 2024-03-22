@@ -15,6 +15,7 @@ from src.domain.user.entity import (
 )
 from src.infrastructure.database.models import (
     UserModel,
+    UserRefreshTokenModel,
 )
 
 from .abс_repository import (
@@ -37,14 +38,14 @@ class AuthQueryMixin(AuthMixin[UserModel, UserEntity]):
     def _get_all_query(self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         pass
 
-    def _update_query(self, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
+    def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
         pass
 
     def _delete_query(self, **kwargs: Any) -> Delete:
         pass
 
 
-class RefreshTokenQueryMixin(AbstractRefreshTokenRepository):
+class RefreshTokenQueryMixin(AbstractRefreshTokenRepository[UserRefreshTokenModel]):
 
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         pass
@@ -52,7 +53,7 @@ class RefreshTokenQueryMixin(AbstractRefreshTokenRepository):
     def _get_all_query(self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         pass
 
-    def _update_query(self, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
+    def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
         pass
 
     def _delete_query(self, **kwargs: Any) -> Delete:

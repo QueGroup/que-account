@@ -1,4 +1,4 @@
-from redis.asyncio import (
+from redis.asyncio import (  # type: ignore
     Redis,
     from_url,
 )
@@ -22,7 +22,7 @@ class RedisUserSignatureBlacklist:
         async with self.protocol.client() as session:
             return await session.get(signature_key)
 
-    async def remove(self, user_id: int):
+    async def remove(self, user_id: int) -> int:
         signature_key = f"{self.namespace}:{user_id}"
         async with self.protocol.client() as session:
             return await session.delete(signature_key)

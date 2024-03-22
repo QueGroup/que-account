@@ -104,7 +104,7 @@ async def update_role(
         role_id: Annotated[int, Path],
         role_in: RoleUpdateSchema,
         role_service: RoleService = Depends(Provide[Container.role_service])
-):
+) -> RoleModel:
     return await role_service.update_role(pk=role_id, role_in=role_in)
 
 

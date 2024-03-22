@@ -78,11 +78,11 @@ class QueryMixin(abc.ABC):
 
     @abc.abstractmethod
     def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
-        raise NotImplementedError()
+        pass
 
     @abc.abstractmethod
     def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:
-        raise NotImplementedError()
+        pass
 
 
 class CRUDMixin(
@@ -157,7 +157,6 @@ class AuthMixin(QueryMixin, abc.ABC, Generic[ModelT, CreateSchemaT]):
             stmt = self._get_query(*args, **kwargs)
             result: Result = await session.execute(stmt)
             user: ModelT = result.scalar_one_or_none()
-            print(user)
             if not user:
                 raise UserNotFoundError()
             if user_in.password and not HashService.verify_password(user.password, user_in.password):
@@ -169,7 +168,7 @@ class AuthMixin(QueryMixin, abc.ABC, Generic[ModelT, CreateSchemaT]):
                 refresh_token=refresh_token
             )
 
-    async def signout(self):
+    async def signout(self) -> None:
         # TODO: Реализуйте логику выхода из системы, например, добавление токена в черный список
         pass
 
@@ -184,7 +183,7 @@ class AbstractRefreshTokenRepository(
         self._session_factory = session
         self.model = model
 
-    async def create(self, refresh_token: str, user_id: int) -> ModelT:
+    async def create(self, refresh_token: str, user_id: int) -> None:
         # token_headers = jwt.get_unverified_header(refresh_token)
         try:
             pass
@@ -193,6 +192,6 @@ class AbstractRefreshTokenRepository(
             raise InvalidTokenError()
 
     @staticmethod
-    def _verify_refresh_token(token_payload: dict):
+    def _verify_refresh_token(token_payload: dict[str, Any]) -> None:
         if len(token_payload.values()) > 1:
             raise jwt.JWTError()

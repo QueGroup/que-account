@@ -77,7 +77,7 @@ async def update_user(
         user_in: UserUpdateSchema,
         current_user: UserModel = Depends(get_current_user),
         user_service: UserService = Depends(Provide[Container.user_service])
-):
+) -> UserModel:
     if current_user.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
     return await user_service.update_user(pk=user_id, user_in=user_in)

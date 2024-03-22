@@ -10,9 +10,9 @@ from src.infrastructure.services.security import (
 
 @dataclasses.dataclass
 class UserEntity:
-    telegram_id: int
     username: str
-    password: str | None
+    password: str | None = None
+    telegram_id: int | None = None
     confirmation_code: str | None = None
     is_active: bool = True
     is_superuser: bool = False
@@ -23,7 +23,7 @@ class UserEntity:
     def create(
             cls,
             password: str,
-            telegram_id: int,
+            telegram_id: int | None,
             username: str,
 
     ) -> 'UserEntity':
@@ -31,11 +31,9 @@ class UserEntity:
             hashed_password = HashService.hash_password(password)
             return cls(
                 password=hashed_password,
-                telegram_id=telegram_id,
                 username=username
             )
         return cls(
-            password=None,
             telegram_id=telegram_id,
             username=username
         )

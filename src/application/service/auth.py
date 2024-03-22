@@ -8,20 +8,20 @@ from src.application.dto import (
     UserLoginSchema,
     UserRegistrationSchema,
 )
-from src.domain.user.entites import (
+from src.domain.user.entity import (
     UserEntity,
 )
 from src.infrastructure.database.models import (
     UserModel,
 )
 from src.infrastructure.database.repositories import (
-    SQLAlchemyAuthRepository,
+    AuthRepository,
 )
 
 
 class AuthService:
-    def __init__(self, auth_repository: SQLAlchemyAuthRepository) -> None:
-        self.repository: SQLAlchemyAuthRepository = auth_repository
+    def __init__(self, auth_repository: AuthRepository) -> None:
+        self.repository: AuthRepository = auth_repository
 
     async def signup(self, user_in: UserRegistrationSchema) -> UserModel:
         if user_in.password is None and user_in.telegram_id is None:
@@ -35,7 +35,8 @@ class AuthService:
             )
             return await self.repository.singup(
                 user_entity,
-                username=user_in.username, telegram_id=user_in.telegram_id
+                username=user_in.username,
+                telegram_id=user_in.telegram_id
             )
 
     async def signin(self, user_in: UserLoginSchema) -> JWTokensSchema:

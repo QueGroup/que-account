@@ -10,7 +10,7 @@ from sqlalchemy import (
     select,
 )
 
-from src.domain.user.entites import (
+from src.domain.user.entity import (
     UserEntity,
 )
 from src.infrastructure.database.models import (
@@ -18,13 +18,14 @@ from src.infrastructure.database.models import (
 )
 
 from .abс_repository import (
-    AbstractAuthRepository,
     AbstractRefreshTokenRepository,
+    AuthMixin,
     UpdateSchemaT,
 )
 
 
-class AuthRepository(AbstractAuthRepository[UserModel, UserEntity]):
+class AuthQueryMixin(AuthMixin[UserModel, UserEntity]):
+    # FIXME: Если у нас несколько пользователей у которых отсутствует
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         username_f = UserModel.username == kwargs.get("username")
         telegram_id_f = UserModel.telegram_id == kwargs.get("telegram_id")
@@ -43,7 +44,7 @@ class AuthRepository(AbstractAuthRepository[UserModel, UserEntity]):
         pass
 
 
-class RefreshTokenRepository(AbstractRefreshTokenRepository):
+class RefreshTokenQueryMixin(AbstractRefreshTokenRepository):
 
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         pass

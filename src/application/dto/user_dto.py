@@ -3,6 +3,7 @@ import re
 from fastapi import (
     HTTPException,
 )
+from pycountry import languages
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -13,12 +14,13 @@ from pydantic import (
 class UserBaseSchema(BaseModel):
     telegram_id: int | None = None
     username: str
+    language: str | None = None
 
 
+# TODO: Написать валидатор для языка
 class UserUpdateSchema(UserBaseSchema):
     telegram_id: int | None = None
     username: str | None = None
-    is_active: bool | None = None
     language: str | None = None
 
     @field_validator("username")
@@ -27,6 +29,14 @@ class UserUpdateSchema(UserBaseSchema):
         if not match_pattern.match(value):
             raise HTTPException(
                 status_code=422, detail="Name should contains only letters"
+            )
+        return value
+
+    @field_validator("language")
+    def validate_language(cls, value: str) -> str:
+        if not languages.get(alpha_2=value):
+            raise HTTPException(
+                status_code=422, detail="Invalid language code"
             )
         return value
 

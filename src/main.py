@@ -18,14 +18,16 @@ from src.presentation import (
 logger = structlog.stdlib.get_logger()
 
 
-async def init_api() -> FastAPI:
+def init_api() -> FastAPI:
     app = FastAPI(
         title="Que Account",
         version="0.1.0",
     )
-    configure_logging()
     setup_middlewares(app)
-    await logger.info("Initializing API")
+    configure_logging()
+    container = Container()
+    app.container = container
+    setup_routes(app)
     return app
 
 
@@ -39,15 +41,11 @@ async def run_server(app: FastAPI) -> None:
         log_level="debug"
     )
     server = uvicorn.Server(config)
-    await logger.info("Starting server")
     await server.serve()
 
 
 async def main() -> None:
-    container = Container()
-    app = await init_api()
-    app.container = container
-    setup_routes(app)
+    app = init_api()
     await run_server(app)
 
 

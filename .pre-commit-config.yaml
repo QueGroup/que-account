@@ -1,4 +1,4 @@
-exclude: 'docs|images|scripts|migrations'
+exclude: 'docs|images|scripts|migrations|README.md'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -30,5 +30,5 @@ repos:
     rev: v1.5.1
     hooks:
       - id: mypy
-        args: [ --follow-imports=silent, --disable-error-code=no-untyped-call, --no-namespace-packages]
+        args: [ --follow-imports=silent, --disable-error-code=no-untyped-call, --explicit-package-bases]
         exclude: tests/

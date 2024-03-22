@@ -16,11 +16,11 @@ from sqlalchemy.ext.asyncio import (
     async_engine_from_config,
 )
 
-from src.app import (
-    load_config as app_config,
-)
-from src.infrastructure.models import (
+from src.infrastructure.database.models import (
     Base,
+)
+from src.infrastructure.settings import (
+    load_config,
 )
 
 # this is the Alembic Config object, which provides
@@ -37,13 +37,13 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 target_metadata = Base.metadata
 
-
 # target_metadata = None
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+app_config = load_config()
 
 
 def run_migrations_offline() -> None:
@@ -58,8 +58,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    conf = app_config()
-    url = config.get_main_option(conf.db.construct_sqlalchemy_url())
+    url = config.get_main_option(app_config.db.construct_sqlalchemy_url())
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -83,9 +82,8 @@ async def run_async_migrations() -> None:
     and associate a connection with the context.
 
     """
-    conf = app_config()
     configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = conf.db.construct_sqlalchemy_url()
+    configuration["sqlalchemy.url"] = app_config.db.construct_sqlalchemy_url()
     connectable = async_engine_from_config(
         configuration,
         prefix="sqlalchemy.",

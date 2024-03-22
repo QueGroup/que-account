@@ -1,7 +1,11 @@
-from typing import Final
+from typing import (
+    Final,
+)
 
 import structlog
-from structlog import BoundLogger
+from structlog import (
+    BoundLogger,
+)
 
 from .configuration import (
     _configure_default_logging_by_custom,

@@ -16,7 +16,8 @@ from fastapi import (
 
 from src.application.dto import (
     RoleCreateSchema,
-    RoleResponseSchema, RoleUpdateSchema,
+    RoleResponseSchema,
+    RoleUpdateSchema,
 )
 from src.application.service import (
     RoleService,

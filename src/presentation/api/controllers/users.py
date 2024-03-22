@@ -1,4 +1,6 @@
-from typing import Annotated
+from typing import (
+    Annotated,
+)
 
 from dependency_injector.wiring import (
     Provide,
@@ -8,11 +10,13 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
-    status, Path,
+    Path,
+    status,
 )
 
 from src.application.dto import (
-    UserResponseSchema, UserUpdateSchema,
+    UserResponseSchema,
+    UserUpdateSchema,
 )
 from src.application.service import (
     UserService,

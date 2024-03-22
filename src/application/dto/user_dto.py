@@ -3,7 +3,9 @@ import re
 from fastapi import (
     HTTPException,
 )
-from pycountry import languages
+from pycountry import (
+    languages,
+)
 from pydantic import (
     BaseModel,
     ConfigDict,

@@ -6,7 +6,8 @@ from sqlalchemy import (
     Delete,
     Select,
     Update,
-    select, update,
+    select,
+    update,
 )
 
 from src.application.dto import (
@@ -16,6 +17,7 @@ from src.application.dto import (
 from src.infrastructure.database.models import (
     RoleModel,
 )
+
 from .abс_repository import (
     CRUDMixin,
     UpdateSchemaT,

@@ -1,5 +1,6 @@
 from src.application.dto import (
-    RoleCreateSchema, RoleUpdateSchema,
+    RoleCreateSchema,
+    RoleUpdateSchema,
 )
 from src.infrastructure.database.models import (
     RoleModel,

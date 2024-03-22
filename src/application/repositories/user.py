@@ -18,6 +18,7 @@ from src.domain.user import (
 from src.infrastructure.database.models import (
     UserModel,
 )
+
 from .abс_repository import (
     CRUDMixin,
     UpdateSchemaT,

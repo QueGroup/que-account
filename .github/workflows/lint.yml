@@ -1,4 +1,4 @@
-name: Python Tests
+name: Lint
 
 on:
   pull_request:
@@ -29,6 +29,3 @@ jobs:
       run: poetry install --all-extras
     - name: Lint code
       run: pre-commit run --all-files
-
-    - name: Run tests
-      run: poetry run pytest -sv tests

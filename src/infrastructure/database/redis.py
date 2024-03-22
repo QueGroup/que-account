@@ -1,3 +1,4 @@
+# https://github.com/redis/redis-py/issues/2249
 from redis.asyncio import (  # type: ignore
     Redis,
     from_url,

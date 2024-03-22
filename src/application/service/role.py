@@ -1,5 +1,5 @@
 from src.application.dto import (
-    RoleCreateSchema,
+    RoleCreateSchema, RoleUpdateSchema,
 )
 from src.infrastructure.database.models import (
     RoleModel,
@@ -26,8 +26,8 @@ class RoleService:
     async def get_all_roles(self) -> list[RoleModel]:
         return await self.repository.get_multi()
 
-    async def update_role(self, role_in: RoleCreateSchema):
-        pass
+    async def update_role(self, pk: int, role_in: RoleUpdateSchema) -> RoleModel:
+        return await self.repository.partial_update(pk=pk, data_in=role_in)
 
     async def delete_role(self, role_id: int) -> None:
         return await self.repository.destroy(role_id=role_id)

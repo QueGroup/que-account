@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from dependency_injector.wiring import (
     Provide,
     inject,
@@ -6,11 +8,11 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
-    status,
+    status, Path,
 )
 
 from src.application.dto import (
-    UserResponseSchema,
+    UserResponseSchema, UserUpdateSchema,
 )
 from src.application.service import (
     UserService,
@@ -43,7 +45,7 @@ async def get_list(
 
 
 @user_router.get(
-    "/{user_id}/",
+    "/me/{user_id}/",
     summary="Getting user details",
     response_model=UserResponseSchema,
     status_code=status.HTTP_200_OK
@@ -60,8 +62,25 @@ async def get_user(
     return current_user
 
 
+@user_router.patch(
+    "/me/{user_id}/",
+    response_model=UserResponseSchema,
+    status_code=status.HTTP_200_OK,
+)
+@inject
+async def update_user(
+        user_id: Annotated[int, Path],
+        user_in: UserUpdateSchema,
+        current_user: UserModel = Depends(get_current_user),
+        user_service: UserService = Depends(Provide[Container.user_service])
+):
+    if current_user.user_id != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
+    return await user_service.update_user(pk=user_id, user_in=user_in)
+
+
 @user_router.delete(
-    "/{user_id}/",
+    "/me/{user_id}/",
     summary="Deactivate user account",
     status_code=status.HTTP_204_NO_CONTENT
 )
@@ -70,4 +89,4 @@ async def deactivate_user(
         user_id: int,
         user_service: UserService = Depends(Provide[Container.user_service])
 ) -> None:
-    return await user_service.delete_user(user_id=user_id)
+    return await user_service.deactivate_user(user_id=user_id)

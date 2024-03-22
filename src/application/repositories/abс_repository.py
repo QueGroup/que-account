@@ -77,7 +77,7 @@ class QueryMixin(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _update_query(self, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
+    def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -118,24 +118,11 @@ class CRUDMixin(
             entity: Sequence[ModelT] = row.scalars().all()
             return list(entity)
 
-    async def partial_update(self, data_in: UpdateSchemaT, **kwargs: Any) -> ModelT:
+    async def partial_update(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> ModelT:
         async with self._session_factory() as session:
-            # stmt = (
-            #     update(
-            #         self.model
-            #     ).values(
-            #         **data_in.model_dump(
-            #             exclude_unset=True
-            #         )
-            #     ).filter_by(
-            #         **kwargs
-            #     ).returning(
-            #         self.model
-            #     )
-            # )
-            stmt = self._update_query(data_in=data_in, **kwargs)
+            stmt = self._update_query(pk=pk, data_in=data_in, **kwargs)
             result: Result = await session.execute(stmt)
-            # await session.commit()
+            await session.commit()
             return result.scalar_one()
 
     async def destroy(self, *args: Any, **kwargs: Any) -> None:

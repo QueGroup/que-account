@@ -16,7 +16,7 @@ from fastapi import (
 
 from src.application.dto import (
     RoleCreateSchema,
-    RoleResponseSchema,
+    RoleResponseSchema, RoleUpdateSchema,
 )
 from src.application.service import (
     RoleService,
@@ -90,6 +90,21 @@ async def get_role_by_id(
     if role is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     return role
+
+
+@role_router.patch(
+    "/{role_id}/",
+    response_model=RoleResponseSchema,
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_role())],
+)
+@inject
+async def update_role(
+        role_id: Annotated[int, Path],
+        role_in: RoleUpdateSchema,
+        role_service: RoleService = Depends(Provide[Container.role_service])
+):
+    return await role_service.update_role(pk=role_id, role_in=role_in)
 
 
 @role_router.delete(

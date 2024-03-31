@@ -7,7 +7,7 @@ from .healthcheck import (
 from .role import (
     role_router,
 )
-from .users import (
+from .user import (
     user_router,
 )
 

@@ -62,6 +62,9 @@ class UserModel(Base):
     roles: Mapped[list["RoleModel"]] = relationship(
         secondary=roles_to_user, back_populates="users", lazy="selectin",
     )
+    # photos: Mapped["PhotoModel"] = relationship(
+    #     "PhotoModel", backref="user", lazy=True
+    # )
 
 
 class UserSignatureModel(Base):

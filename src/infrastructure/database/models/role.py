@@ -24,6 +24,7 @@ if TYPE_CHECKING:
         UserModel,
     )
 
+# TODO: Сделать нормальный класс
 roles_to_user = Table(
     "roles_to_user",
     Base.metadata,

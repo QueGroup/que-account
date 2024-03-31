@@ -2,6 +2,8 @@ from datetime import (
     datetime,
     timedelta,
 )
+import hashlib
+import hmac
 from typing import (
     Any,
 )
@@ -20,7 +22,7 @@ from src.infrastructure import (
     load_config,
 )
 
-jwt_config = load_config().security
+config = load_config().security
 
 
 class HashService:
@@ -38,6 +40,22 @@ class HashService:
         except VerifyMismatchError:
             return False
 
+    @staticmethod
+    def verify_signature(
+            telegram_id: int,
+            signature: str,
+            timestamp: int,
+            nonce: int,
+    ) -> bool:
+        data_to_verify = f"{telegram_id}{timestamp}{nonce}"
+        expected_signature = hmac.new(
+            config.signature_secret_key.encode(),
+            data_to_verify.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        return expected_signature == signature
+
 
 class SignatureService:
 
@@ -50,9 +68,9 @@ class SignatureService:
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=jwt_config.access_expire_time_in_seconds)
+            expire = datetime.utcnow() + timedelta(minutes=config.access_expire_time_in_seconds)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, jwt_config.secret_key, algorithm=jwt_config.algorithm)
+        encoded_jwt = jwt.encode(to_encode, config.secret_key, algorithm=config.algorithm)
         return encoded_jwt
 
     @staticmethod
@@ -60,7 +78,7 @@ class SignatureService:
             data: dict[str, Any],
     ) -> str:
         to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(minutes=jwt_config.refresh_expire_time_in_seconds)
+        expire = datetime.utcnow() + timedelta(minutes=config.refresh_expire_time_in_seconds)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, jwt_config.secret_key, algorithm=jwt_config.algorithm)
+        encoded_jwt = jwt.encode(to_encode, config.secret_key, algorithm=config.algorithm)
         return encoded_jwt

@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
-from src.application.repositories.user import (
+from src.application.mixins.user import (
     UserQueryMixin,
 )
 from src.infrastructure.database.models import (

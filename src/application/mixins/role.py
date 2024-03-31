@@ -18,7 +18,7 @@ from src.infrastructure.database.models import (
     RoleModel,
 )
 
-from .abс_repository import (
+from .base import (
     CRUDMixin,
     UpdateSchemaT,
 )

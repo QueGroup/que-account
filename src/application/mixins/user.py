@@ -19,7 +19,7 @@ from src.infrastructure.database.models import (
     UserModel,
 )
 
-from .abс_repository import (
+from .base import (
     CRUDMixin,
     UpdateSchemaT,
 )

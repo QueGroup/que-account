@@ -1,6 +1,9 @@
 from fastapi import (
     FastAPI,
 )
+from fastapi.middleware.cors import (
+    CORSMiddleware,
+)
 from starlette.middleware.base import (
     BaseHTTPMiddleware,
 )
@@ -21,7 +24,7 @@ from .api.providers import (
 
 def setup_routes(app: FastAPI) -> None:
     prefix: str = "/api/v1"
-    app.include_router(router=user_router, prefix=f"{prefix}/user", tags=["User"])
+    app.include_router(router=user_router, prefix=f"{prefix}/users", tags=["User"])
     app.include_router(router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"])
     app.include_router(router=auth_router, prefix=f"{prefix}/auth", tags=["Authorization"])
     app.include_router(router=role_router, prefix=f"{prefix}/role", tags=["Role"])
@@ -31,6 +34,14 @@ def setup_routes(app: FastAPI) -> None:
 def setup_middlewares(app: FastAPI) -> None:
     app.add_middleware(
         BaseHTTPMiddleware, dispatch=logging_middleware
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["Content-Disposition"],
     )
 
 

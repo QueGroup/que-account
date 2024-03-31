@@ -1,5 +1,4 @@
 from typing import (
-    Annotated,
     Any,
     Callable,
     Coroutine,
@@ -12,12 +11,14 @@ from dependency_injector.wiring import (
 from fastapi import (
     Depends,
     HTTPException,
+    Request,
     status,
 )
 from fastapi.security import (
     OAuth2PasswordBearer,
 )
 from jose import (
+    JWTError,
     jwt,
 )
 
@@ -42,7 +43,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 @inject
 async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)],
+        request: Request,
         config: Config = Depends(Provide[Container.config]),
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> UserModel:
@@ -51,15 +52,19 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    token = request.cookies.get("access_token")
+    if token is None:
+        raise credentials_exception
     try:
         payload = jwt.decode(token, config.security.secret_key, algorithms=[config.security.algorithm])
         user_id: int = payload.get("user_id")
         if user_id is None:
             raise credentials_exception
         token_data = TokenData(user_id=user_id)
-    except jwt.JWTError:
+    except JWTError:
         raise credentials_exception
     user = await user_service.get_user_by_id(user_id=token_data.user_id)
+
     if user is None:
         raise credentials_exception
     return user

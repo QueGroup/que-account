@@ -21,7 +21,6 @@ class UserBaseSchema(BaseModel):
 
 # TODO: Написать валидатор для языка
 class UserUpdateSchema(UserBaseSchema):
-    telegram_id: int | None = None
     username: str | None = None
     language: str | None = None
 

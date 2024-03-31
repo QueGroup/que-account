@@ -39,8 +39,10 @@ class UserRegistrationSchema(BaseModel):
         return value
 
     @field_validator("password")
-    def validate_password(cls, value: str) -> str:
-        if value and not len(value) < 8:
+    def validate_password(cls, value: str) -> str | None:
+        if value is None:
+            return value
+        if len(value) < 8:
             raise HTTPException(
                 status_code=422, detail="Password should be at least 8 characters long"
             )
@@ -62,6 +64,10 @@ class UserLoginSchema(HTTPBasicCredentials):
 class UserTMELoginSchema(BaseModel):
     telegram_id: int
     signature: str
+    nonce: int
+    timestamp: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserLoginWithOTP(BaseModel):

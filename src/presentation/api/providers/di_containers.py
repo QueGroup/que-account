@@ -27,7 +27,7 @@ from src.infrastructure.database.repositories.role import (
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "src.presentation.api.controllers.users",
+            "src.presentation.api.controllers.user",
             "src.presentation.api.controllers.auth",
             "src.presentation.api.controllers.healthcheck",
             "src.presentation.api.controllers.role",

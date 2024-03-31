@@ -5,7 +5,6 @@ from typing import (
     Callable,
     Generic,
     Sequence,
-    Type,
     TypeVar,
 )
 
@@ -87,7 +86,9 @@ class CRUDMixin(
     abc.ABC,
 ):
     def __init__(
-            self, session: Callable[[], AsyncSession], model: Type[ModelT]
+            self,
+            session: Callable[[], AsyncSession],
+            model: type[ModelT],
     ):
         self._session_factory = session
         self.model = model
@@ -133,7 +134,9 @@ class AuthMixin(
     Generic[ModelT, CreateSchemaT]
 ):
     def __init__(
-            self, session: Callable[[], AsyncSession], model: Type[ModelT]
+            self,
+            session: Callable[[], AsyncSession],
+            model: type[ModelT],
     ):
         self._session_factory = session
         self.model = model

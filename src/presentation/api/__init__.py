@@ -5,10 +5,10 @@ from .controllers import (
     user_router,
 )
 from .exceptions import (
+    InvalidSignatureError,
     InvalidTokenError,
     MissingTokenError,
     UserAlreadyExistsError,
-    InvalidSignatureError,
 )
 
 __all__ = (

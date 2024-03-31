@@ -1,6 +1,5 @@
 import abc
 import dataclasses
-import logging
 from typing import (
     Any,
     Callable,
@@ -10,9 +9,6 @@ from typing import (
     TypeVar,
 )
 
-from jose import (
-    jwt,
-)
 from pydantic import (
     BaseModel,
 )
@@ -29,18 +25,14 @@ from sqlalchemy.ext.asyncio import (
 from src.application.dto import (
     JWTokensSchema,
 )
+from src.application.strategies import (
+    AuthStrategy,
+)
 from src.infrastructure.database.models import (
     Base,
 )
-from src.infrastructure.services.security import (
-    HashService,
-    SignatureService,
-)
 from src.presentation.api.exceptions import (
-    InvalidTokenError,
-    PasswordIncorrectError,
     UserAlreadyExistsError,
-    UserNotFoundError,
 )
 
 ModelT = TypeVar("ModelT", bound=Base)
@@ -49,16 +41,13 @@ UpdateSchemaT = TypeVar("UpdateSchemaT", bound=BaseModel)
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 
-class QueryMixin(abc.ABC):
+class RetrieveQueryMixin:
     @abc.abstractmethod
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        """
-        :example: return select(self.model).filter(*args).filter_by(**filters)
-        :param args:
-        :return:
-        """
         raise NotImplementedError()
 
+
+class ListQueryMixin:
     @abc.abstractmethod
     def _get_all_query(
             self,
@@ -67,26 +56,33 @@ class QueryMixin(abc.ABC):
             *args: Any,
             **kwargs: Any
     ) -> Select[tuple[Any]]:
-        """
-        :example: return select(self.model).order_by(order).limit(limit).offset(offset)
-        :param skip:
-        :param limit:
-        :param args:
-        :return:
-        """
         raise NotImplementedError()
 
+
+class UpdateQueryMixin:
     @abc.abstractmethod
     def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
-        pass
+        raise NotImplementedError()
 
+
+class DeleteQueryMixin:
     @abc.abstractmethod
     def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:
-        pass
+        raise NotImplementedError()
+
+
+class RUDQueryMixin(
+    abc.ABC,
+    RetrieveQueryMixin,
+    ListQueryMixin,
+    UpdateQueryMixin,
+    DeleteQueryMixin
+):
+    pass
 
 
 class CRUDMixin(
-    QueryMixin,
+    RUDQueryMixin,
     Generic[ModelT, CreateSchemaT, UpdateSchemaT],
     abc.ABC,
 ):
@@ -132,7 +128,7 @@ class CRUDMixin(
 
 
 class AuthMixin(
-    QueryMixin,
+    RetrieveQueryMixin,
     abc.ABC,
     Generic[ModelT, CreateSchemaT]
 ):
@@ -142,7 +138,12 @@ class AuthMixin(
         self._session_factory = session
         self.model = model
 
-    async def singup(self, user_in: CreateSchemaT, *args: Any, **kwargs: Any) -> ModelT:
+    async def signup(
+            self,
+            user_in: CreateSchemaT,
+            *args: Any,
+            **kwargs: Any
+    ) -> ModelT:
         async with self._session_factory() as session:
             stmt = self._get_query(*args, **kwargs)
             result: Result = await session.execute(stmt)
@@ -156,46 +157,14 @@ class AuthMixin(
             await session.refresh(user)
             return user
 
-    async def signin(self, user_in: SchemaT, *args: Any, **kwargs: Any) -> JWTokensSchema:
+    async def signin(
+            self,
+            strategy: AuthStrategy,
+            user_in: SchemaT
+    ) -> JWTokensSchema:
         async with self._session_factory() as session:
-            stmt = self._get_query(*args, **kwargs)
-            result: Result = await session.execute(stmt)
-            user: ModelT = result.scalar_one_or_none()
-            if not user:
-                raise UserNotFoundError()
-            if user_in.password and not HashService.verify_password(user.password, user_in.password):
-                raise PasswordIncorrectError()
-            access_token = SignatureService.create_access_token(data={"user_id": user.user_id})
-            refresh_token = SignatureService.create_refresh_token(data={"user_id": user.user_id})
-            return JWTokensSchema(
-                access_token=access_token,
-                refresh_token=refresh_token
-            )
+            return await strategy.authenticate(user_in=user_in, session=session)
 
     async def signout(self) -> None:
         # TODO: Реализуйте логику выхода из системы, например, добавление токена в черный список
         pass
-
-
-# TODO: [WIP]
-class AbstractRefreshTokenRepository(
-    QueryMixin,
-    abc.ABC,
-    Generic[ModelT],
-):
-    def __init__(self, session: Callable[[], AsyncSession], model: Type[ModelT]) -> None:
-        self._session_factory = session
-        self.model = model
-
-    async def create(self, refresh_token: str, user_id: int) -> None:
-        # token_headers = jwt.get_unverified_header(refresh_token)
-        try:
-            pass
-        except jwt.JWTError as e:
-            logging.info(e)
-            raise InvalidTokenError()
-
-    @staticmethod
-    def _verify_refresh_token(token_payload: dict[str, Any]) -> None:
-        if len(token_payload.values()) > 1:
-            raise jwt.JWTError()

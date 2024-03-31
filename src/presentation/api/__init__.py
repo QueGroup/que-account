@@ -6,7 +6,9 @@ from .controllers import (
 )
 from .exceptions import (
     InvalidTokenError,
+    MissingTokenError,
     UserAlreadyExistsError,
+    InvalidSignatureError,
 )
 
 __all__ = (
@@ -16,4 +18,6 @@ __all__ = (
     "UserAlreadyExistsError",
     "InvalidTokenError",
     "role_router",
+    "MissingTokenError",
+    "InvalidSignatureError",
 )

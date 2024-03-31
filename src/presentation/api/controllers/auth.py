@@ -26,6 +26,10 @@ from src.application.dto import (
 from src.application.service import (
     AuthService,
 )
+from src.application.strategies import (
+    DefaultAuthStrategy,
+    TelegramAuthStrategy,
+)
 from src.infrastructure import (
     Config,
 )
@@ -40,7 +44,7 @@ auth_router = APIRouter()
 
 
 @auth_router.post(
-    "/",
+    "/signup/",
     response_model=UserResponseSchema,
     response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
@@ -55,24 +59,26 @@ async def signup(
 
 
 @auth_router.post(
-    "/login/t/me",
+    "/login/t/me/",
     response_model=JWTokensSchema,
     summary="Login in telegram",
     description="Login with telegram_id",
     status_code=status.HTTP_200_OK
 )
+@inject
 async def signin_telegram(
-        refresh_token_storage: Any,
         user_in: UserTMELoginSchema,
         request: Request,
         response: Response,
-        user_service: Any,
-) -> None:
-    pass
+        auth_service: AuthService = Depends(Provide[Container.auth_service]),
+) -> JWTokensSchema:
+    strategy = TelegramAuthStrategy()
+    jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy)
+    return jwt_tokens
 
 
 @auth_router.post(
-    "/login",
+    "/login/",
     response_model=JWTokensSchema,
     summary="Default login",
     description="Login with username and password",
@@ -86,7 +92,8 @@ async def login(
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
         config: Config = Depends(Provide[Container.config])
 ) -> JWTokensSchema:
-    jwt_tokens = await auth_service.signin(user_in=user_in)
+    strategy = DefaultAuthStrategy()
+    jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy)
 
     response.set_cookie(
         key="access_token",
@@ -110,7 +117,7 @@ async def login(
 
 
 @auth_router.post(
-    "/send-otp-code",
+    "/send-otp-code/",
     summary="Send otp code",
     status_code=status.HTTP_200_OK,
 
@@ -120,7 +127,7 @@ async def send_otp_code(user_in: UserLoginWithOTP) -> None:
 
 
 @auth_router.post(
-    "/confirm-otp-code",
+    "/confirm-otp-code/",
     response_model=JWTokensSchema,
     summary="Confirm otp code and write out the code",
     status_code=status.HTTP_200_OK,
@@ -135,7 +142,7 @@ async def confirm_otp_code(
 
 
 @auth_router.post(
-    "/refresh",
+    "/refresh/",
     response_model=JWTokensSchema,
     summary="Write out new pair of jwt tokens",
     status_code=status.HTTP_200_OK
@@ -145,7 +152,7 @@ async def refresh_token() -> None:
 
 
 @auth_router.post(
-    "/verify",
+    "/verify/",
     summary="Verification of the transmitted access_token",
     status_code=status.HTTP_200_OK
 )
@@ -154,7 +161,7 @@ async def verify_token() -> None:
 
 
 @auth_router.post(
-    "/logout",
+    "/logout/",
     summary="Logout from  the current session",
     status_code=status.HTTP_200_OK
 )
@@ -163,9 +170,17 @@ async def logout() -> None:
 
 
 @auth_router.post(
-    "/logout_all",
+    "/logout_all/",
     summary="Logout from the all session",
     status_code=status.HTTP_200_OK
 )
 async def logout_all() -> None:
+    pass
+
+
+@auth_router.post(
+    "/reset_password/",
+    status_code=status.HTTP_200_OK,
+)
+async def reset_password() -> None:
     pass

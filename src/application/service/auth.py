@@ -7,6 +7,10 @@ from src.application.dto import (
     JWTokensSchema,
     UserLoginSchema,
     UserRegistrationSchema,
+    UserTMELoginSchema,
+)
+from src.application.strategies import (
+    AuthStrategy,
 )
 from src.domain.user.entity import (
     UserEntity,
@@ -33,11 +37,11 @@ class AuthService:
             user_entity = UserEntity.create(
                 **user_in.model_dump()
             )
-            return await self.repository.singup(
-                user_entity,
-                username=user_in.username,
-                telegram_id=user_in.telegram_id
-            )
+            return await self.repository.signup(user_entity, username=user_in.username, telegram_id=user_in.telegram_id)
 
-    async def signin(self, user_in: UserLoginSchema) -> JWTokensSchema:
-        return await self.repository.signin(user_in=user_in)
+    async def signin(
+            self,
+            user_in: UserTMELoginSchema | UserLoginSchema,
+            strategy: AuthStrategy,
+    ) -> JWTokensSchema:
+        return await self.repository.signin(user_in=user_in, strategy=strategy)

@@ -30,6 +30,7 @@ class Healthcheck(BaseModel):
 HEALTHCHECK = Healthcheck()
 
 
+# TODO: https://github.com/ets-labs/python-dependency-injector/pull/721
 @healthcheck_router.get(
     "/",
     response_model=Healthcheck,
@@ -37,7 +38,7 @@ HEALTHCHECK = Healthcheck()
 )
 @inject
 async def healthcheck(
-        config: Config = Depends(Provide[Container.config])
+        config: Config = Depends(Provide[Container.config]),
 ) -> BaseModel:
     try:
         db_conn = await asyncpg.create_pool(dsn=config.db.construct_psql_dns())

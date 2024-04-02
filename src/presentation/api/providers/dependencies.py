@@ -19,20 +19,19 @@ from fastapi.security import (
 )
 from jose import (
     JWTError,
-    jwt,
 )
 
-from src.application.dto import (
-    TokenData,
+from src.application import (
+    dto,
 )
 from src.application.service import (
     UserService,
 )
-from src.infrastructure import (
-    Config,
+from src.infrastructure.database import (
+    models,
 )
-from src.infrastructure.database.models import (
-    UserModel,
+from src.infrastructure.services.security import (
+    SignatureService,
 )
 from src.presentation.api.providers.di_containers import (
     Container,
@@ -44,23 +43,23 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 @inject
 async def get_current_user(
         request: Request,
-        config: Config = Depends(Provide[Container.config]),
         user_service: UserService = Depends(Provide[Container.user_service]),
-) -> UserModel:
+) -> models.UserModel:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    token = request.cookies.get("access_token")
+    authorization = request.headers.get("Authorization")
+    token = request.cookies.get("access_token") or (authorization and authorization.split()[1])
     if token is None:
         raise credentials_exception
     try:
-        payload = jwt.decode(token, config.security.secret_key, algorithms=[config.security.algorithm])
-        user_id: int = payload.get("user_id")
+        payload = SignatureService.decode_token(token=token)
+        user_id: int = int(payload.get("sub"))
         if user_id is None:
             raise credentials_exception
-        token_data = TokenData(user_id=user_id)
+        token_data = dto.TokenData(user_id=user_id)
     except JWTError:
         raise credentials_exception
     user = await user_service.get_user_by_id(user_id=token_data.user_id)
@@ -71,8 +70,8 @@ async def get_current_user(
 
 
 @inject
-def require_role() -> Callable[[UserModel], Coroutine[Any, Any, UserModel]]:
-    async def check_user_roles(user: UserModel = Depends(get_current_user)) -> UserModel:
+def require_role() -> Callable[[models.UserModel], Coroutine[Any, Any, models.UserModel]]:
+    async def check_user_roles(user: models.UserModel = Depends(get_current_user)) -> models.UserModel:
         if user.is_superuser:
             return user
         else:

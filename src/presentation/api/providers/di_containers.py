@@ -52,10 +52,6 @@ class Container(containers.DeclarativeContainer):
         AuthRepository,
         session_factory=db.provided.get_db_session,
     )
-    auth_service = providers.Factory(
-        AuthService,
-        auth_repository=auth_repository,
-    )
 
     role_repository = providers.Factory(
         RoleRepository,
@@ -64,4 +60,10 @@ class Container(containers.DeclarativeContainer):
     role_service = providers.Factory(
         RoleService,
         role_repository=role_repository,
+    )
+
+    auth_service = providers.Factory(
+        AuthService,
+        auth_repository=auth_repository,
+        role_service=role_service,
     )

@@ -15,7 +15,10 @@ def _extract_from_record(_: Any, __: Any, event_dict: dict[str, Any]) -> dict[st
     return event_dict
 
 
-def _configure_default_logging_by_custom(shared_processors: list[Callable[..., Any]], logs_render: Any) -> None:
+def _configure_default_logging_by_custom(
+        shared_processors: list[Callable[..., Any]],
+        logs_render: Any,
+) -> None:
     handler = logging.StreamHandler()
 
     formatter = structlog.stdlib.ProcessorFormatter(

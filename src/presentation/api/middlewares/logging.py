@@ -35,7 +35,7 @@ async def logging_middleware(
         method=request.method,
         path=request.url.path,
         status_code=response.status_code,
-        response_time=response_time
+        response_time=response_time,
     )
 
     return response

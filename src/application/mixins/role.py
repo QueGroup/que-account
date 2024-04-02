@@ -10,12 +10,11 @@ from sqlalchemy import (
     update,
 )
 
-from src.application.dto import (
-    RoleCreateSchema,
-    RoleUpdateSchema,
+from src.application import (
+    dto,
 )
-from src.infrastructure.database.models import (
-    RoleModel,
+from src.infrastructure.database import (
+    models,
 )
 
 from .base import (
@@ -24,31 +23,29 @@ from .base import (
 )
 
 
-class RoleQueryMixin(CRUDMixin[RoleModel, RoleCreateSchema, RoleUpdateSchema]):
+class RoleQueryMixin(CRUDMixin[models.RoleModel, dto.RoleCreate, dto.RoleUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         return select(self.model).filter(*args).filter_by(**kwargs)
 
-    def _get_all_query(self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        return select(
-            self.model
-        ).offset(skip).limit(limit).filter(*args).filter_by(**kwargs).order_by(self.model.role_id)
+    def _get_all_query(
+            self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any
+    ) -> Select[tuple[Any]]:
+        return (
+            select(self.model)
+            .offset(skip)
+            .limit(limit)
+            .filter(*args)
+            .filter_by(**kwargs)
+            .order_by(self.model.role_id)
+        )
 
     def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
         return (
-            update(
-                self.model
-            ).where(
-                self.model.role_id == pk
-            ).values(
-                **data_in.model_dump(
-                    exclude_unset=True
-                )
-            ).filter_by(
-                **kwargs
-            )
-            .returning(
-                self.model
-            )
+            update(self.model)
+            .where(self.model.role_id == pk)
+            .values(**data_in.model_dump(exclude_unset=True))
+            .filter_by(**kwargs)
+            .returning(self.model)
         )
 
     def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:

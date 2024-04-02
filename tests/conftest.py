@@ -60,6 +60,7 @@ async def setup_db() -> None:
 
 @pytest.fixture(scope="session")
 async def ac():
+    # noinspection PyUnresolvedReferences
     app.dependency_overrides[Container.db.provided.get_db_session] = override_get_db
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac

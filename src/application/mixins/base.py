@@ -21,8 +21,8 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
-from src.application.dto import (
-    JWTokensSchema,
+from src.application import (
+    dto,
 )
 from src.application.strategies import (
     AuthStrategy,
@@ -53,7 +53,7 @@ class ListQueryMixin:
             skip: int = 0,
             limit: int = 10,
             *args: Any,
-            **kwargs: Any
+            **kwargs: Any,
     ) -> Select[tuple[Any]]:
         raise NotImplementedError()
 
@@ -75,7 +75,7 @@ class RUDQueryMixin(
     RetrieveQueryMixin,
     ListQueryMixin,
     UpdateQueryMixin,
-    DeleteQueryMixin
+    DeleteQueryMixin,
 ):
     pass
 
@@ -152,9 +152,7 @@ class AuthMixin(
             result: Result = await session.execute(stmt)
             if result.scalar() is not None:
                 raise UserAlreadyExistsError()
-            user = self.model(
-                **user_in.__dict__
-            )
+            user = self.model(**user_in.__dict__)
             session.add(user)
             await session.commit()
             await session.refresh(user)
@@ -164,7 +162,7 @@ class AuthMixin(
             self,
             strategy: AuthStrategy,
             user_in: SchemaT
-    ) -> JWTokensSchema:
+    ) -> dto.JWTokens:
         async with self._session_factory() as session:
             return await strategy.authenticate(user_in=user_in, session=session)
 

@@ -35,12 +35,14 @@ roles_to_user = Table(
     Column(
         "role_id", Integer, ForeignKey("roles.role_id", ondelete="CASCADE", onupdate="CASCADE"),
         primary_key=True,
-    )
+    ),
 )
 
 
 class RoleModel(Base):
-    role_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    role_id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True, nullable=False
+    )
     title: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
 
     users: Mapped[list["UserModel"]] = relationship(

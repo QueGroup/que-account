@@ -11,8 +11,8 @@ from sqlalchemy import (
 from src.domain.user.entity import (
     UserEntity,
 )
-from src.infrastructure.database.models import (
-    UserModel,
+from src.infrastructure.database import (
+    models,
 )
 
 from .base import (
@@ -20,12 +20,12 @@ from .base import (
 )
 
 
-class AuthQueryMixin(AuthMixin[UserModel, UserEntity]):
+class AuthQueryMixin(AuthMixin[models.UserModel, UserEntity]):
 
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        username_f = UserModel.username == kwargs.get("username")
-        telegram_id_f = UserModel.telegram_id == kwargs.get("telegram_id")
+        username_f = models.UserModel.username == kwargs.get("username")
+        telegram_id_f = models.UserModel.telegram_id == kwargs.get("telegram_id")
 
         combined_filter = or_(username_f, telegram_id_f)
 
-        return select(UserModel).filter(combined_filter)
+        return select(models.UserModel).filter(combined_filter)

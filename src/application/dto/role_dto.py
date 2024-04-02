@@ -4,19 +4,19 @@ from pydantic import (
 )
 
 
-class RoleBaseSchema(BaseModel):
+class RoleBase(BaseModel):
     title: str
 
 
-class RoleCreateSchema(RoleBaseSchema):
+class RoleCreate(RoleBase):
     pass
 
 
-class RoleUpdateSchema(RoleBaseSchema):
+class RoleUpdate(RoleBase):
     title: str | None = None
 
 
-class RoleResponseSchema(RoleBaseSchema):
+class RoleResponse(RoleBase):
     role_id: int
 
     model_config = ConfigDict(from_attributes=True)

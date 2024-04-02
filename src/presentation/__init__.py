@@ -24,16 +24,24 @@ from .api.providers import (
 
 def setup_routes(app: FastAPI) -> None:
     prefix: str = "/api/v1"
-    app.include_router(router=user_router, prefix=f"{prefix}/users", tags=["User"])
-    app.include_router(router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"])
-    app.include_router(router=auth_router, prefix=f"{prefix}/auth", tags=["Authorization"])
-    app.include_router(router=role_router, prefix=f"{prefix}/role", tags=["Role"])
+    app.include_router(
+        router=user_router, prefix=f"{prefix}/users", tags=["UserModel"],
+    )
+    app.include_router(
+        router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"],
+    )
+    app.include_router(
+        router=auth_router, prefix=f"{prefix}/auth", tags=["Authorization"],
+    )
+    app.include_router(
+        router=role_router, prefix=f"{prefix}/role", tags=["RoleModel"],
+    )
 
 
 # noinspection PyTypeChecker
 def setup_middlewares(app: FastAPI) -> None:
     app.add_middleware(
-        BaseHTTPMiddleware, dispatch=logging_middleware
+        BaseHTTPMiddleware, dispatch=logging_middleware,
     )
     app.add_middleware(
         CORSMiddleware,

@@ -1,6 +1,9 @@
 from .auth import (
     AuthRepository,
 )
+from .role import (
+    RoleRepository
+)
 from .user import (
     UserRepository,
 )
@@ -8,4 +11,5 @@ from .user import (
 __all__ = (
     "UserRepository",
     "AuthRepository",
+    "RoleRepository",
 )

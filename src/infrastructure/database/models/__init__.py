@@ -12,7 +12,6 @@ from .role import (
 )
 from .user import (
     UserModel,
-    UserRefreshTokenModel,
 )
 
 __all__ = (

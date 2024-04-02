@@ -17,7 +17,7 @@ class UserEntity:
     is_active: bool = True
     is_superuser: bool = False
     deleted_at: datetime | None = None
-    language: str = 'ru'
+    language: str = "ru"
 
     @classmethod
     def create(
@@ -25,17 +25,16 @@ class UserEntity:
             password: str,
             telegram_id: int | None,
             username: str,
-
-    ) -> 'UserEntity':
+    ) -> "UserEntity":
         if password:
             hashed_password = HashService.hash_password(password)
             return cls(
                 password=hashed_password,
-                username=username
+                username=username,
             )
         return cls(
             telegram_id=telegram_id,
-            username=username
+            username=username,
         )
 
     @classmethod

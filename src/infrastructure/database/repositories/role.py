@@ -9,11 +9,11 @@ from sqlalchemy.ext.asyncio import (
 from src.application.mixins import (
     RoleQueryMixin,
 )
-from src.infrastructure.database.models import (
-    RoleModel,
+from src.infrastructure.database import (
+    models,
 )
 
 
 class RoleRepository(RoleQueryMixin):
     def __init__(self, session_factory: Callable[[], AsyncSession]):
-        super().__init__(session=session_factory, model=RoleModel)
+        super().__init__(session=session_factory, model=models.RoleModel)

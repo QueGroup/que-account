@@ -33,7 +33,7 @@
 <!-- FIXME: Update name of topics and update  -->
 
 1. [About The Project](#about-the-project)
-   - [Built With](#built-with)
+    - [Built With](#built-with)
 2. [Getting Started](#Development)
 3. [Contributing](#contributing)
 4. [License](#license)
@@ -51,7 +51,9 @@ single and universal access to all our applications, with a minimum amount of ef
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)\
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)\
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)\
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)\
+[![OpenAPI](https://img.shields.io/badge/openapi-6BA539?style=for-the-badge&logo=openapi-initiative&logoColor=fff)](https://www.openapis.org/)\
+[![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)](https://swagger.io/)
 
 <!-- GETTING STARTED -->
 
@@ -74,12 +76,21 @@ Distributed under the GPL-2.0 license. See [LICENSE](LICENSE) for more informati
 <h3 align="center">Works on Open Source</h3>
 
 [contributors-shield]: https://img.shields.io/github/contributors/QueGroup/que-account.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/QueGroup/que-account/graphs/contributors
+
 [forks-shield]: https://img.shields.io/github/forks/QueGroup/que-account.svg?style=for-the-badge
+
 [forks-url]: https://github.com/QueGroup/que-account/network/members
+
 [issues-shield]: https://img.shields.io/github/issues/QueGroup/que-account.svg?style=for-the-badge
+
 [issues-url]: https://github.com/QueGroup/que-account/issues
+
 [license-shield]: https://img.shields.io/github/license/QueGroup/que-account.svg?style=for-the-badge
+
 [license-url]: https://github.com/QueGroup/que-account/blob/master/LICENSE
+
 [stars-shield]: https://img.shields.io/github/stars/QueGroup/que-account.svg?style=for-the-badge
+
 [stars-url]: https://github.com/QueGroup/que-account/stargazers

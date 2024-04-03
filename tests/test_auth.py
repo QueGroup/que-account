@@ -1,3 +1,8 @@
+import random
+from typing import (
+    Any,
+)
+
 from faker import (
     Faker,
 )
@@ -10,21 +15,6 @@ from starlette import (
 )
 
 fake = Faker()
-
-
-@pytest.mark.asyncio
-async def test_sign_up_default(ac: AsyncClient) -> None:
-    body = {
-        "username": fake.user_name(),
-        "password": fake.password(length=9)
-    }
-
-    response = await ac.post(
-        url="/api/v1/auth/signup/",
-        json=body
-    )
-    assert "username" in response.json()
-    assert response.status_code == 201
 
 
 @pytest.mark.asyncio
@@ -63,13 +53,64 @@ async def test_sign_up_default(ac: AsyncClient) -> None:
                 status.HTTP_422_UNPROCESSABLE_ENTITY,
                 "Password should contain at least one special character"
         ),
+        (
+                {
+                    "username": fake.user_name(),
+                    "password": fake.password(length=9)
+                },
+                status.HTTP_201_CREATED,
+                None
+        )
     ]
 )
-async def test_sign_up(ac: AsyncClient, body, expected_status, expected_detail) -> None:
+async def test_signup_default(
+        ac: AsyncClient,
+        body: dict[str, Any],
+        expected_status: int,
+        expected_detail: str,
+) -> None:
     response = await ac.post(
         url="/api/v1/auth/signup/",
         json=body
     )
 
-    assert response.json()["detail"] == expected_detail
+    if expected_detail is not None:
+        assert response.json()["detail"] == expected_detail
+    assert response.status_code == expected_status
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "body, expected_status, expected_detail",
+    [
+        (
+                {
+                    "username": fake.user_name(),
+                    "telegram_id": random.randint(10000000, 9999999999)
+                },
+                status.HTTP_201_CREATED,
+                None,
+        ),
+        (
+                {
+                    "username": "invalid_username#",
+                    "telegram_id": 1234567890,
+                },
+                status.HTTP_422_UNPROCESSABLE_ENTITY,
+                "Name should contains only letters"
+        ),
+    ]
+)
+async def test_signup_telegram(
+        ac: AsyncClient,
+        body: dict[str, Any],
+        expected_status: int,
+        expected_detail: str | dict[str, Any],
+):
+    response = await ac.post(
+        url="/api/v1/auth/signup/",
+        json=body
+    )
+    if expected_detail is not None:
+        assert response.json()["detail"] == expected_detail
     assert response.status_code == expected_status

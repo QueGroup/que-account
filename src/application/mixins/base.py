@@ -27,14 +27,14 @@ from src.application import (
 from src.application.strategies import (
     AuthStrategy,
 )
-from src.infrastructure.database.models import (
-    Base,
+from src.infrastructure.database import (
+    models,
 )
 from src.presentation.api.exceptions import (
     UserAlreadyExistsError,
 )
 
-ModelT = TypeVar("ModelT", bound=Base)
+ModelT = TypeVar("ModelT", bound=models.Base)
 CreateSchemaT = TypeVar("CreateSchemaT", bound=Any)
 UpdateSchemaT = TypeVar("UpdateSchemaT", bound=BaseModel)
 SchemaT = TypeVar("SchemaT", bound=BaseModel)

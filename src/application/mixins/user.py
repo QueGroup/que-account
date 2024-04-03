@@ -13,7 +13,7 @@ from src.application import (
     dto,
 )
 from src.domain.user import (
-    UserEntity,
+    entity,
 )
 from src.infrastructure.database import (
     models,
@@ -24,7 +24,7 @@ from .base import (
 )
 
 
-class UserQueryMixin(CRUDMixin[models.UserModel, UserEntity, dto.UserUpdate]):
+class UserQueryMixin(CRUDMixin[models.User, entity.User, dto.UserUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         return select(self.model).filter(*args).filter_by(**kwargs)
 

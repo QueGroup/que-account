@@ -23,7 +23,7 @@ from .base import (
 )
 
 
-class RoleQueryMixin(CRUDMixin[models.RoleModel, dto.RoleCreate, dto.RoleUpdate]):
+class RoleQueryMixin(CRUDMixin[models.Role, dto.RoleCreate, dto.RoleUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         return select(self.model).filter(*args).filter_by(**kwargs)
 

@@ -9,6 +9,8 @@ from src.application import (
 
 
 class InvalidTokenError(HTTPException):
+    """Custom error when provided token is invalid"""
+
     def __init__(
             self,
             status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -19,6 +21,8 @@ class InvalidTokenError(HTTPException):
 
 
 class InvalidSignatureError(HTTPException):
+    """Custom error when provided signature is invalid"""
+
     def __init__(
             self,
             status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -29,6 +33,8 @@ class InvalidSignatureError(HTTPException):
 
 
 class MissingTokenError(HTTPException):
+    """Custom error when no token is provided"""
+
     def __init__(
             self,
             status_code: int = status.HTTP_400_BAD_REQUEST,
@@ -43,7 +49,7 @@ class UserAlreadyExistsError(HTTPException):
 
     def __init__(
             self,
-            status_code: int = status.HTTP_400_BAD_REQUEST,
+            status_code: int = status.HTTP_409_CONFLICT,
             message: str = "User with provided data already exists.",
     ) -> None:
         detail = {"code": AuthExceptionCodes.USER_ALREADY_EXISTS, "message": message}
@@ -75,7 +81,7 @@ class PasswordIncorrectError(HTTPException):
 
 
 class UserNotFoundError(HTTPException):
-    """Возвращаемая модель при отсутствии пользователя."""
+    """Custom error when user not found."""
 
     def __init__(
             self,

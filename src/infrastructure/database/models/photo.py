@@ -9,9 +9,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import (
     Mapped,
-    backref,
     mapped_column,
-    relationship,
 )
 
 from .base import (
@@ -19,13 +17,13 @@ from .base import (
 )
 
 if TYPE_CHECKING:
-    from .user import (
-        UserModel,
-    )
+    pass
 
 
 class PhotoModel(Base):
+    __tablename__ = "profiles"
+
     photo_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.user_id"), nullable=False)
-    user: Mapped["UserModel"] = relationship("UserModel", backref=backref("photos", lazy=True))
+    # user: Mapped["User"] = relationship("User", backref=backref("photos", lazy=True))
     photo_url: Mapped[str] = mapped_column(String, nullable=False)

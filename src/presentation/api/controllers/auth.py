@@ -50,7 +50,7 @@ auth_router = APIRouter()
 async def signup(
         user_in: dto.UserRegistration,
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
-) -> models.UserModel:
+) -> models.User:
     return await auth_service.signup(user_in=user_in)
 
 

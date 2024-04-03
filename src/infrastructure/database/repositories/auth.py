@@ -16,4 +16,4 @@ from src.infrastructure.database import (
 
 class AuthRepository(AuthQueryMixin):
     def __init__(self, session_factory: Callable[[], AsyncSession]) -> None:
-        super().__init__(session=session_factory, model=models.UserModel)
+        super().__init__(session=session_factory, model=models.User)

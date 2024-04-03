@@ -41,7 +41,7 @@ user_router = APIRouter()
 @inject
 async def get_list(
         user_service: UserService = Depends(Provide[Container.user_service]),
-) -> list[models.UserModel]:
+) -> list[models.User]:
     return await user_service.get_users()
 
 
@@ -53,8 +53,8 @@ async def get_list(
 )
 @inject
 async def get_user(
-        current_user: Annotated[models.UserModel, Depends(get_current_user)],
-) -> models.UserModel:
+        current_user: Annotated[models.User, Depends(get_current_user)],
+) -> models.User:
     if not current_user.is_active:
         raise UserDeactivatedError()
     return current_user
@@ -68,9 +68,9 @@ async def get_user(
 @inject
 async def update_user(
         user_in: dto.UserUpdate,
-        current_user: Annotated[models.UserModel, Depends(get_current_user)],
+        current_user: Annotated[models.User, Depends(get_current_user)],
         user_service: UserService = Depends(Provide[Container.user_service]),
-) -> models.UserModel:
+) -> models.User:
     return await user_service.update_user(pk=current_user.user_id, user_in=user_in)
 
 
@@ -81,7 +81,7 @@ async def update_user(
 )
 @inject
 async def deactivate_user(
-        current_user: Annotated[models.UserModel, Depends(get_current_user)],
+        current_user: Annotated[models.User, Depends(get_current_user)],
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> None:
     return await user_service.deactivate_user(user_id=current_user.user_id)

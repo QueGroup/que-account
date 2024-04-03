@@ -31,28 +31,28 @@ class UserRegistration(BaseModel):
 
     @field_validator("username")
     def validate_name(cls, value: str) -> str:
-        match_pattern = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
+        match_pattern = re.compile(r"^[a-zA-Z0-9\-]+$")
         if not match_pattern.match(value):
             raise HTTPException(status_code=422, detail="Name should contains only letters")
         return value
 
-    # @field_validator("password")
-    # def validate_password(cls, value: str) -> str | None:
-    #     if value is None:
-    #         return value
-    #     if len(value) < 8:
-    #         raise HTTPException(
-    #             status_code=422, detail="Password should be at least 8 characters long"
-    #         )
-    #     if value.islower() or value.isupper():
-    #         raise HTTPException(
-    #             status_code=422, detail="Password should contain both uppercase and lowercase letters"
-    #         )
-    #     if value.isalnum():
-    #         raise HTTPException(
-    #             status_code=422, detail="Password should contain at least one special character"
-    #         )
-    #     return value
+    @field_validator("password")
+    def validate_password(cls, value: str) -> str | None:
+        if value is None:
+            return value
+        if len(value) < 8:
+            raise HTTPException(
+                status_code=422, detail="Password should be at least 8 characters long"
+            )
+        if value.islower() or value.isupper():
+            raise HTTPException(
+                status_code=422, detail="Password should contain both uppercase and lowercase letters"
+            )
+        if value.isalnum():
+            raise HTTPException(
+                status_code=422, detail="Password should contain at least one special character"
+            )
+        return value
 
 
 class UserLogin(HTTPBasicCredentials):

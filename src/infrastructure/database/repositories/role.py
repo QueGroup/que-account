@@ -16,4 +16,4 @@ from src.infrastructure.database import (
 
 class RoleRepository(RoleQueryMixin):
     def __init__(self, session_factory: Callable[[], AsyncSession]):
-        super().__init__(session=session_factory, model=models.RoleModel)
+        super().__init__(session=session_factory, model=models.Role)

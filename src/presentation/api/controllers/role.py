@@ -41,7 +41,7 @@ role_router = APIRouter()
 async def create_role(
         role_in: dto.RoleCreate,
         role_service: RoleService = Depends(Provide[Container.role_service])
-) -> models.RoleModel:
+) -> models.Role:
     return await role_service.create_role(role_in=role_in)
 
 
@@ -53,7 +53,7 @@ async def create_role(
 @inject
 async def get_all_roles(
         role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> list[models.RoleModel]:
+) -> list[models.Role]:
     return await role_service.get_all_roles()
 
 
@@ -67,10 +67,10 @@ async def get_all_roles(
 async def get_role_by_title(
         title: Annotated[str, Path],
         role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> models.RoleModel | None:
+) -> models.Role | None:
     role = await role_service.get_role_by_title(title=title)
     if role is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RoleModel not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     return role
 
 
@@ -84,10 +84,10 @@ async def get_role_by_title(
 async def get_role_by_id(
         role_id: Annotated[int, Path],
         role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> models.RoleModel | None:
+) -> models.Role | None:
     role = await role_service.get_role_by_id(role_id=role_id)
     if role is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="RoleModel not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     return role
 
 
@@ -102,7 +102,7 @@ async def update_role(
         role_id: Annotated[int, Path],
         role_in: dto.RoleUpdate,
         role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> models.RoleModel:
+) -> models.Role:
     return await role_service.update_role(pk=role_id, role_in=role_in)
 
 

@@ -2,22 +2,22 @@ from .base import (
     Base,
 )
 from .interest import (
-    InterestModel,
+    Interest,
 )
 from .profile import (
-    ProfileModel,
+    Profile,
 )
 from .role import (
-    RoleModel,
+    Role,
 )
 from .user import (
-    UserModel,
+    User,
 )
 
 __all__ = (
     "Base",
-    "UserModel",
-    "RoleModel",
-    "InterestModel",
-    "ProfileModel",
+    "User",
+    "Role",
+    "Interest",
+    "Profile",
 )

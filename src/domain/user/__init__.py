@@ -1,7 +1,5 @@
-from .entity import (
-    UserEntity,
-)
+from . import entity
 
 __all__ = (
-    "UserEntity",
+    "entity",
 )

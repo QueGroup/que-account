@@ -21,7 +21,7 @@ from .base import (
 
 if TYPE_CHECKING:
     from .user import (
-        UserModel,
+        User,
     )
 
 # TODO: Сделать нормальный класс
@@ -39,14 +39,16 @@ roles_to_user = Table(
 )
 
 
-class RoleModel(Base):
+class Role(Base):
+    __tablename__ = "roles"
+
     role_id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True, nullable=False
     )
     title: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
 
-    users: Mapped[list["UserModel"]] = relationship(
-        "UserModel",
+    users: Mapped[list["User"]] = relationship(
+        "User",
         back_populates="roles",
         secondary=roles_to_user,
     )

@@ -44,7 +44,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 async def get_current_user(
         request: Request,
         user_service: UserService = Depends(Provide[Container.user_service]),
-) -> models.UserModel:
+) -> models.User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -70,8 +70,8 @@ async def get_current_user(
 
 
 @inject
-def require_role() -> Callable[[models.UserModel], Coroutine[Any, Any, models.UserModel]]:
-    async def check_user_roles(user: models.UserModel = Depends(get_current_user)) -> models.UserModel:
+def require_role() -> Callable[[models.User], Coroutine[Any, Any, models.User]]:
+    async def check_user_roles(user: models.User = Depends(get_current_user)) -> models.User:
         if user.is_superuser:
             return user
         else:

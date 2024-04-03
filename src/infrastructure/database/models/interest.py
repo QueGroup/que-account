@@ -1,7 +1,3 @@
-from typing import (
-    TYPE_CHECKING,
-)
-
 from sqlalchemy import (
     Integer,
     String,
@@ -15,10 +11,9 @@ from .base import (
     Base,
 )
 
-if TYPE_CHECKING:
-    pass
 
+class Interest(Base):
+    __tablename__ = "interests"
 
-class InterestModel(Base):
     interest_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String(32), unique=True, nullable=False)

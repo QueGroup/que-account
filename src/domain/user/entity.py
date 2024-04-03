@@ -9,7 +9,7 @@ from src.infrastructure.services.security import (
 
 
 @dataclasses.dataclass
-class UserEntity:
+class User:
     username: str
     password: str | None = None
     telegram_id: int | None = None
@@ -25,7 +25,7 @@ class UserEntity:
             password: str,
             telegram_id: int | None,
             username: str,
-    ) -> "UserEntity":
+    ) -> "User":
         if password:
             hashed_password = HashService.hash_password(password)
             return cls(

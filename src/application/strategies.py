@@ -50,12 +50,13 @@ class DefaultAuthStrategy(AuthStrategy):
 
     @staticmethod
     def _get_query(*args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        username_f = models.UserModel.username == kwargs.get("username")
-        telegram_id_f = models.UserModel.telegram_id == kwargs.get("telegram_id")
-
-        combined_filter = or_(username_f, telegram_id_f)
-
-        return select(models.UserModel).filter(combined_filter)
+        username_f = models.User.username == kwargs.get("username")
+        if kwargs.get("telegram_id"):
+            telegram_id_f = models.User.telegram_id == kwargs.get("telegram_id")
+            combined_filter = or_(username_f, telegram_id_f)
+        else:
+            combined_filter = username_f
+        return select(models.User).filter(combined_filter)
 
     async def authenticate(
             self,
@@ -64,7 +65,7 @@ class DefaultAuthStrategy(AuthStrategy):
     ) -> SchemaT:
         stmt = self._get_query(**user_in.model_dump())
         result: Result = await session.execute(stmt)
-        user: models.UserModel = result.scalar_one_or_none()
+        user: models.User = result.scalar_one_or_none()
         if not user:
             raise UserNotFoundError()
         if user_in.password and not HashService.verify_password(user.password, user_in.password):
@@ -78,7 +79,7 @@ class TelegramAuthStrategy(AuthStrategy):
     @staticmethod
     def _get_query(**kwargs: Any) -> Select[tuple[Any]]:
         telegram_id = kwargs.get("telegram_id")
-        return select(models.UserModel).where(models.UserModel.telegram_id == telegram_id)
+        return select(models.User).where(models.User.telegram_id == telegram_id)
 
     async def authenticate(
             self,
@@ -89,7 +90,7 @@ class TelegramAuthStrategy(AuthStrategy):
     ) -> dto.JWTokens:
         stmt = self._get_query(telegram_id=user_in.telegram_id)
         result: Result = await session.execute(stmt)
-        user: models.UserModel = result.scalar_one_or_none()
+        user: models.User = result.scalar_one_or_none()
 
         if HashService.verify_signature(**user_in.model_dump()):
             if not user:

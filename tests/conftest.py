@@ -15,8 +15,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from src.infrastructure.database.models import (
-    Base,
+from src.infrastructure.database import (
+    models,
 )
 from src.main import (
     init_api,
@@ -40,7 +40,7 @@ async_session_maker = async_sessionmaker(
     expire_on_commit=False
 )
 
-Base.metadata.bind = engine_test
+models.Base.metadata.bind = engine_test
 app = init_api()
 
 
@@ -52,10 +52,10 @@ async def override_get_db():
 @pytest.fixture(autouse=True, scope="session")
 async def setup_db() -> None:
     async with engine_test.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(models.Base.metadata.create_all)
     yield
     async with engine_test.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(models.Base.metadata.drop_all)
 
 
 @pytest.fixture(scope="session")

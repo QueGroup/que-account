@@ -1,28 +1,25 @@
-from .auth_dto import (
+from .auth import (
     ConfirmOtp,
     JWTokens,
     TokenData,
-    TokenRefresh,
-    TokenVerify,
     UserLogin,
     UserLoginWithOTP,
     UserRegistration,
     UserTMELogin,
+    ResetPassword,
 )
-from .role_dto import (
+from .role import (
     RoleCreate,
     RoleResponse,
     RoleUpdate,
 )
-from .user_dto import (
+from .user import (
     UserResponse,
     UserUpdate,
 )
 
 __all__ = (
     "UserUpdate",
-    "TokenRefresh",
-    "TokenVerify",
     "UserResponse",
     "UserRegistration",
     "JWTokens",
@@ -34,4 +31,5 @@ __all__ = (
     "RoleCreate",
     "RoleUpdate",
     "RoleResponse",
+    "ResetPassword",
 )

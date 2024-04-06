@@ -70,7 +70,7 @@ class DeleteQueryMixin:
         raise NotImplementedError()
 
 
-class RUDQueryMixin(
+class RLUDQueryMixin(
     abc.ABC,
     RetrieveQueryMixin,
     ListQueryMixin,
@@ -81,7 +81,7 @@ class RUDQueryMixin(
 
 
 class CRUDMixin(
-    RUDQueryMixin,
+    RLUDQueryMixin,
     Generic[ModelT, CreateSchemaT, UpdateSchemaT],
     abc.ABC,
 ):

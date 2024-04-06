@@ -1,6 +1,9 @@
 from dataclasses import (
     dataclass,
 )
+from typing import (
+    Literal,
+)
 
 from environs import (
     Env,
@@ -136,10 +139,10 @@ class Security:
     secret_key: str
     signature_secret_key: str
     algorithm: str
-    access_token_cookie_samesite: str
     access_token_cookie_httponly: bool
     access_token_cookie_secure: bool
     sessions_cookie_name: str
+    access_token_cookie_samesite: Literal["lax", "strict", "none"] = "lax"
     access_expire_time_in_seconds: int = 60 * 60 * 24
     refresh_expire_time_in_seconds: int = 60 * 60 * 24 * 30
 

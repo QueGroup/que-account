@@ -12,7 +12,7 @@ from pydantic import (
     field_validator,
 )
 
-from .role_dto import (
+from .role import (
     RoleResponse,
 )
 

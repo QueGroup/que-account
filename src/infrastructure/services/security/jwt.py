@@ -1,17 +1,12 @@
 import datetime
-import hashlib
-import hmac
 from typing import (
     Any,
     Literal,
 )
 import uuid
 
-from argon2 import (
-    PasswordHasher,
-)
-from argon2.exceptions import (
-    VerifyMismatchError,
+from fastapi import (
+    Response,
 )
 from jose import (
     jwt,
@@ -20,46 +15,14 @@ from jose import (
 from src.infrastructure import (
     load_config,
 )
-
-from .exception import (
+from src.infrastructure.services.security.exception import (
     JWTDecodeError,
 )
 
 config = load_config().security
 
 
-class HashService:
-    _ph = PasswordHasher()
-
-    @staticmethod
-    def hash_password(password: str) -> str:
-        return HashService._ph.hash(password)
-
-    @staticmethod
-    def verify_password(password: str, hashed_password: str) -> bool:
-        try:
-            HashService._ph.verify(password, hashed_password)
-            return True
-        except VerifyMismatchError:
-            return False
-
-    @staticmethod
-    def verify_signature(
-            telegram_id: int,
-            signature: str,
-            timestamp: int,
-            nonce: int,
-    ) -> bool:
-        data_to_verify = f"{telegram_id}{timestamp}{nonce}"
-        expected_signature = hmac.new(
-            config.signature_secret_key.encode(), data_to_verify.encode(), hashlib.sha256
-        ).hexdigest()
-
-        return expected_signature == signature
-
-
-class SignatureService:
-
+class JWTService:
     @staticmethod
     def _create_token(
             uid: str,
@@ -168,7 +131,7 @@ class SignatureService:
             audience: str | None = None,
     ) -> str:
         expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=config.access_expire_time_in_seconds)
-        return SignatureService._create_token(
+        return JWTService._create_token(
             uid=uid,
             type_="access",
             fresh=fresh,
@@ -186,11 +149,55 @@ class SignatureService:
             audience: str | None = None,
     ) -> str:
         expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=config.refresh_expire_time_in_seconds)
-        return SignatureService._create_token(
+        return JWTService._create_token(
             uid=uid,
             type_="refresh",
             headers=headers,
             expiry=expiry,
             data=data,
             audience=audience,
+        )
+
+    @staticmethod
+    def _get_cookie_config() -> dict[str, Any]:
+        return {
+            "secure": config.access_token_cookie_secure,
+            "httponly": config.access_token_cookie_httponly,
+            "samesite": config.access_token_cookie_samesite,
+        }
+
+    @staticmethod
+    def set_cookies(
+            response: Response,
+            access_token: str,
+            refresh_token: str,
+    ) -> None:
+        cookie_config = JWTService._get_cookie_config()
+
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            max_age=config.access_expire_time_in_seconds,
+            **cookie_config
+        )
+
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            max_age=config.refresh_expire_time_in_seconds,
+            **cookie_config
+        )
+
+    @staticmethod
+    def unset_cookies(response: Response) -> None:
+        cookie_config = JWTService._get_cookie_config()
+
+        response.delete_cookie(
+            key=config.sessions_cookie_name,
+            **cookie_config
+        )
+
+        response.delete_cookie(
+            key="refresh_token",
+            **cookie_config
         )

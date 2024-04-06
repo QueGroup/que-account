@@ -90,3 +90,15 @@ class UserNotFoundError(HTTPException):
     ) -> None:
         detail = {"code": AuthExceptionCodes.USER_NOT_FOUND, "message": message}
         super().__init__(status_code=status_code, detail=detail)
+
+
+class CredentialsError(HTTPException):
+    """Custom error when credentials are invalid or missing."""
+
+    def __init__(
+            self,
+            status_code: int = status.HTTP_401_UNAUTHORIZED,
+            message: str = "Could not validate credentials",
+    ) -> None:
+        detail = {"code": AuthExceptionCodes.CREDENTIALS_INVALID, "message": message}
+        super().__init__(status_code=status_code, detail=detail)

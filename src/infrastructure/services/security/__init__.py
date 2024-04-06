@@ -1,9 +1,11 @@
-from .hash_service import (
+from .hash import (
     HashService,
-    SignatureService,
+)
+from .jwt import (
+    JWTService,
 )
 
 __all__ = (
     "HashService",
-    "SignatureService",
+    "JWTService",
 )

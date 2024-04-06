@@ -1,7 +1,3 @@
-from typing import (
-    Any,
-)
-
 from dependency_injector.wiring import (
     Provide,
     inject,
@@ -17,6 +13,9 @@ from fastapi import (
 from src.application import (
     dto,
 )
+from src.application.dto import (
+    ResetPassword,
+)
 from src.application.service import (
     AuthService,
 )
@@ -24,14 +23,16 @@ from src.application.strategies import (
     DefaultAuthStrategy,
     TelegramAuthStrategy,
 )
-from src.infrastructure import (
-    Config,
-)
 from src.infrastructure.database import (
     models,
 )
+from src.infrastructure.services.security import (
+    JWTService,
+)
 from src.presentation.api.providers import (
     Container,
+    refresh_tokens,
+    verify_token_from_request,
 )
 
 auth_router = APIRouter()
@@ -64,8 +65,6 @@ async def signup(
 @inject
 async def signin_telegram(
         user_in: dto.UserTMELogin,
-        request: Request,
-        response: Response,
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
 ) -> dto.JWTokens:
     strategy = TelegramAuthStrategy()
@@ -83,30 +82,15 @@ async def signin_telegram(
 @inject
 async def login(
         user_in: dto.UserLogin,
-        request: Request,
         response: Response,
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
-        config: Config = Depends(Provide[Container.config]),
 ) -> dto.JWTokens:
     strategy = DefaultAuthStrategy()
     jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy)
-
-    response.set_cookie(
-        key="access_token",
-        value=jwt_tokens.access_token,
-        max_age=config.security.access_expire_time_in_seconds,
-        secure=False,
-        httponly=True,
-        samesite="lax",
-    )
-
-    response.set_cookie(
-        key="refresh_token",
-        value=jwt_tokens.refresh_token,
-        max_age=config.security.refresh_expire_time_in_seconds,
-        secure=False,
-        httponly=True,
-        samesite="lax",
+    JWTService.set_cookies(
+        response=response,
+        access_token=jwt_tokens.access_token,
+        refresh_token=jwt_tokens.refresh_token,
     )
 
     return jwt_tokens
@@ -119,9 +103,13 @@ async def login(
     status_code=status.HTTP_200_OK,
 )
 async def refresh_token(
-        refresh_token_in: dto.TokenRefresh,
-) -> None:
-    pass
+        request: Request,
+        response: Response
+) -> dto.JWTokens:
+    return await refresh_tokens(
+        request=request,
+        response=response,
+    )
 
 
 @auth_router.post(
@@ -130,16 +118,21 @@ async def refresh_token(
     status_code=status.HTTP_200_OK,
 )
 async def verify_token(
-        access_token_in: dto.TokenVerify,
-) -> None:
-    pass
+        request: Request,
+) -> bool:
+    return await verify_token_from_request(
+        request=request,
+    )
 
 
+# TODO: Эта точка должна быть доступна только авторизованному пользователю
 @auth_router.post(
     "/reset_password/",
     status_code=status.HTTP_200_OK,
 )
-async def reset_password() -> None:
+async def reset_password(
+        password_in: ResetPassword
+) -> None:
     pass
 
 
@@ -177,7 +170,6 @@ async def send_otp_code(user_in: dto.UserLoginWithOTP) -> None:
     status_code=status.HTTP_200_OK,
 )
 async def confirm_otp_code(
-        refresh_token_storage: Any,
         otp_in: dto.ConfirmOtp,
         request: Request,
         response: Response,

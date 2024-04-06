@@ -9,6 +9,7 @@ from .exceptions import (
     InvalidTokenError,
     MissingTokenError,
     UserAlreadyExistsError,
+    CredentialsError,
 )
 
 __all__ = (
@@ -19,5 +20,6 @@ __all__ = (
     "InvalidTokenError",
     "role_router",
     "MissingTokenError",
+    "CredentialsError",
     "InvalidSignatureError",
 )

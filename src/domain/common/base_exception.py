@@ -8,7 +8,7 @@ from typing import (
 
 @dataclass(eq=False)
 class AppException(Exception):
-    """Base Exception"""
+    """Model Exception"""
 
     status: ClassVar[int] = 500
 
@@ -18,7 +18,7 @@ class AppException(Exception):
 
 
 class DomainException(AppException):
-    """Base Domain Exception"""
+    """Model Domain Exception"""
 
     @property
     def title(self) -> str:

@@ -12,15 +12,13 @@ from sqlalchemy.orm import (
     mapped_column,
 )
 
-from .base import (
-    Base,
-)
+from . import models
 
 if TYPE_CHECKING:
     pass
 
 
-class PhotoModel(Base):
+class PhotoModel(models.Model):
     __tablename__ = "profiles"
 
     photo_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

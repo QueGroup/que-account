@@ -16,16 +16,14 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from .base import (
-    Base,
-)
+from . import models
 from .role import (
     Role,
     roles_to_user,
 )
 
 
-class User(Base):
+class User(models.Model):
     __tablename__ = "users"
 
     user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True, unique=True)
@@ -53,7 +51,7 @@ class User(Base):
     # )
 
 
-class UserLoginModel(Base):
+class UserLoginModel(models.Model):
     __tablename__ = "user_logins"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, unique=True)

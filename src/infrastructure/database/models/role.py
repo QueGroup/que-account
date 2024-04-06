@@ -15,9 +15,7 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from .base import (
-    Base,
-)
+from . import models
 
 if TYPE_CHECKING:
     from .user import (
@@ -27,7 +25,7 @@ if TYPE_CHECKING:
 # TODO: Сделать нормальный класс
 roles_to_user = Table(
     "roles_to_user",
-    Base.metadata,
+    models.Model.metadata,
     Column(
         "user_id", Integer, ForeignKey("users.user_id", ondelete="CASCADE", onupdate="CASCADE"),
         primary_key=True,
@@ -39,7 +37,7 @@ roles_to_user = Table(
 )
 
 
-class Role(Base):
+class Role(models.Model):
     __tablename__ = "roles"
 
     role_id: Mapped[int] = mapped_column(

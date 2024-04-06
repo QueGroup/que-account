@@ -1,5 +1,5 @@
-from .base import (
-    Base,
+from .models import (
+    Model,
 )
 from .interest import (
     Interest,
@@ -15,7 +15,7 @@ from .user import (
 )
 
 __all__ = (
-    "Base",
+    "Model",
     "User",
     "Role",
     "Interest",

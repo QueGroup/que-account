@@ -34,7 +34,7 @@ from src.presentation.api.exceptions import (
     UserAlreadyExistsError,
 )
 
-ModelT = TypeVar("ModelT", bound=models.Base)
+ModelT = TypeVar("ModelT", bound=models.Model)
 CreateSchemaT = TypeVar("CreateSchemaT", bound=Any)
 UpdateSchemaT = TypeVar("UpdateSchemaT", bound=BaseModel)
 SchemaT = TypeVar("SchemaT", bound=BaseModel)

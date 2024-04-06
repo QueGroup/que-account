@@ -7,12 +7,10 @@ from sqlalchemy.orm import (
     mapped_column,
 )
 
-from .base import (
-    Base,
-)
+from . import models
 
 
-class Interest(Base):
+class Interest(models.Model):
     __tablename__ = "interests"
 
     interest_id: Mapped[int] = mapped_column(Integer, primary_key=True)

@@ -23,7 +23,6 @@ class UserBase(BaseModel):
     language: str | None = None
 
 
-# TODO: Написать валидатор для языка
 class UserUpdate(UserBase):
     username: str | None = None
     language: str | None = None

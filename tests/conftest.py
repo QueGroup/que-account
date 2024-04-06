@@ -40,7 +40,7 @@ async_session_maker = async_sessionmaker(
     expire_on_commit=False
 )
 
-models.Base.metadata.bind = engine_test
+models.Model.metadata.bind = engine_test
 app = init_api()
 
 
@@ -52,10 +52,10 @@ async def override_get_db():
 @pytest.fixture(autouse=True, scope="session")
 async def setup_db() -> None:
     async with engine_test.begin() as conn:
-        await conn.run_sync(models.Base.metadata.create_all)
+        await conn.run_sync(models.Model.metadata.create_all)
     yield
     async with engine_test.begin() as conn:
-        await conn.run_sync(models.Base.metadata.drop_all)
+        await conn.run_sync(models.Model.metadata.drop_all)
 
 
 @pytest.fixture(scope="session")

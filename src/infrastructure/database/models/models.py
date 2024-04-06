@@ -14,7 +14,7 @@ from sqlalchemy.orm import (
 
 
 # TODO: Может переименовать класс в Model, а файл в models. И получать доступ к базову классу с помощью models.Model
-class Base(DeclarativeBase):
+class Model(DeclarativeBase):
     __abstract__ = True
 
     created_at: Mapped[datetime] = mapped_column(

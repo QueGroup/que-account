@@ -16,6 +16,27 @@ config = load_config().security
 
 
 class HashService:
+    """
+    A class for hashing and verifying passwords and signatures.
+
+    Examples:
+        To hash a password:
+
+        >>> hashed_password = HashService.hash_password("my_password")
+
+        To verify a password:
+
+        >>> is_valid_password = HashService.verify_password(password=hashed_password, hashed_password="my_password")
+
+        To verify a Telegram bot API request signature:
+
+        >>> is_valid_signature = HashService.verify_signature(
+        ...     telegram_id=12345678,
+        ...     signature="abcdefghijklmnopqrstuvwxyz123456",
+        ...     timestamp=1633028000,
+        ...     nonce=12345
+        ... )
+    """
     _ph = PasswordHasher()
 
     @staticmethod

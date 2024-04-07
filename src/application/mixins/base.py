@@ -47,13 +47,32 @@ UpdateSchemaT = TypeVar("UpdateSchemaT", bound=BaseModel)
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 
+# noinspection PyUnresolvedReferences
 class RetrieveQueryMixin:
+    """
+    An abstract class providing a method for retrieving a query for fetching data.
+    """
+
     @abc.abstractmethod
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
+        """
+        Return a SELECT query for retrieving a single row from the database.
+
+        >>> return select(self.model).filter(*args).filter_by(**kwargs)
+
+        :param args: Filter arguments to be passed to the SELECT query
+        :param kwargs: Filter keyword arguments to be passed to the SELECT query
+        :return: A SELECT query for retrieving a single row from the database
+        """
         raise NotImplementedError()
 
 
+# noinspection PyUnresolvedReferences
 class ListQueryMixin:
+    """
+    An abstract class providing a method for retrieving a query for fetching a list of data.
+    """
+
     @abc.abstractmethod
     def _get_all_query(
             self,
@@ -62,18 +81,64 @@ class ListQueryMixin:
             *args: Any,
             **kwargs: Any,
     ) -> Select[tuple[Any]]:
+        """
+        Return a SELECT query for retrieving multiple rows from the database.
+
+        >>> return select(self.model).offset(skip).limit(limit).filter(*args).filter_by(**kwargs)
+
+        :param skip: The number of rows to skip (optional, default 0)
+        :param limit: The maximum number of rows to retrieve (optional, default 10)
+        :param args: Filter arguments to be passed to the SELECT query
+        :param kwargs: Filter keyword arguments to be passed to the SELECT query
+        :return: A SELECT query for retrieving multiple rows from the database
+        """
         raise NotImplementedError()
 
 
+# noinspection PyUnresolvedReferences
 class UpdateQueryMixin:
+    """
+    An abstract class providing a method for retrieving a query for updating data.
+    """
+
     @abc.abstractmethod
     def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
+        """
+        Return an UPDATE query for updating a single row in the database.
+
+        >>> return (
+        ...     update(self.model)
+        ...     .where(self.model.user_id == pk)
+        ...     .values(**data_in.model_dump(exclude_unset=True))
+        ...     .filter_by(**kwargs)
+        ...     .returning(self.model)
+        ...    )
+
+        :param pk: The primary key of the row to be updated
+        :param data_in: The updated data to be passed to the UPDATE query
+        :param kwargs: Additional keyword arguments to be passed to the UPDATE query
+        :return: An UPDATE query for updating a single row in the database
+        """
         raise NotImplementedError()
 
 
+# noinspection PyUnresolvedReferences
 class DeleteQueryMixin:
+    """
+    An abstract class providing a method for retrieving a query for deleting data.
+    """
+
     @abc.abstractmethod
     def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:
+        """
+        Return a DELETE query for deleting one or more rows from the database.
+
+        >>> return Delete(self.model).filter(*args)
+
+        :param args: Filter arguments to be passed to the DELETE query
+        :param kwargs: Filter keyword arguments to be passed to the DELETE query
+        :return: A DELETE query for deleting one or more rows from the database
+        """
         raise NotImplementedError()
 
 
@@ -84,14 +149,9 @@ class RLUDQueryMixin(
     UpdateQueryMixin,
     DeleteQueryMixin,
 ):
-    pass
-
-
-class RUQueryMixin(
-    abc.ABC,
-    RetrieveQueryMixin,
-    UpdateQueryMixin,
-):
+    """
+    An abstract class providing methods for retrieving, updating, and deleting data.
+    """
     pass
 
 
@@ -100,11 +160,19 @@ class CRUDMixin(
     Generic[ModelT, CreateSchemaT, UpdateSchemaT],
     abc.ABC,
 ):
+    """
+    An abstract class providing methods for creating, retrieving, updating, and deleting data.
+    """
+
     def __init__(
             self,
             session: Callable[[], AsyncSession],
             model: type[ModelT],
     ):
+        """
+        :param session: a callable that returns an async SQLAlchemy session
+        :param model: a SQLAlchemy model class
+        """
         self._session_factory = session
         self.model = model
 

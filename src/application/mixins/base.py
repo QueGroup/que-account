@@ -252,7 +252,6 @@ class AuthMixin(
         async with self._session_factory() as session:
             return await strategy.authenticate(user_in=user_in, session=session)
 
-    # TODO: Когда пользователь сбрасывает пароль, то старые токены остаются активными
     async def reset_password(self, pk: int, password_in: ResetPassword) -> None:
         async with self._session_factory() as session:
             stmt = self._get_user(user_id=pk)

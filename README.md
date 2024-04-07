@@ -30,22 +30,20 @@
 
 <!-- TABLE OF CONTENTS -->
 
-<!-- FIXME: Update name of topics and update  -->
-
-1. [About The Project](#about-the-project)
-    - [Built With](#built-with)
-2. [Getting Started](#Development)
-3. [Contributing](#contributing)
-4. [License](#license)
+1. [About The Project](#monocle_face-about)
+    - [Built With](#alembic-built-with)
+2. [Getting Started](#hammer-Development)
+3. [Contributing](#busts_in_silhouette-contributing)
+4. [License](#page_facing_up-license)
 
 <!-- ABOUT THE PROJECT -->
 
-### 🧐 About
+### :monocle_face: About
 
 We are creating a convenient service for a single user account for our ecosystem. Our goal is to provide users with a
 single and universal access to all our applications, with a minimum amount of effort.
 
-### ⚗️ Built With
+### :alembic: Built With
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)\
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)\
@@ -57,19 +55,19 @@ single and universal access to all our applications, with a minimum amount of ef
 
 <!-- GETTING STARTED -->
 
-### 🔨 Development
+### :hammer: Development
 
 Find instructions for running the app & tests locally in the [Development Guide](docs).
 
 <!-- CONTRIBUTING -->
 
-### 👥 Contributing
+### :busts_in_silhouette: Contributing
 
 Find the instructions for contributing in the [Contributing Guide](CONTRIBUTING.md)
 
 <!-- LICENSE -->
 
-### 📄 License
+### :page_facing_up: License
 
 Distributed under the GPL-2.0 license. See [LICENSE](LICENSE) for more information.
 

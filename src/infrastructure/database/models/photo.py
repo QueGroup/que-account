@@ -12,7 +12,9 @@ from sqlalchemy.orm import (
     mapped_column,
 )
 
-from . import models
+from . import (
+    models,
+)
 
 if TYPE_CHECKING:
     pass

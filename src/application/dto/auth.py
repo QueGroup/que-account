@@ -88,12 +88,6 @@ class TelegramUserLogin(BaseModel):
     signature: str
 
 
-class SetNewPassword(BaseModel):
-    new_password: str
-    re_new_password: str
-    old_password: str
-
-
 class ConfirmOtp(BaseModel):
     code: int
 

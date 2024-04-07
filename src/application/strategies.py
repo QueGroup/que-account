@@ -27,10 +27,8 @@ from src.infrastructure.services.security import (
     HashService,
     JWTService,
 )
-from src.presentation.api.exceptions import (
-    InvalidSignatureError,
-    PasswordIncorrectError,
-    UserNotFoundError,
+from src.shared import (
+    ex,
 )
 
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
@@ -67,9 +65,9 @@ class DefaultAuthStrategy(AuthStrategy):
         result: Result = await session.execute(stmt)
         user: models.User = result.scalar_one_or_none()
         if not user:
-            raise UserNotFoundError()
+            raise ex.UserNotFound(user_id=user_in.user_id)
         if user_in.password and not HashService.verify_password(user.password, user_in.password):
-            raise PasswordIncorrectError()
+            raise ex.IncorrectPassword()
         access_token = JWTService.create_access_token(uid=str(user.user_id), fresh=True)
         refresh_token = JWTService.create_refresh_token(uid=str(user.user_id))
         return dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
@@ -94,7 +92,7 @@ class TelegramAuthStrategy(AuthStrategy):
 
         if HashService.verify_signature(**user_in.model_dump()):
             if not user:
-                raise UserNotFoundError()
+                raise ex.UserNotFound(user_id=user_in.telegram_id)
             else:
                 access_token = JWTService.create_access_token(
                     uid=str(user.user_id), fresh=True
@@ -102,4 +100,4 @@ class TelegramAuthStrategy(AuthStrategy):
                 refresh_token = JWTService.create_refresh_token(uid=str(user.user_id))
                 return dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
         else:
-            raise InvalidSignatureError()
+            raise ex.InvalidSignature()

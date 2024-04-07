@@ -16,7 +16,9 @@ from sqlalchemy.orm import (
     relationship,
 )
 
-from . import models
+from . import (
+    models,
+)
 from .role import (
     Role,
     roles_to_user,

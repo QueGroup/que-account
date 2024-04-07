@@ -6,6 +6,9 @@ from datetime import (
 from src.infrastructure.services.security import (
     HashService,
 )
+from src.shared import (
+    ex,
+)
 
 
 @dataclasses.dataclass
@@ -22,18 +25,16 @@ class User:
     @classmethod
     def create(
             cls,
-            password: str,
+            password: str | None,
             telegram_id: int | None,
             username: str,
     ) -> "User":
-        if password:
-            hashed_password = HashService.hash_password(password)
-            return cls(
-                password=hashed_password,
-                username=username,
-            )
+        if not password and not telegram_id:
+            raise ex.MissingFieldsError(fields=["telegram_id", "password"])
+
         return cls(
-            telegram_id=telegram_id,
+            password=HashService.hash_password(password) if password else None,
+            telegram_id=telegram_id if telegram_id else None,
             username=username,
         )
 

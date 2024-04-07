@@ -10,6 +10,7 @@ from .exceptions import (
     MissingTokenError,
     UserAlreadyExistsError,
     CredentialsError,
+    OldPasswordIncorrectError,
 )
 
 __all__ = (
@@ -22,4 +23,5 @@ __all__ = (
     "MissingTokenError",
     "CredentialsError",
     "InvalidSignatureError",
+    "OldPasswordIncorrectError",
 )

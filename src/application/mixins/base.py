@@ -16,6 +16,7 @@ from sqlalchemy import (
     Result,
     Select,
     Update,
+    select,
 )
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -24,14 +25,20 @@ from sqlalchemy.ext.asyncio import (
 from src.application import (
     dto,
 )
+from src.application.dto import (
+    ResetPassword,
+)
 from src.application.strategies import (
     AuthStrategy,
 )
 from src.infrastructure.database import (
     models,
 )
-from src.presentation.api.exceptions import (
-    UserAlreadyExistsError,
+from src.infrastructure.services.security import (
+    HashService,
+)
+from src.shared import (
+    ex,
 )
 
 ModelT = TypeVar("ModelT", bound=models.Model)
@@ -76,6 +83,14 @@ class RLUDQueryMixin(
     ListQueryMixin,
     UpdateQueryMixin,
     DeleteQueryMixin,
+):
+    pass
+
+
+class RUQueryMixin(
+    abc.ABC,
+    RetrieveQueryMixin,
+    UpdateQueryMixin,
 ):
     pass
 
@@ -131,7 +146,7 @@ class CRUDMixin(
 class AuthMixin(
     RetrieveQueryMixin,
     abc.ABC,
-    Generic[ModelT, CreateSchemaT]
+    Generic[ModelT, CreateSchemaT, UpdateSchemaT]
 ):
     def __init__(
             self,
@@ -140,6 +155,9 @@ class AuthMixin(
     ):
         self._session_factory = session
         self.model = model
+
+    def _get_user(self, *args: Any, **kwargs: Any) -> Select[tuple]:
+        return select(self.model).filter(*args).filter_by(**kwargs)
 
     async def signup(
             self,
@@ -151,7 +169,7 @@ class AuthMixin(
             stmt = self._get_query(*args, **kwargs)
             result: Result = await session.execute(stmt)
             if result.scalar() is not None:
-                raise UserAlreadyExistsError()
+                raise ex.UserAlreadyExists()
             user = self.model(**user_in.__dict__)
             session.add(user)
             await session.commit()
@@ -166,6 +184,21 @@ class AuthMixin(
         async with self._session_factory() as session:
             return await strategy.authenticate(user_in=user_in, session=session)
 
+    # TODO: Когда пользователь сбрасывает пароль, то старые токены остаются активными
+    async def reset_password(self, pk: int, password_in: ResetPassword) -> None:
+        async with self._session_factory() as session:
+            stmt = self._get_user(user_id=pk)
+            result: Result = await session.execute(stmt)
+            user: models.User = result.scalar_one_or_none()
+            if not user:
+                raise ex.UserNotFound(user_id=pk)
+            if not HashService.verify_password(password=user.password, hashed_password=password_in.old_password):
+                raise ex.IncorrectPassword()
+            new_hashed_password = HashService.hash_password(password=password_in.new_password)
+            user.password = new_hashed_password
+            await session.execute(stmt)
+            await session.commit()
+
+    # TODO: Реализуйте логику выхода из системы, например, добавление токена в черный список
     async def signout(self) -> None:
-        # TODO: Реализуйте логику выхода из системы, например, добавление токена в черный список
         pass

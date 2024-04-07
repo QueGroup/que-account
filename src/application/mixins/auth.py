@@ -8,6 +8,9 @@ from sqlalchemy import (
     select,
 )
 
+from src.application import (
+    dto,
+)
 from src.domain.user import (
     entity,
 )
@@ -20,7 +23,7 @@ from .base import (
 )
 
 
-class AuthQueryMixin(AuthMixin[models.User, entity.User]):
+class AuthQueryMixin(AuthMixin[models.User, entity.User, dto.ResetPassword]):
 
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         username_f = models.User.username == kwargs.get("username")

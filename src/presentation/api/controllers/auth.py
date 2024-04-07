@@ -1,3 +1,7 @@
+from typing import (
+    Annotated,
+)
+
 from dependency_injector.wiring import (
     Provide,
     inject,
@@ -31,6 +35,7 @@ from src.infrastructure.services.security import (
 )
 from src.presentation.api.providers import (
     Container,
+    get_current_user,
     refresh_tokens,
     verify_token_from_request,
 )
@@ -38,8 +43,6 @@ from src.presentation.api.providers import (
 auth_router = APIRouter()
 
 
-# FIXME: Теперь при создании пользователя задается роль по умолчанию, но я не тестировал как это работает.
-#  так что возможны ошибки
 @auth_router.post(
     "/signup/",
     response_model=dto.UserResponse,
@@ -125,15 +128,23 @@ async def verify_token(
     )
 
 
-# TODO: Эта точка должна быть доступна только авторизованному пользователю
+# TODO: Необходимо инвалидировать текущий JWT-токен после сброса пароля:
+#  Теперь нужно сохранять идентификатор токена (token ID) в базе данных при его создании.
+#  При сбросе пароля удалите все токены, связанные с текущим пользователем, из базы данных.
+#  Создайте новый JWT-токен и верните его клиенту.
 @auth_router.post(
     "/reset_password/",
     status_code=status.HTTP_200_OK,
 )
+@inject
 async def reset_password(
-        password_in: ResetPassword
-) -> None:
-    pass
+        password_in: ResetPassword,
+        current_user: Annotated[models.User, Depends(get_current_user)],
+        auth_service: AuthService = Depends(Provide[Container.auth_service]),
+) -> Response:
+    print(current_user.user_id)
+    await auth_service.reset_password(pk=current_user.user_id, password_in=password_in)
+    return Response(status_code=status.HTTP_200_OK, content="Password was updating")
 
 
 @auth_router.post(

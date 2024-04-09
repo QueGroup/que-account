@@ -10,8 +10,8 @@ from src.infrastructure.log import (
     configure_logging,
 )
 from src.presentation import (
-    Container,
     setup_middlewares,
+    setup_provider,
     setup_routes,
 )
 
@@ -22,6 +22,8 @@ def init_api() -> FastAPI:
     app = FastAPI(
         title="Que Account",
         version="0.1.0",
+        summary="The service API which provides access to the account",
+        swagger_ui_parameters={"syntaxHighlight.theme": "obsidian"}
     )
 
     return app
@@ -30,8 +32,7 @@ def init_api() -> FastAPI:
 def init_services(app: FastAPI) -> None:
     setup_middlewares(app)
     configure_logging()
-    container = Container()
-    app.container = container
+    setup_provider(app)
     setup_routes(app)
 
 

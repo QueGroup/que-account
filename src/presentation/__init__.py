@@ -53,8 +53,13 @@ def setup_middlewares(app: FastAPI) -> None:
     )
 
 
+def setup_provider(app: FastAPI) -> None:
+    container = Container()
+    app.container = container
+
+
 __all__ = (
     "setup_middlewares",
     "setup_routes",
-    "Container",
+    "setup_provider",
 )

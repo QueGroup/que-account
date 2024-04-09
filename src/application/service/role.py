@@ -18,7 +18,7 @@ class RoleService:
         return await self.repository.create(data_in=role_in)
 
     async def get_role_by_id(self, role_id: int) -> models.Role | None:
-        return await self.repository.get_single(role_id=role_id)
+        return await self.repository.get_single(id=role_id)
 
     async def get_role_by_title(self, title: str) -> models.Role | None:
         return await self.repository.get_single(title=title)
@@ -30,4 +30,4 @@ class RoleService:
         return await self.repository.partial_update(pk=pk, data_in=role_in)
 
     async def delete_role(self, role_id: int) -> None:
-        return await self.repository.destroy(role_id=role_id)
+        return await self.repository.destroy(id=role_id)

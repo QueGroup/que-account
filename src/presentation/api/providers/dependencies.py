@@ -63,7 +63,7 @@ def _decode_token_from_request(
         user_id: int = int(payload.get("sub"))
         if user_id is None:
             raise CredentialsError
-        return dto.TokenData(user_id=user_id)
+        return dto.TokenData(id=user_id)
     except JWTError:
         raise CredentialsError
 
@@ -81,12 +81,12 @@ async def _get_user_and_tokens(
         if token_data is None:
             raise CredentialsError
 
-    user = await user_service.get_user_by_id(user_id=token_data.user_id)
+    user = await user_service.get_user_by_id(user_id=token_data.id)
     if user is None:
         raise CredentialsError
 
-    access_token = JWTService.create_access_token(uid=str(user.user_id), fresh=False)
-    refresh_token = JWTService.create_refresh_token(uid=str(user.user_id))
+    access_token = JWTService.create_access_token(uid=str(user.id), fresh=False)
+    refresh_token = JWTService.create_refresh_token(uid=str(user.id))
     JWTService.set_cookies(response=response, access_token=access_token, refresh_token=refresh_token)
 
     return user, access_token, refresh_token

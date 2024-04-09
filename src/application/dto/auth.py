@@ -21,17 +21,38 @@ class JWTokens(BaseModel):
     access_token: str
     refresh_token: str
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "access_token":
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikp"
+                    "vaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                "refresh_token": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9l"
+                                 "IiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.bQTnz6AuMJvmXXQsVPrxeQNvzDkimo7VNXxHeSBfC"
+                                 "lLufmCVZRUuyTwJF311JHuh",
+            }
+        }
+    )
 
 
 class TokenData(BaseModel):
-    user_id: int | None = None
+    id: int | None = None
 
 
 class UserRegistration(BaseModel):
     username: str
     telegram_id: int | None = None
     password: str | None = None
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "username": "John Doe",
+                "telegram_id": 1234567890,
+            }
+        }
+    )
 
     @field_validator("username")
     def validate_name(cls, value: str) -> str | None:

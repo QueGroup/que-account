@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class Profile(models.Model):
     __tablename__ = "profiles"
 
-    profile_id: Mapped[int] = mapped_column(BIGINT, primary_key=True)
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True)
     first_name: Mapped[str] = mapped_column(String(128))
     gender: Mapped[str] = mapped_column(String(2))
     show_me: Mapped[str] = mapped_column(String(2))

@@ -49,6 +49,7 @@ async def get_list(
     "/me/",
     summary="Getting user details",
     response_model=dto.UserResponse,
+    responses={400: {"description": "Your account is deactivated"}},
     status_code=status.HTTP_200_OK,
 )
 @inject
@@ -63,6 +64,7 @@ async def get_user(
 @user_router.patch(
     "/me/",
     response_model=dto.UserResponse,
+    responses={400: {"description": "Your account is deactivated"}},
     status_code=status.HTTP_200_OK,
 )
 @inject
@@ -71,11 +73,13 @@ async def update_user(
         current_user: Annotated[models.User, Depends(get_current_user)],
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> models.User:
-    return await user_service.update_user(pk=current_user.user_id, user_in=user_in)
+    if not current_user.is_active:
+        raise UserDeactivatedError()
+    return await user_service.update_user(pk=current_user.id, user_in=user_in)
 
 
 @user_router.delete(
-    "/me/{user_id}/",
+    "/me/",
     summary="Deactivate user account",
     status_code=status.HTTP_204_NO_CONTENT
 )
@@ -84,4 +88,11 @@ async def deactivate_user(
         current_user: Annotated[models.User, Depends(get_current_user)],
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> None:
-    return await user_service.deactivate_user(user_id=current_user.user_id)
+    return await user_service.deactivate_user(user_id=current_user.id)
+
+
+@user_router.post(
+    "/me/reactivate/"
+)
+async def reactivate_user() -> None:
+    pass

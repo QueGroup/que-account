@@ -17,6 +17,6 @@ class RoleUpdate(RoleBase):
 
 
 class RoleResponse(RoleBase):
-    role_id: int
+    id: int
 
     model_config = ConfigDict(from_attributes=True)

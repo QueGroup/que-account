@@ -8,6 +8,9 @@ from argon2.exceptions import (
     VerifyMismatchError,
 )
 
+from src.domain.auth import (
+    PasswordEncoder,
+)
 from src.infrastructure import (
     load_config,
 )
@@ -15,7 +18,7 @@ from src.infrastructure import (
 config = load_config().security
 
 
-class HashService:
+class HashService(PasswordEncoder):
     """
     A class for hashing and verifying passwords and signatures.
 

@@ -17,7 +17,7 @@ class UserService:
         return await self.repository.get_multi(is_active=True)
 
     async def get_user_by_id(self, user_id: int) -> models.User | None:
-        return await self.repository.get_single(user_id=user_id)
+        return await self.repository.get_single(id=user_id)
 
     async def get_user_by_telegram_id(self, telegram_id: int) -> models.User | None:
         return await self.repository.get_single(telegram_id=telegram_id)
@@ -29,4 +29,4 @@ class UserService:
         return await self.repository.partial_update(data_in=user_in, pk=pk)
 
     async def deactivate_user(self, user_id: int) -> None:
-        return await self.repository.destroy(user_id=user_id, is_active=False)
+        return await self.repository.destroy(id=user_id, is_active=False)

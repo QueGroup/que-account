@@ -68,8 +68,8 @@ class DefaultAuthStrategy(AuthStrategy):
             raise ex.UserNotFound(user_id=user_in.user_id)
         if user_in.password and not HashService.verify_password(user.password, user_in.password):
             raise ex.IncorrectPassword()
-        access_token = JWTService.create_access_token(uid=str(user.user_id), fresh=True)
-        refresh_token = JWTService.create_refresh_token(uid=str(user.user_id))
+        access_token = JWTService.create_access_token(uid=str(user.id), fresh=True)
+        refresh_token = JWTService.create_refresh_token(uid=str(user.id))
         return dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
 
 
@@ -95,9 +95,9 @@ class TelegramAuthStrategy(AuthStrategy):
                 raise ex.UserNotFound(user_id=user_in.telegram_id)
             else:
                 access_token = JWTService.create_access_token(
-                    uid=str(user.user_id), fresh=True
+                    uid=str(user.id), fresh=True
                 )
-                refresh_token = JWTService.create_refresh_token(uid=str(user.user_id))
+                refresh_token = JWTService.create_refresh_token(uid=str(user.id))
                 return dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
         else:
             raise ex.InvalidSignature()

@@ -28,7 +28,7 @@ from .role import (
 class User(models.Model):
     __tablename__ = "users"
 
-    user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True, unique=True)
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True, unique=True)
     telegram_id: Mapped[int] = mapped_column(BIGINT, unique=True, nullable=True)
     username: Mapped[str] = mapped_column(String(255), unique=True)
     password: Mapped[str] = mapped_column(String(255), nullable=True)
@@ -57,7 +57,7 @@ class UserLoginModel(models.Model):
     __tablename__ = "user_logins"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, unique=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id", ondelete="CASCADE", onupdate="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"))
     user: Mapped["User"] = relationship("User", back_populates="logins")
     ip_address: Mapped[str] = mapped_column(String(128))
     user_agent: Mapped[str] = mapped_column(String(256))

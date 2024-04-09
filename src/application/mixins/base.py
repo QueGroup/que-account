@@ -108,7 +108,7 @@ class UpdateQueryMixin:
 
         >>> return (
         ...     update(self.model)
-        ...     .where(self.model.user_id == pk)
+        ...     .where(self.model.id == pk)
         ...     .values(**data_in.model_dump(exclude_unset=True))
         ...     .filter_by(**kwargs)
         ...     .returning(self.model)
@@ -254,7 +254,7 @@ class AuthMixin(
 
     async def reset_password(self, pk: int, password_in: ResetPassword) -> None:
         async with self._session_factory() as session:
-            stmt = self._get_user(user_id=pk)
+            stmt = self._get_user(id=pk)
             result: Result = await session.execute(stmt)
             user: models.User = result.scalar_one_or_none()
             if not user:

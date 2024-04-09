@@ -18,14 +18,21 @@ from .role import (
 
 
 class UserBase(BaseModel):
-    telegram_id: int | None = None
     username: str
-    language: str | None = None
+    language: str
 
 
 class UserUpdate(UserBase):
     username: str | None = None
     language: str | None = None
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "username": "dryhence",
+                "language": "ru",
+            }
+        }
+    )
 
     @field_validator("username")
     def validate_name(cls, value: str) -> str:
@@ -42,8 +49,18 @@ class UserUpdate(UserBase):
 
 
 class UserResponse(UserBase):
-    user_id: int
+    id: int
+    telegram_id: int | None = None
     roles: list["RoleResponse"] = []
     model_config = ConfigDict(
         from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "id": 76564380,
+                "telegram_id": 8056567643,
+                "username": "hencedry",
+                "language": "en",
+                "roles": [{"id": 1, "title": "admin"}],
+            }
+        }
     )

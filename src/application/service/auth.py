@@ -38,7 +38,7 @@ class AuthService:
             user_in=user_entity,
             username=user_in.username,
             telegram_id=user_in.telegram_id,
-            # roles=[*{"role_id": role.role_id, "title": role.title}]
+            # roles=[*{"id": role.id, "title": role.title}]
         )
 
     async def signin(

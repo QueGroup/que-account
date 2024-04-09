@@ -36,7 +36,7 @@ class UserQueryMixin(CRUDMixin[models.User, entity.User, dto.UserUpdate]):
     def _update_query(self, pk: int, data_in: dto.UserUpdate, **kwargs: Any) -> Update:
         return (
             update(self.model)
-            .where(self.model.user_id == pk)
+            .where(self.model.id == pk)
             .values(**data_in.model_dump(exclude_unset=True))
             .filter_by(**kwargs)
             .returning(self.model)
@@ -45,6 +45,6 @@ class UserQueryMixin(CRUDMixin[models.User, entity.User, dto.UserUpdate]):
     def _delete_query(self, *args: Any, **kwargs: Any) -> Update:
         return (
             update(self.model)
-            .where(self.model.user_id == kwargs.get("user_id"))
+            .where(self.model.id == kwargs.get("id"))
             .values(is_active=kwargs.get("is_active"))
         )

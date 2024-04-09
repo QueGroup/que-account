@@ -36,13 +36,13 @@ class RoleQueryMixin(CRUDMixin[models.Role, dto.RoleCreate, dto.RoleUpdate]):
             .limit(limit)
             .filter(*args)
             .filter_by(**kwargs)
-            .order_by(self.model.role_id)
+            .order_by(self.model.id)
         )
 
     def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
         return (
             update(self.model)
-            .where(self.model.role_id == pk)
+            .where(self.model.id == pk)
             .values(**data_in.model_dump(exclude_unset=True))
             .filter_by(**kwargs)
             .returning(self.model)

@@ -168,6 +168,19 @@ class Security:
 
 
 @dataclass(slots=True, frozen=True)
+class Settings:
+    app_host: str = "127.0.0.1"
+    app_port: int = 8080
+
+    @staticmethod
+    def from_env(env: Env) -> "Settings":
+        return Settings(
+            app_host=env.str("APP_HOST"),
+            app_port=env.int("APP_PORT")
+        )
+
+
+@dataclass(slots=True, frozen=True)
 class Config:
     """
     The main configuration class that integrates all the other configuration classes.
@@ -185,6 +198,7 @@ class Config:
 
     db: DbConfig
     security: Security
+    settings: Settings
 
 
 def load_config(path: str = None) -> Config:
@@ -201,4 +215,5 @@ def load_config(path: str = None) -> Config:
     return Config(
         db=DbConfig.from_env(env),
         security=Security.from_env(env),
+        settings=Settings.from_env(env),
     )

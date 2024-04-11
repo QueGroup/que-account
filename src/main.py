@@ -6,6 +6,9 @@ from fastapi import (
 import structlog
 import uvicorn
 
+from src.infrastructure import (
+    load_config,
+)
 from src.infrastructure.log import (
     configure_logging,
 )
@@ -37,15 +40,16 @@ def init_services(app: FastAPI) -> None:
 
 
 async def start_server(app: FastAPI) -> None:
-    config = uvicorn.Config(
+    config = load_config().settings
+    app_config = uvicorn.Config(
         app,
-        host="127.0.0.1",
-        port=8080,
+        host=config.app_host,
+        port=config.app_port,
         reload=True,
         use_colors=True,
         log_level="debug"
     )
-    server = uvicorn.Server(config)
+    server = uvicorn.Server(app_config)
     await server.serve()
 
 

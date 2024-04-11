@@ -96,17 +96,21 @@ class UserTMELogin(BaseModel):
     nonce: int
     timestamp: int
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "telegram_id": 1234567890,
+                "signature": "ea11face3d4cd1b13dd164216c336caf2dadf7db9438faa833d215e24493f6f6",
+                "nonce": 415238,
+                "timestamp": 1712868243
+            }
+        }
+    )
 
 
 class UserLoginWithOTP(BaseModel):
     telegram_id: str
-
-
-class TelegramUserLogin(BaseModel):
-    telegram_id: str
-    username: str
-    signature: str
 
 
 class ConfirmOtp(BaseModel):

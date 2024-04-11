@@ -1,15 +1,9 @@
-from .auth import (
-    AuthQueryMixin,
-)
-from .role import (
-    RoleQueryMixin,
-)
-from .user import (
-    UserQueryMixin,
+from .base import (
+    CRUDMixin,
+    AuthMixin,
 )
 
 __all__ = (
-    "UserQueryMixin",
-    "AuthQueryMixin",
-    "RoleQueryMixin",
+    "CRUDMixin",
+    "AuthMixin",
 )

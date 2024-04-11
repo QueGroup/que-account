@@ -11,6 +11,9 @@ from sqlalchemy import (
 from src.application import (
     dto,
 )
+from src.application.mixins.base import (
+    AuthMixin,
+)
 from src.domain.user import (
     entity,
 )
@@ -18,12 +21,8 @@ from src.infrastructure.database import (
     models,
 )
 
-from .base import (
-    AuthMixin,
-)
 
-
-class AuthQueryMixin(AuthMixin[models.User, entity.User, dto.ResetPassword]):
+class AuthQuery(AuthMixin[models.User, entity.User, dto.ResetPassword]):
 
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         username_f = models.User.username == kwargs.get("username")

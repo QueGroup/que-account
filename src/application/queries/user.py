@@ -3,7 +3,6 @@ from typing import (
 )
 
 from sqlalchemy import (
-    Delete,
     Select,
     Update,
     select,
@@ -13,33 +12,27 @@ from sqlalchemy import (
 from src.application import (
     dto,
 )
+from src.application.mixins.base import (
+    CRUDMixin,
+)
+from src.domain.user import (
+    entity,
+)
 from src.infrastructure.database import (
     models,
 )
 
-from .base import (
-    CRUDMixin,
-    UpdateSchemaT,
-)
 
-
-class RoleQueryMixin(CRUDMixin[models.Role, dto.RoleCreate, dto.RoleUpdate]):
+class UserQuery(CRUDMixin[models.User, entity.User, dto.UserUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         return select(self.model).filter(*args).filter_by(**kwargs)
 
     def _get_all_query(
             self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any
     ) -> Select[tuple[Any]]:
-        return (
-            select(self.model)
-            .offset(skip)
-            .limit(limit)
-            .filter(*args)
-            .filter_by(**kwargs)
-            .order_by(self.model.id)
-        )
+        return select(self.model).offset(skip).limit(limit).filter(*args).filter_by(**kwargs)
 
-    def _update_query(self, pk: int, data_in: UpdateSchemaT, **kwargs: Any) -> Update:
+    def _update_query(self, pk: int, data_in: dto.UserUpdate, **kwargs: Any) -> Update:
         return (
             update(self.model)
             .where(self.model.id == pk)
@@ -48,5 +41,9 @@ class RoleQueryMixin(CRUDMixin[models.Role, dto.RoleCreate, dto.RoleUpdate]):
             .returning(self.model)
         )
 
-    def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:
-        return Delete(self.model).filter(*args)
+    def _delete_query(self, *args: Any, **kwargs: Any) -> Update:
+        return (
+            update(self.model)
+            .where(self.model.id == kwargs.get("id"))
+            .values(is_active=kwargs.get("is_active"))
+        )

@@ -15,7 +15,7 @@ from fastapi import (
 from src.application import (
     dto,
 )
-from src.application.service import (
+from src.application.services import (
     UserService,
 )
 from src.infrastructure.database import (

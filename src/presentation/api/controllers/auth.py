@@ -20,7 +20,7 @@ from src.application import (
 from src.application.dto import (
     ResetPassword,
 )
-from src.application.service import (
+from src.application.services import (
     AuthService,
 )
 from src.application.strategies import (

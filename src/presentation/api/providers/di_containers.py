@@ -3,7 +3,7 @@ from dependency_injector import (
     providers,
 )
 
-from src.application.service import (
+from src.application.services import (
     AuthService,
     RoleService,
     UserService,

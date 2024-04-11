@@ -6,44 +6,57 @@ from fastapi import (
 import structlog
 import uvicorn
 
-from src.app.middlewares import (
-    setup_middlewares,
+from src.infrastructure import (
+    load_config,
 )
 from src.infrastructure.log import (
     configure_logging,
+)
+from src.presentation import (
+    setup_middlewares,
+    setup_provider,
+    setup_routes,
 )
 
 logger = structlog.stdlib.get_logger()
 
 
-async def init_api() -> FastAPI:
+def init_api() -> FastAPI:
     app = FastAPI(
         title="Que Account",
         version="0.1.0",
+        summary="The service API which provides access to the account",
+        swagger_ui_parameters={"syntaxHighlight.theme": "obsidian"}
     )
-    configure_logging()
-    setup_middlewares(app)
-    await logger.info("Initializing API")
+
     return app
 
 
-async def run_server(app: FastAPI) -> None:
-    config = uvicorn.Config(
+def init_services(app: FastAPI) -> None:
+    setup_middlewares(app)
+    configure_logging()
+    setup_provider(app)
+    setup_routes(app)
+
+
+async def start_server(app: FastAPI) -> None:
+    config = load_config().settings
+    app_config = uvicorn.Config(
         app,
-        host="127.0.0.1",
-        port=8080,
+        host=config.app_host,
+        port=config.app_port,
         reload=True,
         use_colors=True,
         log_level="debug"
     )
-    server = uvicorn.Server(config)
-    await logger.info("Starting server")
+    server = uvicorn.Server(app_config)
     await server.serve()
 
 
 async def main() -> None:
-    app = await init_api()
-    await run_server(app)
+    app = init_api()
+    init_services(app)
+    await start_server(app)
 
 
 if __name__ == "__main__":

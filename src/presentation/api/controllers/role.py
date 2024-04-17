@@ -11,6 +11,7 @@ from fastapi import (
     Depends,
     HTTPException,
     Path,
+    Query,
     status,
 )
 
@@ -22,6 +23,9 @@ from src.application.services import (
 )
 from src.infrastructure.database import (
     models,
+)
+from src.infrastructure.database.models import (
+    Role,
 )
 from src.presentation.api.providers import (
     Container,
@@ -46,46 +50,24 @@ async def create_role(
 
 
 @role_router.get(
-    "/",
-    response_model=list[dto.RoleResponse],
+    "/single/",
+    response_model=list[dto.RoleResponse] | dto.RoleResponse,
+    summary="Get the single role by title or role id",
     status_code=status.HTTP_200_OK,
 )
 @inject
-async def get_all_roles(
+async def get_role(
+        role_id: Annotated[int | None, Query] = None,
+        title: Annotated[str | None, Query] = None,
         role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> list[models.Role]:
-    return await role_service.get_all_roles()
+) -> list[Role] | Role:
+    if role_id is not None:
+        role = await role_service.get_role_by_id(role_id=role_id)
+    elif title is not None:
+        role = await role_service.get_role_by_title(title=title)
+    else:
+        return await role_service.get_all_roles()
 
-
-@role_router.get(
-    "/title/{title}/",
-    response_model=dto.RoleResponse,
-    summary="Get the single role by title",
-    status_code=status.HTTP_200_OK,
-)
-@inject
-async def get_role_by_title(
-        title: Annotated[str, Path],
-        role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> models.Role | None:
-    role = await role_service.get_role_by_title(title=title)
-    if role is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
-    return role
-
-
-@role_router.get(
-    "/{role_id}/",
-    response_model=dto.RoleResponse,
-    status_code=status.HTTP_200_OK,
-    summary="Get the single role by role id",
-)
-@inject
-async def get_role_by_id(
-        role_id: Annotated[int, Path],
-        role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> models.Role | None:
-    role = await role_service.get_role_by_id(role_id=role_id)
     if role is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     return role

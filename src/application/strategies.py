@@ -40,7 +40,7 @@ class AuthStrategy(abc.ABC):
             self,
             session: AsyncSession,
             user_in: SchemaT,
-    ) -> SchemaT:
+    ) -> tuple[int, SchemaT] | SchemaT:
         pass
 
 
@@ -60,7 +60,7 @@ class DefaultAuthStrategy(AuthStrategy):
             self,
             session: AsyncSession,
             user_in: SchemaT,
-    ) -> SchemaT:
+    ) -> tuple[int, dto.JWTokens] | dto.JWTokens:
         stmt = self._get_query(**user_in.model_dump())
         result: Result = await session.execute(stmt)
         user: models.User = result.scalar_one_or_none()
@@ -68,8 +68,12 @@ class DefaultAuthStrategy(AuthStrategy):
             raise ex.UserNotFound(user_id=user_in.user_id)
         if user_in.password and not HashService.verify_password(user.password, user_in.password):
             raise ex.IncorrectPassword()
+
         access_token = JWTService.create_access_token(uid=str(user.id), fresh=True)
         refresh_token = JWTService.create_refresh_token(uid=str(user.id))
+        if user.telegram_id:
+            telegram_id = int(user.telegram_id)
+            return telegram_id, dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
         return dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
 
 

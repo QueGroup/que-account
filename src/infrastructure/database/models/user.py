@@ -48,9 +48,6 @@ class User(models.Model):
         back_populates="users",
         lazy="selectin",
     )
-    # photos: Mapped["PhotoModel"] = relationship(
-    #     "PhotoModel", backref="user", lazy=True
-    # )
 
 
 class UserLoginModel(models.Model):

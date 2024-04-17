@@ -11,7 +11,7 @@ from argon2.exceptions import (
 from src.domain.auth import (
     PasswordEncoder,
 )
-from src.infrastructure import (
+from src.shared import (
     load_config,
 )
 

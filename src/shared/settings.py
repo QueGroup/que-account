@@ -39,10 +39,10 @@ class DbConfig:
     database: str
     port: int = 5432
 
-    redis_host: str = ""
+    redis_host: str = "localhost"
     redis_password: str = ""
-    redis_database: str = ""
-    redis_port: int = 0
+    redis_database: str = "0"
+    redis_port: int = 6379
 
     def construct_sqlalchemy_url(
             self,
@@ -167,6 +167,7 @@ class Security:
         )
 
 
+# TODO: Добавить docs string
 @dataclass(slots=True, frozen=True)
 class Settings:
     app_host: str = "127.0.0.1"
@@ -177,6 +178,18 @@ class Settings:
         return Settings(
             app_host=env.str("APP_HOST"),
             app_port=env.int("APP_PORT")
+        )
+
+
+# TODO: Добавить docs string
+@dataclass(slots=True, frozen=True)
+class Miscellaneous:
+    bot_token: str
+
+    @staticmethod
+    def from_env(env: Env) -> "Miscellaneous":
+        return Miscellaneous(
+            bot_token=env.str("BOT_TOKEN"),
         )
 
 
@@ -199,6 +212,7 @@ class Config:
     db: DbConfig
     security: Security
     settings: Settings
+    misc: Miscellaneous
 
 
 def load_config(path: str = None) -> Config:
@@ -216,4 +230,5 @@ def load_config(path: str = None) -> Config:
         db=DbConfig.from_env(env),
         security=Security.from_env(env),
         settings=Settings.from_env(env),
+        misc=Miscellaneous.from_env(env),
     )

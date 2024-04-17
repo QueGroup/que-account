@@ -248,7 +248,7 @@ class AuthMixin(
             self,
             strategy: AuthStrategy,
             user_in: SchemaT
-    ) -> dto.JWTokens:
+    ) -> tuple[int, dto.JWTokens] | dto.JWTokens:
         async with self._session_factory() as session:
             return await strategy.authenticate(user_in=user_in, session=session)
 
@@ -265,7 +265,3 @@ class AuthMixin(
             user.password = new_hashed_password
             await session.execute(stmt)
             await session.commit()
-
-    # TODO: Реализуйте логику выхода из системы, например, добавление токена в черный список
-    async def signout(self) -> None:
-        pass

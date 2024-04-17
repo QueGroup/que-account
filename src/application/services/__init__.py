@@ -1,6 +1,9 @@
 from .auth import (
     AuthService,
 )
+from .notification import (
+    TelegramNotifierService,
+)
 from .role import (
     RoleService,
 )
@@ -12,4 +15,5 @@ __all__ = (
     "UserService",
     "AuthService",
     "RoleService",
+    "TelegramNotifierService",
 )

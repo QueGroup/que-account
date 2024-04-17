@@ -1,3 +1,7 @@
+from fastapi import (
+    Request,
+)
+
 from src.application import (
     dto,
 )
@@ -14,6 +18,9 @@ from src.infrastructure.database.repositories import (
     AuthRepository,
 )
 
+from .notification import (
+    TelegramNotifierService,
+)
 from .role import (
     RoleService,
 )
@@ -24,9 +31,11 @@ class AuthService:
             self,
             auth_repository: AuthRepository,
             role_service: RoleService,
+            telegram_notifier: TelegramNotifierService
     ) -> None:
         self.repository: AuthRepository = auth_repository
         self.service: RoleService = role_service
+        self.telegram_notifier: TelegramNotifierService = telegram_notifier
 
     async def signup(self, user_in: dto.UserRegistration) -> models.User:
         # FIXME: Необходимо установить роль по умолчанию для пользователя
@@ -45,8 +54,20 @@ class AuthService:
             self,
             user_in: dto.UserTMELogin | dto.UserLogin,
             strategy: AuthStrategy,
+            request: Request | None = None
     ) -> dto.JWTokens:
-        return await self.repository.signin(user_in=user_in, strategy=strategy)
+        user_agent, host = request.headers.get("user-agent"), request.client.host
+        text = (
+            "Logged in to your account. With device:\n"
+            f"Browser: {user_agent}\n"
+            f"IP: {host}\n"
+        )
+        data = await self.repository.signin(user_in=user_in, strategy=strategy)
+        if isinstance(data, tuple):
+            telegram_id, jwt_tokens = data
+            await self.telegram_notifier.send_message(chat_id=telegram_id, text=text)
+            return jwt_tokens
+        return data
 
     async def reset_password(self, pk: int, password_in: dto.ResetPassword) -> None:
         return await self.repository.reset_password(pk=pk, password_in=password_in)

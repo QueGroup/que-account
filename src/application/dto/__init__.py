@@ -8,6 +8,10 @@ from .auth import (
     UserTMELogin,
     ResetPassword,
 )
+from .notification import (
+    SendMessageResponse,
+    Message,
+)
 from .role import (
     RoleCreate,
     RoleResponse,
@@ -32,4 +36,6 @@ __all__ = (
     "RoleUpdate",
     "RoleResponse",
     "ResetPassword",
+    "SendMessageResponse",
+    "Message",
 )

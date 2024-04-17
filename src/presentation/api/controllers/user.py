@@ -78,6 +78,19 @@ async def update_user(
     return await user_service.update_user(pk=current_user.id, user_in=user_in)
 
 
+@user_router.post(
+    "/me/reactivate/",
+    response_model=dto.UserResponse,
+    status_code=status.HTTP_200_OK,
+)
+@inject
+async def reactivate_user(
+        current_user: Annotated[models.User, Depends(get_current_user)],
+        user_service: UserService = Depends(Provide[Container.user_service]),
+) -> None:
+    return await user_service.reactivate_user(user_id=current_user.id)
+
+
 @user_router.delete(
     "/me/",
     summary="Deactivate user account",
@@ -89,10 +102,3 @@ async def deactivate_user(
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> None:
     return await user_service.deactivate_user(user_id=current_user.id)
-
-
-@user_router.post(
-    "/me/reactivate/"
-)
-async def reactivate_user() -> None:
-    pass

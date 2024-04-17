@@ -28,6 +28,7 @@ from src.application.strategies import (
     TelegramAuthStrategy,
 )
 from src.infrastructure.database import (
+    JTIRedisStorage,
     models,
 )
 from src.infrastructure.services.security import (
@@ -42,6 +43,7 @@ from src.presentation.api.providers import (
     Container,
     get_current_user,
     refresh_tokens,
+    revoke_tokens,
     verify_token_from_request,
 )
 from src.shared import (
@@ -54,7 +56,9 @@ auth_router = APIRouter()
 @auth_router.post(
     "/signup/",
     response_model=dto.UserResponse,
-    responses={409: {"message": "User already exists"}},
+    responses={
+        status.HTTP_409_CONFLICT: {"message": "User already exists"},
+    },
     response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
@@ -74,8 +78,8 @@ async def signup(
     "/login/t/me/",
     response_model=dto.JWTokens,
     responses={
-        404: {"message": "Not found"},
-        401: {"message": "Incorrect password"}
+        status.HTTP_404_NOT_FOUND: {"message": "Not found"},
+        status.HTTP_401_UNAUTHORIZED: {"message": "Incorrect password"}
     },
     summary="Login in telegram",
     description="Login with telegram_id",
@@ -100,8 +104,8 @@ async def signin_telegram(
     "/login/",
     response_model=dto.JWTokens,
     responses={
-        404: {"message": "Not found"},
-        401: {"message": "Incorrect password"}
+        status.HTTP_404_NOT_FOUND: {"message": "Not found"},
+        status.HTTP_401_UNAUTHORIZED: {"message": "Incorrect password"}
     },
     summary="Default login",
     description="Login with username and password",
@@ -110,12 +114,13 @@ async def signin_telegram(
 @inject
 async def login(
         user_in: dto.UserLogin,
+        request: Request,
         response: Response,
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
 ) -> dto.JWTokens:
     strategy = DefaultAuthStrategy()
     try:
-        jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy)
+        jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy, request=request)
         JWTService.set_cookies(
             response=response,
             access_token=jwt_tokens.access_token,
@@ -158,20 +163,19 @@ async def verify_token(
     )
 
 
-# TODO: Необходимо инвалидировать текущий JWT-токен после сброса пароля:
-#  Теперь нужно сохранять идентификатор токена (token ID) в базе данных при его создании.
-#  При сбросе пароля удалите все токены, связанные с текущим пользователем, из базы данных.
-#  Создайте новый JWT-токен и верните его клиенту.
 @auth_router.post(
     "/reset_password/",
     status_code=status.HTTP_200_OK,
 )
 @inject
 async def reset_password(
+        request: Request,
         password_in: ResetPassword,
         current_user: Annotated[models.User, Depends(get_current_user)],
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
+        blacklist_service: JTIRedisStorage = Depends(Provide[Container.blacklist_service])
 ) -> Response:
+    await revoke_tokens(request=request, blacklist_service=blacklist_service)
     await auth_service.reset_password(pk=current_user.id, password_in=password_in)
     return Response(status_code=status.HTTP_200_OK, content="Password was updating")
 
@@ -179,19 +183,14 @@ async def reset_password(
 @auth_router.post(
     "/logout/",
     summary="Logout from  the current session",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_204_NO_CONTENT
 )
-async def logout() -> None:
-    pass
-
-
-@auth_router.post(
-    "/logout_all/",
-    summary="Logout from the all session",
-    status_code=status.HTTP_200_OK
-)
-async def logout_all() -> None:
-    pass
+async def logout(
+        response: Response,
+) -> None:
+    JWTService.unset_cookies(
+        response=response,
+    )
 
 
 @auth_router.post(

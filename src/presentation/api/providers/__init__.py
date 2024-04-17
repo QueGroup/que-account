@@ -3,6 +3,7 @@ from .dependencies import (
     require_role,
     refresh_tokens,
     verify_token_from_request,
+    revoke_tokens,
 
 )
 from .di_containers import (
@@ -15,4 +16,5 @@ __all__ = (
     "get_current_user",
     "refresh_tokens",
     "verify_token_from_request",
+    "revoke_tokens",
 )

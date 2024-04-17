@@ -6,14 +6,13 @@ from dependency_injector import (
 from src.application.services import (
     AuthService,
     RoleService,
+    TelegramNotifierService,
     UserService,
-)
-from src.infrastructure import (
-    load_config,
 )
 from src.infrastructure.database import (
     DBConnector,
-    RedisUserSignatureBlacklist,
+    JTIRedisStorage,
+    RedisConnector,
 )
 from src.infrastructure.database.repositories import (
     AuthRepository,
@@ -21,6 +20,9 @@ from src.infrastructure.database.repositories import (
 )
 from src.infrastructure.database.repositories.role import (
     RoleRepository,
+)
+from src.shared import (
+    load_config,
 )
 
 
@@ -37,7 +39,12 @@ class Container(containers.DeclarativeContainer):
     config = providers.Singleton(load_config)
 
     db = providers.Singleton(DBConnector, db_url=config().db.construct_sqlalchemy_url())
-    redis = providers.Singleton(RedisUserSignatureBlacklist, url=config().db.construct_redis_dsn())
+    redis = providers.Singleton(RedisConnector, url=config().db.construct_redis_dsn())
+
+    blacklist_service = providers.Factory(
+        JTIRedisStorage,
+        redis_connector=redis,
+    )
 
     user_repository = providers.Factory(
         UserRepository,
@@ -48,11 +55,6 @@ class Container(containers.DeclarativeContainer):
         user_repository=user_repository,
     )
 
-    auth_repository = providers.Factory(
-        AuthRepository,
-        session_factory=db.provided.get_db_session,
-    )
-
     role_repository = providers.Factory(
         RoleRepository,
         session_factory=db.provided.get_db_session,
@@ -61,9 +63,17 @@ class Container(containers.DeclarativeContainer):
         RoleService,
         role_repository=role_repository,
     )
-
+    telegram_notifier = providers.Factory(
+        TelegramNotifierService,
+        bot_token=config().misc.bot_token,
+    )
+    auth_repository = providers.Factory(
+        AuthRepository,
+        session_factory=db.provided.get_db_session,
+    )
     auth_service = providers.Factory(
         AuthService,
         auth_repository=auth_repository,
         role_service=role_service,
+        telegram_notifier=telegram_notifier
     )

@@ -2,10 +2,12 @@ from .db_connection import (
     DBConnector,
 )
 from .redis import (
-    RedisUserSignatureBlacklist,
+    RedisConnector,
+    JTIRedisStorage,
 )
 
 __all__ = (
     "DBConnector",
-    "RedisUserSignatureBlacklist",
+    "RedisConnector",
+    "JTIRedisStorage",
 )

@@ -27,6 +27,7 @@ from src.application.services import (
     UserService,
 )
 from src.infrastructure.database import (
+    JTIRedisStorage,
     models,
 )
 from src.infrastructure.services.security import (
@@ -61,9 +62,15 @@ def _decode_token_from_request(
     try:
         payload = JWTService.decode_token(token=token)
         user_id: int = int(payload.get("sub"))
+        jti: str = payload.get("jti")
+        if jti is None:
+            raise CredentialsError
         if user_id is None:
             raise CredentialsError
-        return dto.TokenData(id=user_id)
+        return dto.TokenData(
+            user_id=user_id,
+            jti=jti
+        )
     except JWTError:
         raise CredentialsError
 
@@ -73,6 +80,7 @@ async def _get_user_and_tokens(
         request: Request,
         response: Response,
         user_service: UserService = Depends(Provide[Container.user_service]),
+        blacklist_service: JTIRedisStorage = Depends(Provide[Container.blacklist_service]),
 ) -> tuple[models.User, str, str] | None:
     try:
         token_data = _decode_token_from_request(request=request, token_type="access_token")
@@ -81,10 +89,12 @@ async def _get_user_and_tokens(
         if token_data is None:
             raise CredentialsError
 
-    user = await user_service.get_user_by_id(user_id=token_data.id)
+    user = await user_service.get_user_by_id(user_id=token_data.user_id)
     if user is None:
         raise CredentialsError
-
+    is_in_blacklist = await blacklist_service.is_in_blacklist(jti=token_data.jti)
+    if is_in_blacklist:
+        raise CredentialsError
     access_token = JWTService.create_access_token(uid=str(user.id), fresh=False)
     refresh_token = JWTService.create_refresh_token(uid=str(user.id))
     JWTService.set_cookies(response=response, access_token=access_token, refresh_token=refresh_token)
@@ -97,8 +107,9 @@ async def get_current_user(
         request: Request,
         response: Response,
         user_service: UserService = Depends(Provide[Container.user_service]),
+        blacklist_service: JTIRedisStorage = Depends(Provide[Container.blacklist_service])
 ) -> models.User:
-    user, _, _ = await _get_user_and_tokens(request, response, user_service)
+    user, _, _ = await _get_user_and_tokens(request, response, user_service, blacklist_service)
     return user
 
 
@@ -139,3 +150,19 @@ def require_role() -> Callable[[models.User], Coroutine[Any, Any, models.User]]:
             )
 
     return check_user_roles
+
+
+@inject
+async def revoke_tokens(
+        request: Request,
+        blacklist_service: JTIRedisStorage = Depends(Provide[Container.blacklist_service])
+) -> None:
+    access_token = _get_token_from_request(request, "access_token")
+    refresh_token = _get_token_from_request(request, "refresh_token")
+    decode_access_token = JWTService.decode_token(token=access_token)
+    decode_refresh_token = JWTService.decode_token(token=refresh_token)
+    access_jti = decode_access_token["jti"]
+    await blacklist_service.add(access_jti)
+
+    refresh_jti = decode_refresh_token["jti"]
+    await blacklist_service.add(refresh_jti)

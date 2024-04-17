@@ -1,12 +1,6 @@
 from .models import (
     Model,
 )
-from .interest import (
-    Interest,
-)
-from .profile import (
-    Profile,
-)
 from .role import (
     Role,
 )
@@ -18,6 +12,4 @@ __all__ = (
     "Model",
     "User",
     "Role",
-    "Interest",
-    "Profile",
 )

@@ -25,16 +25,16 @@ from .api.providers import (
 def setup_routes(app: FastAPI) -> None:
     prefix: str = "/api/v1"
     app.include_router(
-        router=user_router, prefix=f"{prefix}/users", tags=["User"],
-    )
-    app.include_router(
-        router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"],
-    )
-    app.include_router(
         router=auth_router, prefix=f"{prefix}/auth", tags=["Authorization"],
     )
     app.include_router(
-        router=role_router, prefix=f"{prefix}/role", tags=["Role"],
+        router=user_router, prefix=f"{prefix}/users", tags=["User"],
+    )
+    app.include_router(
+        router=role_router, prefix=f"{prefix}/roles", tags=["Role"],
+    )
+    app.include_router(
+        router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"],
     )
 
 

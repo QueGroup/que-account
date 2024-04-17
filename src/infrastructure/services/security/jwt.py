@@ -12,11 +12,11 @@ from jose import (
     jwt,
 )
 
-from src.infrastructure import (
-    load_config,
-)
 from src.infrastructure.services.security.exception import (
     JWTDecodeError,
+)
+from src.shared import (
+    load_config,
 )
 
 config = load_config().security

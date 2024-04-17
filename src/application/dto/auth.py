@@ -37,7 +37,8 @@ class JWTokens(BaseModel):
 
 
 class TokenData(BaseModel):
-    id: int | None = None
+    user_id: int
+    jti: str
 
 
 class UserRegistration(BaseModel):

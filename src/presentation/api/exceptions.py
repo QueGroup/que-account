@@ -20,6 +20,18 @@ class InvalidTokenError(HTTPException):
         super().__init__(status_code=status_code, detail=detail)
 
 
+class TokenExpiredError(HTTPException):
+    """Custom error when provided token is expired"""
+
+    def __init__(
+            self,
+            status_code: int = status.HTTP_401_UNAUTHORIZED,
+            message: str = "Token expired"
+    ):
+        detail = {"code": "TOKEN_EXPIRED", "message": message}
+        super().__init__(status_code=status_code, detail=detail)
+
+
 class InvalidSignatureError(HTTPException):
     """Custom error when provided signature is invalid"""
 

@@ -35,9 +35,13 @@ from src.infrastructure.services.security import (
 )
 from src.presentation.api.exceptions import (
     CredentialsError,
+    TokenExpiredError,
 )
 from src.presentation.api.providers.di_containers import (
     Container,
+)
+from src.shared import (
+    ex,
 )
 
 
@@ -73,6 +77,8 @@ def _decode_token_from_request(
         )
     except JWTError:
         raise CredentialsError
+    except ex.JWTDecodeError:
+        raise TokenExpiredError
 
 
 @inject

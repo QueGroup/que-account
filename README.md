@@ -28,14 +28,6 @@
   </p>
 </div>
 
-<!-- TABLE OF CONTENTS -->
-
-1. [About The Project](#monocle_face-about)
-    - [Built With](#alembic-built-with)
-2. [Getting Started](#hammer-Development)
-3. [Contributing](#busts_in_silhouette-contributing)
-4. [License](#page_facing_up-license)
-
 <!-- ABOUT THE PROJECT -->
 
 ### :monocle_face: About

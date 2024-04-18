@@ -13,8 +13,8 @@ class UserService:
     def __init__(self, user_repository: UserRepository) -> None:
         self.repository: UserRepository = user_repository
 
-    async def get_users(self) -> list[models.User]:
-        return await self.repository.get_multi(is_active=True)
+    async def get_users(self, skip: int, limit: int) -> list[models.User]:
+        return await self.repository.get_multi(is_active=True, skip=skip, limit=limit)
 
     async def get_user_by_id(self, user_id: int) -> models.User | None:
         return await self.repository.get_single(id=user_id)

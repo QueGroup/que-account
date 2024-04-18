@@ -9,6 +9,7 @@ from dependency_injector.wiring import (
 from fastapi import (
     APIRouter,
     Depends,
+    Query,
     status,
 )
 
@@ -40,9 +41,11 @@ user_router = APIRouter()
 )
 @inject
 async def get_list(
+        skip: int = Query(0, ge=0),
+        limit: int = Query(10, gt=0),
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> list[models.User]:
-    return await user_service.get_users()
+    return await user_service.get_users(skip=skip, limit=limit)
 
 
 @user_router.get(

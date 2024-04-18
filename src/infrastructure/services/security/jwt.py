@@ -12,10 +12,8 @@ from jose import (
     jwt,
 )
 
-from src.infrastructure.services.security.exception import (
-    JWTDecodeError,
-)
 from src.shared import (
+    ex,
     load_config,
 )
 
@@ -120,7 +118,7 @@ class JWTService:
                 options={"verify_signature": verify},
             )
         except Exception as e:
-            raise JWTDecodeError(*e.args) from e
+            raise ex.JWTDecodeError(*e.args) from e
 
     @staticmethod
     def create_access_token(

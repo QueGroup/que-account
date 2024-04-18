@@ -111,3 +111,12 @@ class InvalidSignature(DomainException):
     @property
     def title(self) -> str:
         return "Given signature is invalid"
+
+
+@dataclass(eq=False)
+class JWTDecodeError(Exception):
+    status = 401
+
+    @property
+    def title(self) -> str:
+        return "Decoding JSON Web Token failed"

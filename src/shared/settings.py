@@ -167,9 +167,20 @@ class Security:
         )
 
 
-# TODO: Добавить docs string
 @dataclass(slots=True, frozen=True)
 class Settings:
+    """
+    Application settings class.
+
+    This class holds the settings specific to the application.
+
+    Attributes
+    ----------
+    app_host : str
+        The host address of the application (default is '127.0.0.1').
+    app_port : int
+        The port number of the application (default is 8080).
+    """
     app_host: str = "127.0.0.1"
     app_port: int = 8080
 
@@ -181,9 +192,18 @@ class Settings:
         )
 
 
-# TODO: Добавить docs string
 @dataclass(slots=True, frozen=True)
 class Miscellaneous:
+    """
+    Miscellaneous settings class.
+
+    This class holds settings that don't fit into other categories.
+
+    Attributes
+    ----------
+    bot_token : str
+        API token for the telegram bot
+    """
     bot_token: str
 
     @staticmethod

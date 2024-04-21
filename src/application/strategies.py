@@ -65,7 +65,7 @@ class DefaultAuthStrategy(AuthStrategy):
         result: Result = await session.execute(stmt)
         user: models.User = result.scalar_one_or_none()
         if not user:
-            raise ex.UserNotFound(user_id=user_in.user_id)
+            raise ex.UserNotFound()
         if user_in.password and not HashService.verify_password(user.password, user_in.password):
             raise ex.IncorrectPassword()
 
@@ -96,7 +96,7 @@ class TelegramAuthStrategy(AuthStrategy):
 
         if HashService.verify_signature(**user_in.model_dump()):
             if not user:
-                raise ex.UserNotFound(user_id=user_in.telegram_id)
+                raise ex.UserNotFound()
             else:
                 access_token = JWTService.create_access_token(
                     uid=str(user.id), fresh=True

@@ -25,11 +25,10 @@ class AuthExceptionCodes:
 @dataclass(eq=False)
 class UserNotFound(DomainException):
     status = 404
-    user_id: int
 
     @property
     def title(self) -> str:
-        return f"UserEntity with ID {self.user_id} not found"
+        return "User not found"
 
 
 @dataclass(eq=False)

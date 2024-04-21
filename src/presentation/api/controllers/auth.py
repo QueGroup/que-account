@@ -117,7 +117,7 @@ async def login(
         request: Request,
         response: Response,
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
-) -> dto.JWTokens:
+) -> dto.JWTokens | None:
     strategy = DefaultAuthStrategy()
     try:
         jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy, request=request)
@@ -126,12 +126,11 @@ async def login(
             access_token=jwt_tokens.access_token,
             refresh_token=jwt_tokens.refresh_token,
         )
+        return jwt_tokens
     except ex.UserNotFound:
         raise UserNotFoundError()
     except ex.IncorrectPassword:
         raise PasswordIncorrectError()
-
-    return jwt_tokens
 
 
 @auth_router.post(

@@ -17,6 +17,7 @@ from src.infrastructure.database import (
 from src.infrastructure.database.repositories import (
     AuthRepository,
 )
+
 from .notification import (
     TelegramNotifierService,
 )

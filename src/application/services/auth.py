@@ -17,7 +17,6 @@ from src.infrastructure.database import (
 from src.infrastructure.database.repositories import (
     AuthRepository,
 )
-
 from .notification import (
     TelegramNotifierService,
 )
@@ -56,18 +55,24 @@ class AuthService:
             strategy: AuthStrategy,
             request: Request | None = None
     ) -> dto.JWTokens:
-        user_agent, host = request.headers.get("user-agent"), request.client.host
-        text = (
-            "Logged in to your account. With device:\n"
-            f"Browser: {user_agent}\n"
-            f"IP: {host}\n"
-        )
         data = await self.repository.signin(user_in=user_in, strategy=strategy)
-        if isinstance(data, tuple):
+        text = self._get_device_info(request)
+        if isinstance(data, tuple) and text is not None:
             telegram_id, jwt_tokens = data
             await self.telegram_notifier.send_message(chat_id=telegram_id, text=text)
             return jwt_tokens
-        return data
+        return data  # type: ignore
 
     async def reset_password(self, pk: int, password_in: dto.ResetPassword) -> None:
         return await self.repository.reset_password(pk=pk, password_in=password_in)
+
+    def _get_device_info(self, request: Request) -> str | None:
+        try:
+            user_agent, host = request.headers.get("user-agent"), request.client.host
+            return (
+                "Logged in to your account. With device:\n"
+                f"Browser: {user_agent}\n"
+                f"IP: {host}\n"
+            )
+        except AttributeError:
+            return None

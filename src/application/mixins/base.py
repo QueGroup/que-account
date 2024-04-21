@@ -258,7 +258,7 @@ class AuthMixin(
             result: Result = await session.execute(stmt)
             user: models.User = result.scalar_one_or_none()
             if not user:
-                raise ex.UserNotFound(user_id=pk)
+                raise ex.UserNotFound()
             if not HashService.verify_password(password=user.password, hashed_password=password_in.old_password):
                 raise ex.IncorrectPassword()
             new_hashed_password = HashService.hash_password(password=password_in.new_password)

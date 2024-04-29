@@ -52,6 +52,7 @@ class UserResponse(UserBase):
     id: int
     telegram_id: int | None = None
     roles: list["RoleResponse"] = []
+    days_since_created: int
     model_config = ConfigDict(
         from_attributes=True,
         json_schema_extra={
@@ -61,6 +62,7 @@ class UserResponse(UserBase):
                 "username": "hencedry",
                 "language": "en",
                 "roles": [{"id": 1, "title": "admin"}],
+                "days_since_created": 347
             }
         }
     )

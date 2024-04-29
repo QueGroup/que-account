@@ -49,6 +49,10 @@ class User(models.Model):
         lazy="selectin",
     )
 
+    @property
+    def days_since_created(self) -> int:
+        return (datetime.datetime.now() - self.created_at).days
+
 
 class UserLoginModel(models.Model):
     __tablename__ = "user_logins"

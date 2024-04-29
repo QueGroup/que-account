@@ -83,8 +83,7 @@ async def update_user(
 
 @user_router.post(
     "/me/reactivate/",
-    response_model=dto.UserResponse,
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 @inject
 async def reactivate_user(

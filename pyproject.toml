@@ -27,6 +27,7 @@ stubs = "^1.0.0"
 redis = "^5.0.3"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 faker = "^24.4.0"
+starlette-exporter = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"

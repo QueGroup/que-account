@@ -1635,6 +1635,20 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
+name = "prometheus-client"
+version = "0.20.0"
+description = "Python client for the Prometheus monitoring system."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "prometheus_client-0.20.0-py3-none-any.whl", hash = "sha256:cde524a85bce83ca359cc837f28b8c0db5cac7aa653a588fd7e84ba061c329e7"},
+    {file = "prometheus_client-0.20.0.tar.gz", hash = "sha256:287629d00b147a32dcb2be0b9df905da599b2d82f80377083ec8463309a4bb89"},
+]
+
+[package.extras]
+twisted = ["twisted"]
+
+[[package]]
 name = "py-serializable"
 version = "1.0.3"
 description = "Library for serializing and deserializing Python Objects to and from JSON and XML."
@@ -2369,6 +2383,21 @@ anyio = ">=3.4.0,<5"
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.7)", "pyyaml"]
 
 [[package]]
+name = "starlette-exporter"
+version = "0.21.0"
+description = "Prometheus metrics exporter for Starlette applications."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "starlette_exporter-0.21.0-py3-none-any.whl", hash = "sha256:f6c66fe241c7cc3634ba9d35231684bffb620ea35671e71cd788c26a50a7caaa"},
+    {file = "starlette_exporter-0.21.0.tar.gz", hash = "sha256:ca513b173003439303e931f467054c9fe75e7c98439f2ae17e94c9c3bcf18dfd"},
+]
+
+[package.dependencies]
+prometheus-client = ">=0.12"
+starlette = ">=0.35"
+
+[[package]]
 name = "structlog"
 version = "24.1.0"
 description = "Structured Logging for Python"
@@ -2582,4 +2611,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f89c30bbd38c19882a42ab078005468d886d96a0e516887bf8c8c4791af69964"
+content-hash = "f645a7567d5a5f5727bf3700c496571d356bc98213749599e784547c19a4d9df"

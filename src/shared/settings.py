@@ -33,16 +33,16 @@ class DbConfig:
         The port where the database server is listening.
     """
 
+    redis_host: str
+    redis_database: str
+    redis_port: int
+
     host: str
     password: str
     user: str
     database: str
+    redis_password: str | None = None
     port: int = 5432
-
-    redis_host: str = "localhost"
-    redis_password: str = ""
-    redis_database: str = "0"
-    redis_port: int = 6379
 
     def construct_sqlalchemy_url(
             self,
@@ -100,12 +100,18 @@ class DbConfig:
         user = env.str("POSTGRES_USER")
         database = env.str("POSTGRES_DB")
         port = env.int("DB_PORT", 5432)
+        redis_host = env.str("REDIS_HOST")
+        redis_port = env.int("REDIS_PORT")
+        redis_database = env.str("REDIS_DB")
         return DbConfig(
             host=host,
             password=password,
             user=user,
             database=database,
             port=port,
+            redis_host=redis_host,
+            redis_port=redis_port,
+            redis_database=redis_database
         )
 
 

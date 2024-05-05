@@ -7,6 +7,10 @@ from fastapi.middleware.cors import (
 from starlette.middleware.base import (
     BaseHTTPMiddleware,
 )
+from starlette_exporter import (
+    PrometheusMiddleware,
+    handle_metrics,
+)
 
 from .api import (
     auth_router,
@@ -36,6 +40,7 @@ def setup_routes(app: FastAPI) -> None:
     app.include_router(
         router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"],
     )
+    app.add_route("/metrics", handle_metrics)
 
 
 # noinspection PyTypeChecker
@@ -51,6 +56,7 @@ def setup_middlewares(app: FastAPI) -> None:
         allow_headers=["*"],
         expose_headers=["Content-Disposition"],
     )
+    app.add_middleware(PrometheusMiddleware)
 
 
 def setup_provider(app: FastAPI) -> None:

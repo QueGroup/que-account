@@ -34,12 +34,12 @@ To interact with the database using the provided mixins and classes, follow thes
         # Define other columns as needed
    ```
 
-#### 2. Create a QueryMixin Class
+#### 2. Create a Query Class
 
-   Create a QueryMixin class for the new model. These classes should inherit from the appropriate query mixin class and
+   Create a Query class for the new model. These classes should inherit from the appropriate query mixin class and
    provide methods for CRUD operations specific to the entity. Create them in the `src/application/mixins/` directory.
    ```python
-   class SomeModelQueryMixin(CRUDMixin[models.SomeModel, entity.SomeModel, dto.SomeModelUpdate]):
+   class SomeModelQuery(CRUDMixin[models.SomeModel, entity.SomeModel, dto.SomeModelUpdate]):
         def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
             return select(self.model).filter(*args).filter_by(**kwargs)
         # Define other methods as needed

@@ -32,6 +32,8 @@ src/
 └── shared
 ```
 
+---
+
 ### Detailed description
 
 #### `application/`

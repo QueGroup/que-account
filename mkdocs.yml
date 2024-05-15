@@ -1,4 +1,4 @@
-site_name: My Docs
+site_name: Que Account docs
 theme:
   name: material
 markdown_extensions:
@@ -9,3 +9,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+nav:
+  - 'home.md'
+  - 'backend.md'
+  - 'database.md'
+  - 'development.md'

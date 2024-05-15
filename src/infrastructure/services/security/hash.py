@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import time
 
 from argon2 import (
     PasswordHasher,
@@ -9,7 +10,7 @@ from argon2.exceptions import (
 )
 
 from src.domain.auth import (
-    PasswordEncoder,
+    IPasswordEncoder,
 )
 from src.shared import (
     load_config,
@@ -18,7 +19,7 @@ from src.shared import (
 config = load_config().security
 
 
-class HashService(PasswordEncoder):
+class HashService(IPasswordEncoder):
     """
     A class for hashing and verifying passwords and signatures.
 
@@ -61,6 +62,10 @@ class HashService(PasswordEncoder):
             timestamp: int,
             nonce: int,
     ) -> bool:
+        current_time = int(time.time())
+        time_diff = abs(current_time - timestamp)
+        if time_diff > 5 * 60:
+            return False
         data_to_verify = f"{telegram_id}{timestamp}{nonce}"
         expected_signature = hmac.new(
             config.signature_secret_key.encode(), data_to_verify.encode(), hashlib.sha256

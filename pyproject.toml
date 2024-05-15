@@ -25,12 +25,18 @@ types-redis = "^4.6.0.20240218"
 pycountry = "^23.12.11"
 stubs = "^1.0.0"
 redis = "^5.0.3"
-python-jose = {extras = ["cryptography"], version = "^3.3.0"}
-faker = "^24.4.0"
+python-jose = { extras = ["cryptography"], version = "^3.3.0" }
 starlette-exporter = "^0.21.0"
+logfire = "^0.30.0"
+opentelemetry-instrumentation-asgi = "^0.45b0"
+opentelemetry-instrumentation-fastapi = "^0.45b0"
+
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
+faker = "^24.4.0"
+pytest-mock = "^3.14.0"
+coverage = "^7.5.1"
 mypy = "^1.8.0"
 black = "^24.3.0"
 isort = "^5.13.2"
@@ -39,10 +45,9 @@ ruff = "^0.1.14"
 pip-audit = "^2.7.0"
 httpx = "^0.26.0"
 pytest-asyncio = "^0.23.3"
-aiosqlite = "^0.19.0"
 
 [tool.black]
-line-length = 99
+line-length = 79
 exclude = "venv"
 target-version = ['py311']
 

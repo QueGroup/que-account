@@ -20,6 +20,9 @@ from sqlalchemy.ext.asyncio import (
 from src.application import (
     dto,
 )
+from src.domain.user import (
+    entity,
+)
 from src.infrastructure.database import (
     models,
 )
@@ -34,7 +37,7 @@ from src.shared import (
 SchemaT = TypeVar("SchemaT", bound=BaseModel)
 
 
-class AuthStrategy(abc.ABC):
+class IAuthStrategy(abc.ABC):
     @abc.abstractmethod
     async def authenticate(
             self,
@@ -44,7 +47,7 @@ class AuthStrategy(abc.ABC):
         pass
 
 
-class DefaultAuthStrategy(AuthStrategy):
+class DefaultAuthStrategy(IAuthStrategy):
 
     @staticmethod
     def _get_query(*args: Any, **kwargs: Any) -> Select[tuple[Any]]:
@@ -66,18 +69,22 @@ class DefaultAuthStrategy(AuthStrategy):
         user: models.User = result.scalar_one_or_none()
         if not user:
             raise ex.UserNotFound()
-        if user_in.password and not HashService.verify_password(user.password, user_in.password):
+
+        if user_in.password and not entity.User.check_password(password=user.password, password_in=user_in.password):
             raise ex.IncorrectPassword()
 
         access_token = JWTService.create_access_token(uid=str(user.id), fresh=True)
         refresh_token = JWTService.create_refresh_token(uid=str(user.id))
         if user.telegram_id:
-            telegram_id = int(user.telegram_id)
+            telegram_id = int(str(user.telegram_id))
             return telegram_id, dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
+        if user_in.telegram_id:
+            user.telegram_id = user_in.telegram_id
+            await session.commit()
         return dto.JWTokens(access_token=access_token, refresh_token=refresh_token)
 
 
-class TelegramAuthStrategy(AuthStrategy):
+class TelegramAuthStrategy(IAuthStrategy):
     @staticmethod
     def _get_query(**kwargs: Any) -> Select[tuple[Any]]:
         telegram_id = kwargs.get("telegram_id")

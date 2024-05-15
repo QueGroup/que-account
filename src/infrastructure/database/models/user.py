@@ -60,5 +60,5 @@ class UserLoginModel(models.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, unique=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"))
     user: Mapped["User"] = relationship("User", back_populates="logins")
-    ip_address: Mapped[str] = mapped_column(String(128))
+    ip_address: Mapped[str] = mapped_column(String(128), nullable=True)
     user_agent: Mapped[str] = mapped_column(String(256))

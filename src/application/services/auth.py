@@ -6,7 +6,7 @@ from src.application import (
     dto,
 )
 from src.application.strategies import (
-    AuthStrategy,
+    IAuthStrategy,
 )
 from src.domain.user import (
     entity,
@@ -52,8 +52,9 @@ class AuthService:
 
     async def signin(
             self,
+            *,
             user_in: dto.UserTMELogin | dto.UserLogin,
-            strategy: AuthStrategy,
+            strategy: IAuthStrategy,
             request: Request | None = None
     ) -> dto.JWTokens:
         data = await self.repository.signin(user_in=user_in, strategy=strategy)

@@ -37,8 +37,8 @@ class Container(containers.DeclarativeContainer):
     )
 
     config = providers.Singleton(load_config)
-
     db = providers.Singleton(DBConnector, db_url=config().db.construct_sqlalchemy_url())
+    session = db.provided.get_db_session
     redis = providers.Singleton(RedisConnector, url=config().db.construct_redis_dsn())
 
     blacklist_service = providers.Factory(
@@ -48,7 +48,7 @@ class Container(containers.DeclarativeContainer):
 
     user_repository = providers.Factory(
         UserRepository,
-        session_factory=db.provided.get_db_session,
+        session_factory=session,
     )
     user_service = providers.Factory(
         UserService,
@@ -57,7 +57,7 @@ class Container(containers.DeclarativeContainer):
 
     role_repository = providers.Factory(
         RoleRepository,
-        session_factory=db.provided.get_db_session,
+        session_factory=session,
     )
     role_service = providers.Factory(
         RoleService,
@@ -69,7 +69,7 @@ class Container(containers.DeclarativeContainer):
     )
     auth_repository = providers.Factory(
         AuthRepository,
-        session_factory=db.provided.get_db_session,
+        session_factory=session,
     )
     auth_service = providers.Factory(
         AuthService,

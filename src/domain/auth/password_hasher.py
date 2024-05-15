@@ -1,7 +1,7 @@
 import abc
 
 
-class PasswordEncoder(abc.ABC):
+class IPasswordEncoder(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def hash_password(password: str) -> str:

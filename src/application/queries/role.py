@@ -13,7 +13,7 @@ from sqlalchemy import (
 from src.application import (
     dto,
 )
-from src.application.mixins.base import (
+from src.application.persistence.base import (
     CRUDMixin,
     UpdateSchemaT,
 )

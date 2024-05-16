@@ -12,41 +12,20 @@ from pydantic import (
 )
 from sqlalchemy import (
     Result,
-    Select,
-    select,
 )
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
-from src.application import (
-    dto,
-)
-from src.application.dto import (
-    ResetPassword,
-)
-from src.application.strategies import (
-    IAuthStrategy,
-)
-from src.infrastructure.database import (
-    models,
-)
-from src.infrastructure.services.security import (
-    HashService,
-)
-from src.shared import (
-    ex,
+from src.shared.types import (
+    CreateSchemaT,
+    ModelT,
+    UpdateSchemaT,
 )
 
 from .interfaces import (
     IRetrieveQuery,
     IRLUDQuery,
-)
-from .types import (
-    CreateSchemaT,
-    ModelT,
-    SchemaT,
-    UpdateSchemaT,
 )
 
 
@@ -118,45 +97,3 @@ class AuthMixin(
     ):
         self._session_factory = session
         self.model = model
-
-    def _get_user(self, *args: Any, **kwargs: Any) -> Select[tuple]:
-        return select(self.model).filter(*args).filter_by(**kwargs)
-
-    async def signup(
-            self,
-            user_in: CreateSchemaT,
-            *args: Any,
-            **kwargs: Any
-    ) -> ModelT:
-        async with self._session_factory() as session:
-            stmt = self._get_query(*args, **kwargs)
-            result: Result = await session.execute(stmt)
-            if result.scalar() is not None:
-                raise ex.UserAlreadyExists()
-            user = self.model(**user_in.__dict__)
-            session.add(user)
-            await session.commit()
-            await session.refresh(user)
-            return user
-
-    async def signin(
-            self,
-            strategy: IAuthStrategy,
-            user_in: SchemaT
-    ) -> tuple[int, dto.JWTokens] | dto.JWTokens:
-        async with self._session_factory() as session:
-            return await strategy.authenticate(user_in=user_in, session=session)
-
-    async def reset_password(self, pk: int, password_in: ResetPassword) -> None:
-        async with self._session_factory() as session:
-            stmt = self._get_user(id=pk)
-            result: Result = await session.execute(stmt)
-            user: models.User = result.scalar_one_or_none()
-            if not user:
-                raise ex.UserNotFound()
-            if not HashService.verify_password(password=user.password, hashed_password=password_in.old_password):
-                raise ex.IncorrectPassword()
-            new_hashed_password = HashService.hash_password(password=password_in.new_password)
-            user.password = new_hashed_password
-            await session.execute(stmt)
-            await session.commit()

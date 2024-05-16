@@ -21,7 +21,6 @@ from . import (
 )
 from .role import (
     Role,
-    roles_to_user,
 )
 
 
@@ -43,8 +42,8 @@ class User(models.Model):
         back_populates="user",
         lazy="selectin",
     )
-    roles: Mapped[list["Role"]] = relationship(
-        secondary=roles_to_user,
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=True)
+    role: Mapped[list["Role"]] = relationship(
         back_populates="users",
         lazy="selectin",
     )

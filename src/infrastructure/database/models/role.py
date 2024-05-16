@@ -3,11 +3,8 @@ from typing import (
 )
 
 from sqlalchemy import (
-    Column,
-    ForeignKey,
     Integer,
     String,
-    Table,
 )
 from sqlalchemy.orm import (
     Mapped,
@@ -24,31 +21,16 @@ if TYPE_CHECKING:
         User,
     )
 
-# TODO: Сделать нормальный класс
-roles_to_user = Table(
-    "roles_to_user",
-    models.Model.metadata,
-    Column(
-        "user_id", Integer, ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"),
-        primary_key=True,
-    ),
-    Column(
-        "role_id", Integer, ForeignKey("roles.id", ondelete="CASCADE", onupdate="CASCADE"),
-        primary_key=True,
-    ),
-)
-
 
 class Role(models.Model):
     __tablename__ = "roles"
 
     id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True, nullable=False
+        Integer, primary_key=True, autoincrement=True
     )
-    title: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(64), unique=True)
 
     users: Mapped[list["User"]] = relationship(
         "User",
-        back_populates="roles",
-        secondary=roles_to_user,
+        back_populates="role",
     )

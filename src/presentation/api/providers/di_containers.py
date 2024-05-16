@@ -5,9 +5,9 @@ from dependency_injector import (
 
 from src.application.services import (
     AuthService,
+    CompositeNotifier,
     RoleService,
     UserService,
-    CompositeNotifier,
 )
 from src.infrastructure.database import (
     DBConnector,

@@ -1,5 +1,3 @@
-# TODO: Может быть перенести в shared
-
 from typing import (
     Any,
     TypeVar,

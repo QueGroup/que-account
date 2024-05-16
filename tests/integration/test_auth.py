@@ -203,7 +203,7 @@ async def test_login_telegram(ac: Any, mocker: Any) -> None:
 
     response = await ac.post(
         url="/api/v1/auth/login/t/me/",
-        json=user_in.dict()
+        json=user_in.model_dump()
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -227,7 +227,7 @@ async def test_signin_telegram_user_not_found(ac: Any, mocker: Any) -> None:
 
     response = await ac.post(
         url="/api/v1/auth/login/t/me/",
-        json=user_in.dict()
+        json=user_in.model_dump()
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
@@ -249,7 +249,7 @@ async def test_signin_telegram_user_already_exists(ac: Any, mocker: Any) -> None
 
     response = await ac.post(
         url="/api/v1/auth/login/t/me/",
-        json=user_in.dict()
+        json=user_in.model_dump()
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json().get("detail").get("message") == "Invalid signature"
@@ -263,25 +263,21 @@ async def test_reset_password(ac: Any) -> None:
 
 @pytest.mark.asyncio
 async def test_logout(ac: Any) -> None:
-    # Создание пользователя
     body = {
         "username": "testUsername",
         "password": "<PASSWORd>1"
     }
     await create_test_user(ac, body)
 
-    # Логин пользователя
     lg_response = await ac.post(
         url="/api/v1/auth/login/",
         json=body
     )
     assert lg_response.status_code == status.HTTP_200_OK
 
-    # Выход из системы
     logout_response = await ac.post("/api/v1/auth/logout/")
     assert logout_response.status_code == status.HTTP_204_NO_CONTENT
     assert logout_response.content == b""
 
-    # Проверка ручки
     user_response = await ac.get("/api/v1/users/me/")
     assert user_response.status_code == status.HTTP_401_UNAUTHORIZED

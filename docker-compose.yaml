@@ -63,7 +63,7 @@ services:
       - custom
   mkdocs:
     build:
-      context: docs
+      context: .
       dockerfile: Dockerfile
     container_name: "mkdocs_container"
     volumes:

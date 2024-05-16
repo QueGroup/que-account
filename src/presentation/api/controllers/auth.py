@@ -17,18 +17,13 @@ from fastapi import (
 from src.application import (
     dto,
 )
-from src.application.dto import (
-    ResetPassword,
-)
 from src.application.services import (
     AuthService,
 )
-from src.application.strategies import (
-    DefaultAuthStrategy,
-    TelegramAuthStrategy,
-)
 from src.infrastructure.database import (
+    DefaultAuthStrategy,
     JTIRedisStorage,
+    TelegramAuthStrategy,
     models,
 )
 from src.infrastructure.services.security import (
@@ -159,7 +154,7 @@ async def verify_token(
 @inject
 async def reset_password(
         request: Request,
-        password_in: ResetPassword,
+        password_in: dto.ResetPassword,
         current_user: Annotated[models.User, Depends(get_current_user)],
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
         blacklist_service: JTIRedisStorage = Depends(Provide[Container.blacklist_service])

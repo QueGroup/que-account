@@ -24,9 +24,6 @@ from src.application.services import (
 from src.infrastructure.database import (
     models,
 )
-from src.infrastructure.database.models import (
-    Role,
-)
 from src.presentation.api.providers import (
     Container,
     require_role,
@@ -60,7 +57,7 @@ async def get_role(
         role_id: Annotated[int | None, Query] = None,
         title: Annotated[str | None, Query] = None,
         role_service: RoleService = Depends(Provide[Container.role_service]),
-) -> list[Role] | Role:
+) -> list[models.Role] | models.Role:
     if role_id is not None:
         role = await role_service.get_role_by_id(role_id=role_id)
     elif title is not None:

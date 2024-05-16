@@ -3,6 +3,7 @@ from .auth import (
 )
 from .notification import (
     TelegramNotifierService,
+    CompositeNotifier,
 )
 from .role import (
     RoleService,
@@ -16,4 +17,5 @@ __all__ = (
     "AuthService",
     "RoleService",
     "TelegramNotifierService",
+    "CompositeNotifier",
 )

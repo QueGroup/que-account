@@ -6,8 +6,8 @@ from dependency_injector import (
 from src.application.services import (
     AuthService,
     RoleService,
-    TelegramNotifierService,
     UserService,
+    CompositeNotifier,
 )
 from src.infrastructure.database import (
     DBConnector,
@@ -63,9 +63,8 @@ class Container(containers.DeclarativeContainer):
         RoleService,
         role_repository=role_repository,
     )
-    telegram_notifier = providers.Factory(
-        TelegramNotifierService,
-        bot_token=config().misc.bot_token,
+    notifier = providers.Factory(
+        CompositeNotifier,
     )
     auth_repository = providers.Factory(
         AuthRepository,
@@ -75,5 +74,5 @@ class Container(containers.DeclarativeContainer):
         AuthService,
         auth_repository=auth_repository,
         role_service=role_service,
-        telegram_notifier=telegram_notifier
+        notifier=notifier
     )

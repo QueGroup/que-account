@@ -77,6 +77,18 @@ async def setup_db() -> None:
         await conn.run_sync(models.Model.metadata.drop_all)
 
 
+@pytest.fixture(scope="session")
+async def data_roles():
+    async with async_session_maker() as session:
+        role1 = models.Role(id=1, title="Role1")
+        role2 = models.Role(id=2, title="Role2")
+        session.add(role1)
+        session.add(role2)
+        await session.commit()
+
+    yield [role1, role2]
+
+
 @pytest.fixture(autouse=True, scope="session")
 def event_loop():
     loop = asyncio.get_event_loop_policy().new_event_loop()

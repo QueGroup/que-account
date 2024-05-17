@@ -1,5 +1,6 @@
 from typing import (
     TYPE_CHECKING,
+    Any,
 )
 
 from sqlalchemy import (
@@ -34,3 +35,9 @@ class Role(models.Model):
         "User",
         back_populates="role",
     )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            'id': self.id,
+            'title': self.title,
+        }

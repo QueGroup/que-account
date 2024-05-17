@@ -9,7 +9,6 @@ from dependency_injector.wiring import (
 from fastapi import (
     APIRouter,
     Depends,
-    HTTPException,
     Path,
     Query,
     status,
@@ -23,6 +22,9 @@ from src.application.services import (
 )
 from src.infrastructure.database import (
     models,
+)
+from src.presentation.api.exceptions import (
+    RoleNotFoundError,
 )
 from src.presentation.api.providers import (
     Container,
@@ -66,7 +68,7 @@ async def get_role(
         return await role_service.get_all_roles()
 
     if role is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
+        raise RoleNotFoundError()
     return role
 
 

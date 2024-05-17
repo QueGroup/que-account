@@ -100,7 +100,19 @@ class UserNotFoundError(HTTPException):
             status_code: int = status.HTTP_404_NOT_FOUND,
             message: str = "User is not exists",
     ) -> None:
-        detail = {"code": ex.AuthExceptionCodes.USER_NOT_FOUND, "message": message}
+        detail = {"code": ex.AuthExceptionCodes.NOT_FOUND, "message": message}
+        super().__init__(status_code=status_code, detail=detail)
+
+
+class RoleNotFoundError(HTTPException):
+    """Custom error when role not found"""
+
+    def __init__(
+            self,
+            status_code: int = status.HTTP_404_NOT_FOUND,
+            message: str = "Role is not exists",
+    ):
+        detail = {"code": ex.AuthExceptionCodes.NOT_FOUND, "message": message}
         super().__init__(status_code=status_code, detail=detail)
 
 

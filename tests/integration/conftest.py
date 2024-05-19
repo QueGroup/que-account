@@ -17,6 +17,9 @@ from sqlalchemy.ext.asyncio import (
 from src.infrastructure.database import (
     models,
 )
+from src.infrastructure.services.security import (
+    HashService,
+)
 from src.main import (
     create_app,
 )
@@ -78,15 +81,36 @@ async def setup_db() -> None:
 
 
 @pytest.fixture(scope="session")
-async def data_roles():
+async def data_roles() -> list[models.Role]:
     async with async_session_maker() as session:
-        role1 = models.Role(id=1, title="Role1")
-        role2 = models.Role(id=2, title="Role2")
-        session.add(role1)
-        session.add(role2)
+        roles = [models.Role(id=i, title=f"Role{i}") for i in range(1, 3)]
+        session.add_all(roles)
         await session.commit()
+        yield roles
 
-    yield [role1, role2]
+
+@pytest.fixture(scope="session")
+async def admin_user() -> models.User:
+    async with async_session_maker() as session:
+        hashed_password = HashService.hash_password("admin_password")
+        user = models.User(username="admin", password=hashed_password, is_superuser=True)
+        session.add(user)
+        await session.commit()
+    yield user
+
+
+@pytest.fixture(scope="session")
+async def users() -> list[models.User]:
+    async with async_session_maker() as session:
+        users = [
+            models.User(username="user1", password=HashService.hash_password("user1"), is_active=True),
+            models.User(username="user2", password=HashService.hash_password("admin_password"), is_superuser=True),
+            models.User(username="user3", password=HashService.hash_password("user3"), is_active=False),
+            models.User(username="user4", password=HashService.hash_password("user4"), is_active=True),
+        ]
+        session.add_all(users)
+        await session.commit()
+        yield users
 
 
 @pytest.fixture(autouse=True, scope="session")

@@ -48,4 +48,4 @@ class RoleQuery(CRUDMixin[models.Role, dto.RoleCreate, dto.RoleUpdate]):
         )
 
     def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:
-        return Delete(self.model).filter(*args)
+        return Delete(self.model).where(self.model.id == kwargs.get("id"))

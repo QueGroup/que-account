@@ -1,7 +1,7 @@
 from .password_hasher import (
-    PasswordEncoder,
+    IPasswordEncoder,
 )
 
 __all__ = (
-    "PasswordEncoder",
+    "IPasswordEncoder",
 )

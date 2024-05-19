@@ -33,16 +33,16 @@ class DbConfig:
         The port where the database server is listening.
     """
 
-    redis_host: str
-    redis_database: str
-    redis_port: int
-
     host: str
     password: str
     user: str
     database: str
+    port: int
+
+    redis_host: str
+    redis_database: str
+    redis_port: int
     redis_password: str | None = None
-    port: int = 5432
 
     def construct_sqlalchemy_url(
             self,
@@ -189,12 +189,14 @@ class Settings:
     """
     app_host: str = "127.0.0.1"
     app_port: int = 8080
+    logfire: bool = True
 
     @staticmethod
     def from_env(env: Env) -> "Settings":
         return Settings(
             app_host=env.str("APP_HOST"),
-            app_port=env.int("APP_PORT")
+            app_port=env.int("APP_PORT"),
+            logfire=env.bool("LOGFIRE")
         )
 
 

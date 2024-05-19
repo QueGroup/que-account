@@ -37,3 +37,7 @@ black:
 # Run pre-commit lint
 lint:
     @pre-commit run --all-files
+
+# Coverage report
+cover:
+    @coverage report

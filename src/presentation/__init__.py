@@ -59,13 +59,8 @@ def setup_middlewares(app: FastAPI) -> None:
     app.add_middleware(PrometheusMiddleware)
 
 
-def setup_provider(app: FastAPI) -> None:
-    container = Container()
-    app.container = container
-
-
 __all__ = (
     "setup_middlewares",
     "setup_routes",
-    "setup_provider",
+    "Container"
 )

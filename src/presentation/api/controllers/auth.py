@@ -17,24 +17,20 @@ from fastapi import (
 from src.application import (
     dto,
 )
-from src.application.dto import (
-    ResetPassword,
-)
 from src.application.services import (
     AuthService,
 )
-from src.application.strategies import (
-    DefaultAuthStrategy,
-    TelegramAuthStrategy,
-)
 from src.infrastructure.database import (
+    DefaultAuthStrategy,
     JTIRedisStorage,
+    TelegramAuthStrategy,
     models,
 )
 from src.infrastructure.services.security import (
     JWTService,
 )
 from src.presentation.api.exceptions import (
+    InvalidSignatureError,
     PasswordIncorrectError,
     UserAlreadyExistsError,
     UserNotFoundError,
@@ -56,9 +52,6 @@ auth_router = APIRouter()
 @auth_router.post(
     "/signup/",
     response_model=dto.UserResponse,
-    responses={
-        status.HTTP_409_CONFLICT: {"message": "User already exists"},
-    },
     response_model_exclude_none=True,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
@@ -77,10 +70,6 @@ async def signup(
 @auth_router.post(
     "/login/t/me/",
     response_model=dto.JWTokens,
-    responses={
-        status.HTTP_404_NOT_FOUND: {"message": "Not found"},
-        status.HTTP_401_UNAUTHORIZED: {"message": "Incorrect password"}
-    },
     summary="Login in telegram",
     description="Login with telegram_id",
     status_code=status.HTTP_200_OK,
@@ -89,24 +78,20 @@ async def signup(
 async def signin_telegram(
         user_in: dto.UserTMELogin,
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
-) -> dto.JWTokens:
+) -> dto.JWTokens | None:
     strategy = TelegramAuthStrategy()
     try:
         jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy)
     except ex.UserNotFound:
         raise UserNotFoundError()
-    except ex.IncorrectPassword:
-        raise PasswordIncorrectError()
+    except ex.InvalidSignature:
+        raise InvalidSignatureError()
     return jwt_tokens
 
 
 @auth_router.post(
     "/login/",
     response_model=dto.JWTokens,
-    responses={
-        status.HTTP_404_NOT_FOUND: {"message": "Not found"},
-        status.HTTP_401_UNAUTHORIZED: {"message": "Incorrect password"}
-    },
     summary="Default login",
     description="Login with username and password",
     status_code=status.HTTP_200_OK,
@@ -126,11 +111,11 @@ async def login(
             access_token=jwt_tokens.access_token,
             refresh_token=jwt_tokens.refresh_token,
         )
-        return jwt_tokens
     except ex.UserNotFound:
         raise UserNotFoundError()
     except ex.IncorrectPassword:
         raise PasswordIncorrectError()
+    return jwt_tokens
 
 
 @auth_router.post(
@@ -169,7 +154,7 @@ async def verify_token(
 @inject
 async def reset_password(
         request: Request,
-        password_in: ResetPassword,
+        password_in: dto.ResetPassword,
         current_user: Annotated[models.User, Depends(get_current_user)],
         auth_service: AuthService = Depends(Provide[Container.auth_service]),
         blacklist_service: JTIRedisStorage = Depends(Provide[Container.blacklist_service])

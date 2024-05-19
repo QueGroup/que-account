@@ -21,7 +21,6 @@ from . import (
 )
 from .role import (
     Role,
-    roles_to_user,
 )
 
 
@@ -43,8 +42,8 @@ class User(models.Model):
         back_populates="user",
         lazy="selectin",
     )
-    roles: Mapped[list["Role"]] = relationship(
-        secondary=roles_to_user,
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=True)
+    role: Mapped[list["Role"]] = relationship(
         back_populates="users",
         lazy="selectin",
     )
@@ -60,5 +59,5 @@ class UserLoginModel(models.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, unique=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"))
     user: Mapped["User"] = relationship("User", back_populates="logins")
-    ip_address: Mapped[str] = mapped_column(String(128))
+    ip_address: Mapped[str] = mapped_column(String(128), nullable=True)
     user_agent: Mapped[str] = mapped_column(String(256))

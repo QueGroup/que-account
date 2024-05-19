@@ -49,7 +49,8 @@ class UserRegistration(BaseModel):
         from_attributes=True,
         json_schema_extra={
             "example": {
-                "username": "John Doe",
+                "username": "JohnDoe",
+                "password": None,
                 "telegram_id": 1234567890,
             }
         }
@@ -88,7 +89,15 @@ class UserRegistration(BaseModel):
 
 
 class UserLogin(HTTPBasicCredentials):
-    pass
+    """
+    Attributes
+    ----------
+    username : str
+    password : str
+    telegram_id : Optional[int]
+        Used only in telegram bot, when user has telegram_id, and we are using it for only saving
+    """
+    telegram_id: int | None = None
 
 
 class UserTMELogin(BaseModel):

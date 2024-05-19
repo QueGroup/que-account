@@ -43,5 +43,9 @@ class User:
         cls.password = HashService.hash_password(password=password)
 
     @classmethod
-    def check_password(cls, password: str) -> bool:
-        return HashService.verify_password(password=password, hashed_password=cls.password)
+    def check_password(cls, password_in: str, password: str | None = None) -> bool:
+        if not password and not password_in:
+            raise ex.MissingFieldsError(fields=["password"])
+        if password is None:
+            password = cls.password
+        return HashService.verify_password(password=password, hashed_password=password_in)

@@ -118,7 +118,7 @@ class JWTService:
                 options={"verify_signature": verify},
             )
         except Exception as e:
-            raise ex.JWTDecodeError(*e.args) from e
+            raise ex.JWTDecodeError() from e
 
     @staticmethod
     def create_access_token(

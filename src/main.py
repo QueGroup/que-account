@@ -3,6 +3,7 @@ import asyncio
 from fastapi import (
     FastAPI,
 )
+import logfire
 import structlog
 import uvicorn
 
@@ -10,8 +11,8 @@ from src.infrastructure.log import (
     configure_logging,
 )
 from src.presentation import (
+    Container,
     setup_middlewares,
-    setup_provider,
     setup_routes,
 )
 from src.shared import (
@@ -21,22 +22,22 @@ from src.shared import (
 logger = structlog.stdlib.get_logger()
 
 
-def init_api() -> FastAPI:
+def create_app() -> FastAPI:
     app = FastAPI(
         title="Que Account",
         version="0.1.0",
         summary="The service API which provides access to the account",
         swagger_ui_parameters={"syntaxHighlight.theme": "obsidian"}
     )
-
+    container = Container()
+    app.container = container
+    setup_routes(app)
     return app
 
 
 def init_services(app: FastAPI) -> None:
     setup_middlewares(app)
     configure_logging()
-    setup_provider(app)
-    setup_routes(app)
 
 
 async def start_server(app: FastAPI) -> None:
@@ -49,13 +50,17 @@ async def start_server(app: FastAPI) -> None:
         use_colors=True,
         log_level="debug"
     )
+    if config.logfire:
+        logfire.configure()
+        logfire.instrument_fastapi(app)
     server = uvicorn.Server(app_config)
     await server.serve()
 
 
 async def main() -> None:
-    app = init_api()
+    app = create_app()
     init_services(app)
+
     await start_server(app)
 
 

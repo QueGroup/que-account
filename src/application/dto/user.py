@@ -51,7 +51,8 @@ class UserUpdate(UserBase):
 class UserResponse(UserBase):
     id: int
     telegram_id: int | None = None
-    roles: list["RoleResponse"] = []
+    role_id: int | None = None
+    role: RoleResponse | None = None
     days_since_created: int
     model_config = ConfigDict(
         from_attributes=True,
@@ -61,7 +62,7 @@ class UserResponse(UserBase):
                 "telegram_id": 8056567643,
                 "username": "hencedry",
                 "language": "en",
-                "roles": [{"id": 1, "title": "admin"}],
+                "role": {"id": 1, "title": "admin"},
                 "days_since_created": 347
             }
         }

@@ -1,11 +1,34 @@
+import abc
+
 import httpx
+from pydantic import (
+    BaseModel,
+)
 
 from src.application import (
     dto,
 )
 
 
-class TelegramNotifierService:
+class Notifier(abc.ABC):
+    @abc.abstractmethod
+    async def send_message(self, chat_id: int, text: str) -> BaseModel:
+        pass
+
+
+class CompositeNotifier(Notifier):
+    def __init__(self) -> None:
+        self.notifiers: list[Notifier] = []
+
+    def add_notifier(self, notifier: Notifier) -> None:
+        self.notifiers.append(notifier)
+
+    async def send_message(self, chat_id: int, text: str) -> None:
+        for notifier in self.notifiers:
+            await notifier.send_message(chat_id, text)
+
+
+class TelegramNotifierService(Notifier):
     def __init__(self, bot_token: str) -> None:
         self.bot_token = bot_token
 

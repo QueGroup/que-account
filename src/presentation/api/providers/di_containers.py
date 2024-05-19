@@ -5,8 +5,8 @@ from dependency_injector import (
 
 from src.application.services import (
     AuthService,
+    CompositeNotifier,
     RoleService,
-    TelegramNotifierService,
     UserService,
 )
 from src.infrastructure.database import (
@@ -37,8 +37,8 @@ class Container(containers.DeclarativeContainer):
     )
 
     config = providers.Singleton(load_config)
-
     db = providers.Singleton(DBConnector, db_url=config().db.construct_sqlalchemy_url())
+    session = db.provided.get_db_session
     redis = providers.Singleton(RedisConnector, url=config().db.construct_redis_dsn())
 
     blacklist_service = providers.Factory(
@@ -48,7 +48,7 @@ class Container(containers.DeclarativeContainer):
 
     user_repository = providers.Factory(
         UserRepository,
-        session_factory=db.provided.get_db_session,
+        session_factory=session,
     )
     user_service = providers.Factory(
         UserService,
@@ -57,23 +57,22 @@ class Container(containers.DeclarativeContainer):
 
     role_repository = providers.Factory(
         RoleRepository,
-        session_factory=db.provided.get_db_session,
+        session_factory=session,
     )
     role_service = providers.Factory(
         RoleService,
         role_repository=role_repository,
     )
-    telegram_notifier = providers.Factory(
-        TelegramNotifierService,
-        bot_token=config().misc.bot_token,
+    notifier = providers.Factory(
+        CompositeNotifier,
     )
     auth_repository = providers.Factory(
         AuthRepository,
-        session_factory=db.provided.get_db_session,
+        session_factory=session,
     )
     auth_service = providers.Factory(
         AuthService,
         auth_repository=auth_repository,
         role_service=role_service,
-        telegram_notifier=telegram_notifier
+        notifier=notifier
     )

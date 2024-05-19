@@ -37,7 +37,7 @@ class InvalidSignatureError(HTTPException):
 
     def __init__(
             self,
-            status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code: int = status.HTTP_401_UNAUTHORIZED,
             message: str = "Invalid signature",
     ):
         detail = {"code": ex.AuthExceptionCodes.INVALID_SIGNATURE, "message": message}
@@ -62,7 +62,7 @@ class UserAlreadyExistsError(HTTPException):
     def __init__(
             self,
             status_code: int = status.HTTP_409_CONFLICT,
-            message: str = "User with provided data already exists.",
+            message: str = "User with provided data already exists",
     ) -> None:
         detail = {"code": ex.AuthExceptionCodes.USER_ALREADY_EXISTS, "message": message}
         super().__init__(status_code=status_code, detail=detail)
@@ -74,7 +74,7 @@ class UserDeactivatedError(HTTPException):
     def __init__(
             self,
             status_code: int = status.HTTP_400_BAD_REQUEST,
-            message: str = "User deactivated"
+            message: str = "Your account is deactivated"
     ):
         detail = {"code": ex.AuthExceptionCodes.USER_DEACTIVATED, "message": message}
         super().__init__(status_code=status_code, detail=detail)
@@ -86,7 +86,7 @@ class PasswordIncorrectError(HTTPException):
     def __init__(
             self,
             status_code: int = status.HTTP_401_UNAUTHORIZED,
-            message: str = "Incorrect password.",
+            message: str = "Invalid username or password",
     ) -> None:
         detail = {"code": ex.AuthExceptionCodes.PROVIDED_PASSWORD_INCORRECT, "message": message}
         super().__init__(status_code=status_code, detail=detail)
@@ -98,9 +98,21 @@ class UserNotFoundError(HTTPException):
     def __init__(
             self,
             status_code: int = status.HTTP_404_NOT_FOUND,
-            message: str = "User is not exists.",
+            message: str = "User is not exists",
     ) -> None:
-        detail = {"code": ex.AuthExceptionCodes.USER_NOT_FOUND, "message": message}
+        detail = {"code": ex.AuthExceptionCodes.NOT_FOUND, "message": message}
+        super().__init__(status_code=status_code, detail=detail)
+
+
+class RoleNotFoundError(HTTPException):
+    """Custom error when role not found"""
+
+    def __init__(
+            self,
+            status_code: int = status.HTTP_404_NOT_FOUND,
+            message: str = "Role is not exists",
+    ):
+        detail = {"code": ex.AuthExceptionCodes.NOT_FOUND, "message": message}
         super().__init__(status_code=status_code, detail=detail)
 
 

@@ -11,7 +11,7 @@ from sqlalchemy import (
 from src.application import (
     dto,
 )
-from src.application.mixins.base import (
+from src.application.persistence.base import (
     AuthMixin,
 )
 from src.domain.user import (
@@ -32,3 +32,6 @@ class AuthQuery(AuthMixin[models.User, entity.User, dto.ResetPassword]):
         else:
             combined_filter = username_f
         return select(models.User).filter(combined_filter)
+
+    def _get_user(self, *args: Any, **kwargs: Any) -> Select[tuple]:
+        return select(self.model).filter(*args).filter_by(**kwargs)

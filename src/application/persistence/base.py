@@ -1,4 +1,5 @@
 import abc
+import asyncio
 import dataclasses
 from typing import (
     Any,
@@ -12,6 +13,11 @@ from pydantic import (
 )
 from sqlalchemy import (
     Result,
+    func,
+    select,
+)
+from sqlalchemy.exc import (
+    IntegrityError,
 )
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -50,6 +56,23 @@ class CRUDMixin(
         self._session_factory = session
         self.model = model
 
+    async def __generate_new_id(self) -> int:
+        async with self._session_factory() as session:
+            max_id_instance = await session.execute(select(func.max(self.model.id)))
+            max_id = max_id_instance.scalar() or 0
+            new_id = max_id + 1
+            existing_instance = await session.get(self.model, new_id)
+            while existing_instance:
+                new_id += 1
+                existing_instance = await session.get(self.model, new_id)
+            return new_id
+
+    async def generate_new_id(self) -> int:
+        try:
+            return await asyncio.wait_for(self.__generate_new_id(), timeout=5)
+        except asyncio.TimeoutError:
+            raise TimeoutError("Timeout occurred while generating new id.")
+
     async def create(self, data_in: CreateSchemaT) -> ModelT:
         async with self._session_factory() as session:
             if dataclasses.is_dataclass(data_in):
@@ -57,8 +80,17 @@ class CRUDMixin(
             elif issubclass(type(data_in), BaseModel):
                 instance = self.model(**data_in.model_dump())
             session.add(instance)
-            await session.commit()
-            await session.refresh(instance)
+            try:
+                await session.commit()
+                await session.refresh(instance)
+            except IntegrityError as e:
+                if "duplicate key value violates unique constraint" in str(e.orig):
+                    await session.rollback()
+                    new_id = await self.generate_new_id()
+                    instance.id = new_id
+                    session.add(instance)
+                    await session.commit()
+                    await session.refresh(instance)
             return instance
 
     async def get_single(self, *args: Any, **kwargs: Any) -> ModelT | None:

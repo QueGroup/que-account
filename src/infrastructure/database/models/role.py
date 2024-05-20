@@ -4,7 +4,6 @@ from typing import (
 )
 
 from sqlalchemy import (
-    Integer,
     String,
 )
 from sqlalchemy.orm import (
@@ -26,11 +25,7 @@ if TYPE_CHECKING:
 class Role(models.Model):
     __tablename__ = "roles"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True
-    )
     title: Mapped[str] = mapped_column(String(64), unique=True)
-
     users: Mapped[list["User"]] = relationship(
         "User",
         back_populates="role",

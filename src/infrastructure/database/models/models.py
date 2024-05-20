@@ -1,5 +1,7 @@
 import datetime
-from typing import Annotated
+from typing import (
+    Annotated,
+)
 
 from sqlalchemy import (
     func,

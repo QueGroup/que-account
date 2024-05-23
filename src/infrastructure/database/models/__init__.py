@@ -1,6 +1,12 @@
 from .models import (
     Model,
 )
+from .photo import (
+    Photo
+)
+from .profile import (
+    Profile,
+)
 from .role import (
     Role,
 )
@@ -9,7 +15,9 @@ from .user import (
 )
 
 __all__ = (
-    "Model",
     "User",
     "Role",
+    "Profile",
+    "Photo",
+    "Model",
 )

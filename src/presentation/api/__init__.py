@@ -3,6 +3,7 @@ from .controllers import (
     healthcheck_router,
     role_router,
     user_router,
+    profile_router,
 )
 
 __all__ = (
@@ -10,4 +11,5 @@ __all__ = (
     "auth_router",
     "healthcheck_router",
     "role_router",
+    "profile_router",
 )

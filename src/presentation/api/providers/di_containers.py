@@ -9,6 +9,9 @@ from src.application.services import (
     RoleService,
     UserService,
 )
+from src.application.services.profile import (
+    ProfileService,
+)
 from src.infrastructure.database import (
     DBConnector,
     JTIRedisStorage,
@@ -16,6 +19,7 @@ from src.infrastructure.database import (
 )
 from src.infrastructure.database.repositories import (
     AuthRepository,
+    ProfileRepository,
     UserRepository,
 )
 from src.infrastructure.database.repositories.role import (
@@ -33,6 +37,7 @@ class Container(containers.DeclarativeContainer):
             "src.presentation.api.controllers.auth",
             "src.presentation.api.controllers.healthcheck",
             "src.presentation.api.controllers.role",
+            "src.presentation.api.controllers.profile"
         ]
     )
 
@@ -75,4 +80,12 @@ class Container(containers.DeclarativeContainer):
         auth_repository=auth_repository,
         role_service=role_service,
         notifier=notifier
+    )
+    profile_repository = providers.Factory(
+        ProfileRepository,
+        session_factory=session
+    )
+    profile_service = providers.Factory(
+        ProfileService,
+        profile_repository=profile_repository,
     )

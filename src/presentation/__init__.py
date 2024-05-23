@@ -16,7 +16,7 @@ from .api import (
     auth_router,
     healthcheck_router,
     role_router,
-    user_router,
+    user_router, profile_router,
 )
 from .api.middlewares import (
     logging_middleware,
@@ -39,6 +39,9 @@ def setup_routes(app: FastAPI) -> None:
     )
     app.include_router(
         router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"],
+    )
+    app.include_router(
+        router=profile_router, prefix=f"{prefix}/profile", tags=["Profile"]
     )
     app.add_route("/metrics", handle_metrics)
 

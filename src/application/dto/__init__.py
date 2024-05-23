@@ -12,6 +12,12 @@ from .notification import (
     SendMessageResponse,
     Message,
 )
+from .profile import (
+    ProfileCreate,
+    ProfileUpdate,
+    Profile,
+    ProfileCreatePrivate,
+)
 from .role import (
     RoleCreate,
     RoleResponse,
@@ -38,4 +44,8 @@ __all__ = (
     "ResetPassword",
     "SendMessageResponse",
     "Message",
+    "ProfileCreate",
+    "ProfileUpdate",
+    "Profile",
+    "ProfileCreatePrivate",
 )

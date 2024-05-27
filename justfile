@@ -41,3 +41,7 @@ lint:
 # Coverage report
 cover:
     @coverage report
+
+# Running tests
+test:
+    @pytest

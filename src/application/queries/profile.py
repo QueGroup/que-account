@@ -6,6 +6,7 @@ from sqlalchemy import (
     Delete,
     Select,
     Update,
+    delete,
     select,
 )
 
@@ -25,7 +26,7 @@ from src.shared.types import (
 
 class ProfileQuery(CRUDMixin[models.Profile, dto.ProfileCreate, dto.ProfileUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        return select(self.model)
+        return select(self.model).where(self.model.id == kwargs.get("id"))
 
     def _get_all_query(self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
         return select(self.model).offset(skip).limit(limit).filter(*args).filter_by(**kwargs)
@@ -34,4 +35,4 @@ class ProfileQuery(CRUDMixin[models.Profile, dto.ProfileCreate, dto.ProfileUpdat
         pass
 
     def _delete_query(self, *args: Any, **kwargs: Any) -> Delete:
-        pass
+        return delete(self.model).where(self.model.id == kwargs.get("id"))

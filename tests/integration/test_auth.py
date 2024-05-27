@@ -7,6 +7,9 @@ from httpx import (
     AsyncClient,
 )
 import pytest
+from pytest_mock import (
+    MockerFixture,
+)
 from starlette import (
     status,
 )
@@ -14,6 +17,9 @@ from starlette import (
 from src.application import (
     dto,
     services,
+)
+from src.infrastructure.database import (
+    TelegramAuthStrategy,
 )
 from src.shared import (
     ex,
@@ -190,7 +196,7 @@ async def test_login_not_found_user(ac) -> None:
 
 
 @pytest.mark.asyncio
-async def test_login_telegram(ac: Any, mocker: Any) -> None:
+async def test_login_telegram(ac: Any, mocker: MockerFixture) -> None:
     user_in = dto.UserTMELogin(
         telegram_id=12345,
         signature="test_signature",
@@ -210,11 +216,11 @@ async def test_login_telegram(ac: Any, mocker: Any) -> None:
     assert response.json()["access_token"] == "test_access_token"
     assert response.json()["refresh_token"] == "test_refresh_token"
 
-    mock_signin.assert_called_once_with(user_in=user_in, strategy=mocker.ANY)
+    assert mock_signin.call_args[1]['strategy'].__class__ == TelegramAuthStrategy
 
 
 @pytest.mark.asyncio
-async def test_signin_telegram_user_not_found(ac: Any, mocker: Any) -> None:
+async def test_signin_telegram_user_not_found(ac: Any, mocker: MockerFixture) -> None:
     user_in = dto.UserTMELogin(
         telegram_id=12345,
         signature="test_signature",
@@ -232,11 +238,11 @@ async def test_signin_telegram_user_not_found(ac: Any, mocker: Any) -> None:
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json().get("detail").get("message") == "User is not exists"
-    mock_signin.assert_called_once_with(user_in=user_in, strategy=mocker.ANY)
+    assert mock_signin.call_args[1]['strategy'].__class__ == TelegramAuthStrategy
 
 
 @pytest.mark.asyncio
-async def test_signin_telegram_user_already_exists(ac: Any, mocker: Any) -> None:
+async def test_signin_telegram_user_already_exists(ac: Any, mocker: MockerFixture) -> None:
     user_in = dto.UserTMELogin(
         telegram_id=12345,
         signature="test_signature",
@@ -253,7 +259,7 @@ async def test_signin_telegram_user_already_exists(ac: Any, mocker: Any) -> None
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json().get("detail").get("message") == "Invalid signature"
-    mock_signin.assert_called_once_with(user_in=user_in, strategy=mocker.ANY)
+    assert mock_signin.call_args[1]['strategy'].__class__ == TelegramAuthStrategy
 
 
 @pytest.mark.asyncio

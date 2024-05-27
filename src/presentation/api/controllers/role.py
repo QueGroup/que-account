@@ -14,17 +14,15 @@ from fastapi import (
     status,
 )
 
-from src.application import (
-    dto,
-)
 from src.application.services import (
     RoleService,
 )
 from src.infrastructure.database import (
     models,
 )
-from src.presentation.api.exceptions import (
-    RoleNotFoundError,
+from src.presentation.api import (
+    dto,
+    exceptions,
 )
 from src.presentation.api.providers import (
     Container,
@@ -68,7 +66,7 @@ async def get_role(
         return await role_service.get_all_roles()
 
     if role is None:
-        raise RoleNotFoundError()
+        raise exceptions.RoleNotFoundError()
     return role
 
 

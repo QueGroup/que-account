@@ -13,17 +13,15 @@ from fastapi import (
     status,
 )
 
-from src.application import (
-    dto,
-)
 from src.application.services import (
     UserService,
 )
 from src.infrastructure.database import (
     models,
 )
-from src.presentation.api.exceptions import (
-    UserDeactivatedError,
+from src.presentation.api import (
+    dto,
+    exceptions,
 )
 from src.presentation.api.providers import (
     Container,
@@ -60,7 +58,7 @@ async def get_user(
         current_user: Annotated[models.User, Depends(get_current_user)],
 ) -> models.User:
     if not current_user.is_active:
-        raise UserDeactivatedError()
+        raise exceptions.UserDeactivatedError()
     return current_user
 
 
@@ -77,7 +75,7 @@ async def update_user(
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> models.User:
     if not current_user.is_active:
-        raise UserDeactivatedError()
+        raise exceptions.UserDeactivatedError()
     return await user_service.update_user(pk=current_user.id, user_in=user_in)
 
 

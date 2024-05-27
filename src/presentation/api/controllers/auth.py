@@ -14,9 +14,6 @@ from fastapi import (
     status,
 )
 
-from src.application import (
-    dto,
-)
 from src.application.services import (
     AuthService,
 )
@@ -29,11 +26,9 @@ from src.infrastructure.database import (
 from src.infrastructure.services.security import (
     JWTService,
 )
-from src.presentation.api.exceptions import (
-    InvalidSignatureError,
-    PasswordIncorrectError,
-    UserAlreadyExistsError,
-    UserNotFoundError,
+from src.presentation.api import (
+    dto,
+    exceptions,
 )
 from src.presentation.api.providers import (
     Container,
@@ -64,7 +59,7 @@ async def signup(
     try:
         return await auth_service.signup(user_in=user_in)
     except ex.UserAlreadyExists:
-        raise UserAlreadyExistsError()
+        raise exceptions.UserAlreadyExistsError()
 
 
 @auth_router.post(
@@ -83,9 +78,9 @@ async def signin_telegram(
     try:
         jwt_tokens = await auth_service.signin(user_in=user_in, strategy=strategy)
     except ex.UserNotFound:
-        raise UserNotFoundError()
+        raise exceptions.UserNotFoundError()
     except ex.InvalidSignature:
-        raise InvalidSignatureError()
+        raise exceptions.InvalidSignatureError()
     return jwt_tokens
 
 
@@ -112,9 +107,9 @@ async def login(
             refresh_token=jwt_tokens.refresh_token,
         )
     except ex.UserNotFound:
-        raise UserNotFoundError()
+        raise exceptions.UserNotFoundError()
     except ex.IncorrectPassword:
-        raise PasswordIncorrectError()
+        raise exceptions.PasswordIncorrectError()
     return jwt_tokens
 
 

@@ -8,24 +8,24 @@ from .auth import (
     UserTMELogin,
     ResetPassword,
 )
-from .notification import (
-    SendMessageResponse,
-    Message,
-)
-from .profile import (
-    ProfileUpdate,
-    ProfileCreate,
-)
 from .role import (
     RoleCreate,
+    RoleResponse,
     RoleUpdate,
 )
 from .user import (
+    UserResponse,
     UserUpdate,
+)
+from .profile import (
+    ProfileCreate,
+    ProfileUpdate,
+    ProfileResponse,
 )
 
 __all__ = (
     "UserUpdate",
+    "UserResponse",
     "UserRegistration",
     "JWTokens",
     "UserLogin",
@@ -35,9 +35,9 @@ __all__ = (
     "TokenData",
     "RoleCreate",
     "RoleUpdate",
+    "RoleResponse",
     "ResetPassword",
-    "SendMessageResponse",
-    "Message",
+    "ProfileResponse",
     "ProfileUpdate",
     "ProfileCreate",
 )

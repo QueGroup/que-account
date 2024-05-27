@@ -2,9 +2,9 @@ import datetime
 
 from pydantic import (
     BaseModel,
+    ConfigDict,
 )
 
-# Если нужно будет добавить enum, то нужно в ConfigDict добавить use_enum_values
 
 class ProfileBase(BaseModel):
     first_name: str
@@ -15,7 +15,7 @@ class ProfileBase(BaseModel):
     birthdate: datetime.datetime
     description: str
     interested_in: str
-    hobbies: list[str]  # не факт
+    hobbies: list[str]
 
 
 class ProfileCreate(ProfileBase):
@@ -33,3 +33,8 @@ class ProfileUpdate(ProfileBase):
     description: str | None = None
     interested_in: str | None = None
     hobbies: list[str] | None = None
+
+
+class ProfileResponse(ProfileBase):
+    age: int
+    model_config = ConfigDict(from_attributes=True)

@@ -15,11 +15,13 @@ from starlette import (
 )
 
 from src.application import (
-    dto,
     services,
 )
 from src.infrastructure.database import (
     TelegramAuthStrategy,
+)
+from src.presentation.api import (
+    dto,
 )
 from src.shared import (
     ex,

@@ -54,7 +54,7 @@ class User(models.Model):
     )
 
     photos: Mapped[list["Photo"]] = relationship("Photo", back_populates="user")
-    profile: Mapped["Profile"] = relationship("Profile", uselist=False, back_populates="user")
+    profile: Mapped["Profile"] = relationship("Profile", uselist=False, back_populates="user", lazy="selectin")
 
     @property
     def days_since_created(self) -> int:

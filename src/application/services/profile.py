@@ -19,8 +19,8 @@ class ProfileService:
     async def get_profiles(self) -> list[models.Profile]:
         return await self.repository.get_multi()
 
-    async def get_profile_by_id(self, profile_id: int) -> models.Profile | None:
-        return await self.repository.get_single(id=profile_id)
+    async def get_profile_by_id(self, user_id: int) -> models.Profile | None:
+        return await self.repository.get_single(user_id=user_id)
 
     async def create_profile(self, profile_in: dto.ProfileCreate, user_id: int) -> models.Profile:
         profile_in = ProfileCreate(**profile_in.model_dump(), user_id=user_id)

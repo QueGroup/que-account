@@ -36,7 +36,6 @@ profile_router = APIRouter()
     "/",
     response_model=dto.ProfileResponse,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(get_current_user)]
 )
 @inject
 async def create_profile(
@@ -47,25 +46,26 @@ async def create_profile(
     return await profile_service.create_profile(profile_in=profile_in, user_id=user.id)
 
 
+# TODO: Добавить 404 ошибку, если профиля нет, чтоб сервак не выбрасывал сам 500
 @profile_router.get(
-    "/{profile_id}",
+    "/{user_id}",
     response_model=dto.ProfileResponse,
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_current_user)]
 )
 @inject
 async def get_profile(
-        profile_id: Annotated[int, Path],
+        user_id: Annotated[int, Path],
         profile_service: ProfileService = Depends(Provide[Container.profile_service])
 ) -> models.Profile:
-    return await profile_service.get_profile_by_id(profile_id=profile_id)
+    return await profile_service.get_profile_by_id(user_id=user_id)
 
 
 @profile_router.patch(
     "/{profile_id}",
     response_model=dto.ProfileResponse,
-    dependencies=[Depends(get_current_user)],
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(get_current_user)],
 )
 @inject
 async def update_profile(
@@ -78,9 +78,8 @@ async def update_profile(
 
 @profile_router.delete(
     "/{profile_id}",
-    response_model=dto.ProfileResponse,
-    dependencies=[Depends(get_current_user)],
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 @inject
 async def delete_profile(

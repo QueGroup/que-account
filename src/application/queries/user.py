@@ -25,7 +25,11 @@ from src.infrastructure.database import (
 
 class UserQuery(CRUDMixin[models.User, entity.User, dto.UserUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        return select(self.model).filter(*args).filter_by(**kwargs)
+        return (
+            select(self.model)
+            .filter(*args)
+            .filter_by(**kwargs)
+        )
 
     def _get_all_query(
             self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any

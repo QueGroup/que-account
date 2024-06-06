@@ -41,7 +41,7 @@ def setup_routes(app: FastAPI) -> None:
         router=healthcheck_router, prefix=f"{prefix}/healthcheck", tags=["Healthcheck"],
     )
     app.include_router(
-        router=profile_router, prefix=f"{prefix}/profile", tags=["Profile"]
+        router=profile_router, prefix=f"{prefix}/profiles", tags=["Profile"]
     )
     app.add_route("/metrics", handle_metrics)
 

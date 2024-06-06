@@ -56,7 +56,7 @@ if TYPE_CHECKING:
 class Profile(models.Model):
     __tablename__ = "profiles"
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
     first_name: Mapped[str] = mapped_column(String(64), nullable=False)
     gender: Mapped[str] = mapped_column(nullable=False)
     city: Mapped[str] = mapped_column(String(64), nullable=False)

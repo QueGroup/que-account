@@ -19,7 +19,7 @@ class ProfileBase(BaseModel):
 
 
 class ProfileCreate(ProfileBase):
-    user_id: int
+    pass
 
 
 class ProfileUpdate(ProfileBase):
@@ -36,5 +36,7 @@ class ProfileUpdate(ProfileBase):
 
 
 class ProfileResponse(ProfileBase):
+    id: int
+    user_id: int
     age: int
     model_config = ConfigDict(from_attributes=True)

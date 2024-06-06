@@ -12,6 +12,9 @@ from pydantic import (
     field_validator,
 )
 
+from . import (
+    ProfileResponse,
+)
 from .role import (
     RoleResponse,
 )
@@ -53,17 +56,8 @@ class UserResponse(UserBase):
     telegram_id: int | None = None
     role_id: int | None = None
     role: RoleResponse | None = None
+    profile: ProfileResponse | None = None
     days_since_created: int
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={
-            "example": {
-                "id": 76564380,
-                "telegram_id": 8056567643,
-                "username": "hencedry",
-                "language": "en",
-                "role": {"id": 1, "title": "admin"},
-                "days_since_created": 347
-            }
-        }
     )

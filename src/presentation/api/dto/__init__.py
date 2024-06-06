@@ -8,6 +8,11 @@ from .auth import (
     UserTMELogin,
     ResetPassword,
 )
+from .profile import (
+    ProfileCreate,
+    ProfileUpdate,
+    ProfileResponse,
+)
 from .role import (
     RoleCreate,
     RoleResponse,
@@ -16,11 +21,6 @@ from .role import (
 from .user import (
     UserResponse,
     UserUpdate,
-)
-from .profile import (
-    ProfileCreate,
-    ProfileUpdate,
-    ProfileResponse,
 )
 
 __all__ = (

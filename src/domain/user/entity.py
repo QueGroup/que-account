@@ -6,7 +6,7 @@ from datetime import (
 from src.infrastructure.services.security import (
     HashService,
 )
-from src.shared import (
+from src.core import (
     ex,
 )
 

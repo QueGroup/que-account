@@ -25,7 +25,7 @@ from src.infrastructure.database.repositories import (
 from src.infrastructure.database.repositories.role import (
     RoleRepository,
 )
-from src.shared import (
+from src.core import (
     load_config,
 )
 

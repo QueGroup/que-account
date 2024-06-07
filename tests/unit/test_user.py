@@ -11,7 +11,7 @@ from src.domain.user import (
 from src.infrastructure.database import (
     models,
 )
-from src.shared import (
+from src.core import (
     ex,
 )
 from tests.misc import (

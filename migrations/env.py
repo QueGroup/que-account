@@ -19,7 +19,7 @@ from sqlalchemy.ext.asyncio import (
 from src.infrastructure.database import (
     models,
 )
-from src.shared import (
+from src.core import (
     load_config,
 )
 

@@ -15,7 +15,7 @@ from src.presentation import (
     setup_middlewares,
     setup_routes,
 )
-from src.shared import (
+from src.core import (
     load_config,
 )
 

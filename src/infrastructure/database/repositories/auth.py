@@ -33,10 +33,10 @@ from src.infrastructure.services.security import (
     HashService,
     JWTService,
 )
-from src.shared import (
+from src.core import (
     ex,
 )
-from src.shared.types import (
+from src.core.types import (
     CreateSchemaT,
     ModelT,
     SchemaT,

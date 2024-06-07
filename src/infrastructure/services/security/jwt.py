@@ -12,7 +12,7 @@ from jose import (
     jwt,
 )
 
-from src.shared import (
+from src.core import (
     ex,
     load_config,
 )

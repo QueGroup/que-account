@@ -12,7 +12,7 @@ from argon2.exceptions import (
 from src.domain.auth import (
     IPasswordEncoder,
 )
-from src.shared import (
+from src.core import (
     load_config,
 )
 

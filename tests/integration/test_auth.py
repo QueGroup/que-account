@@ -23,7 +23,7 @@ from src.infrastructure.database import (
 from src.presentation.api import (
     dto,
 )
-from src.shared import (
+from src.core import (
     ex,
 )
 from tests.misc import (

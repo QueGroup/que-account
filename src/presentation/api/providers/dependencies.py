@@ -40,7 +40,7 @@ from src.presentation.api.exceptions import (
 from src.presentation.api.providers.di_containers import (
     Container,
 )
-from src.shared import (
+from src.core import (
     ex,
 )
 

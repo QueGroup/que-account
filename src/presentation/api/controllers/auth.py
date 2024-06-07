@@ -37,7 +37,7 @@ from src.presentation.api.providers import (
     revoke_tokens,
     verify_token_from_request,
 )
-from src.shared import (
+from src.core import (
     ex,
 )
 

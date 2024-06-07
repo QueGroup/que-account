@@ -12,6 +12,9 @@ from src.application.services import (
 from src.application.services.profile import (
     ProfileService,
 )
+from src.core import (
+    load_config,
+)
 from src.infrastructure.database import (
     DBConnector,
     JTIRedisStorage,
@@ -24,9 +27,6 @@ from src.infrastructure.database.repositories import (
 )
 from src.infrastructure.database.repositories.role import (
     RoleRepository,
-)
-from src.core import (
-    load_config,
 )
 
 

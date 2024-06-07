@@ -15,11 +15,11 @@ from pydantic import (
     BaseModel,
 )
 
-from src.presentation.api.providers import (
-    Container,
-)
 from src.core import (
     Config,
+)
+from src.presentation.api.providers import (
+    Container,
 )
 
 healthcheck_router = APIRouter()

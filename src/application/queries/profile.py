@@ -17,11 +17,11 @@ from src.application import (
 from src.application.persistence import (
     CRUDMixin,
 )
-from src.infrastructure.database import (
-    models,
-)
 from src.core.types import (
     UpdateSchemaT,
+)
+from src.infrastructure.database import (
+    models,
 )
 
 

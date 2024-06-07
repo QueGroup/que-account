@@ -17,6 +17,9 @@ from fastapi import (
 from src.application.services import (
     AuthService,
 )
+from src.core import (
+    ex,
+)
 from src.infrastructure.database import (
     DefaultAuthStrategy,
     JTIRedisStorage,
@@ -36,9 +39,6 @@ from src.presentation.api.providers import (
     refresh_tokens,
     revoke_tokens,
     verify_token_from_request,
-)
-from src.core import (
-    ex,
 )
 
 auth_router = APIRouter()

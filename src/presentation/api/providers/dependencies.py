@@ -26,6 +26,9 @@ from src.application import (
 from src.application.services import (
     UserService,
 )
+from src.core import (
+    ex,
+)
 from src.infrastructure.database import (
     JTIRedisStorage,
     models,
@@ -39,9 +42,6 @@ from src.presentation.api.exceptions import (
 )
 from src.presentation.api.providers.di_containers import (
     Container,
-)
-from src.core import (
-    ex,
 )
 
 

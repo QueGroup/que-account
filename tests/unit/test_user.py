@@ -5,14 +5,14 @@ import unittest
 
 import pytest
 
-from src.core import (
-    ex,
-)
 from src.domain.user import (
     entity,
 )
 from src.infrastructure.database import (
     models,
+)
+from src.shared import (
+    ex,
 )
 from tests.misc import (
     fake,

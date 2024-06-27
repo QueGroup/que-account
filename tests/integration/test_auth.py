@@ -17,14 +17,14 @@ from starlette import (
 from src.application import (
     services,
 )
-from src.core import (
-    ex,
-)
 from src.infrastructure.database import (
     TelegramAuthStrategy,
 )
 from src.presentation.api import (
     dto,
+)
+from src.shared import (
+    ex,
 )
 from tests.misc import (
     fake,

@@ -12,6 +12,11 @@ from .notification import (
     SendMessageResponse,
     Message,
 )
+from .photo import (
+    Photo,
+    PhotoList,
+    PhotoUploadResponse,
+)
 from .profile import (
     ProfileUpdate,
     ProfileCreate,
@@ -40,4 +45,7 @@ __all__ = (
     "Message",
     "ProfileUpdate",
     "ProfileCreate",
+    "Photo",
+    "PhotoList",
+    "PhotoUploadResponse",
 )

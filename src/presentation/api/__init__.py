@@ -4,6 +4,7 @@ from .controllers import (
     role_router,
     user_router,
     profile_router,
+    photo_router,
 )
 
 __all__ = (
@@ -12,4 +13,5 @@ __all__ = (
     "healthcheck_router",
     "role_router",
     "profile_router",
+    "photo_router",
 )

@@ -6,14 +6,13 @@ from dependency_injector import (
 from src.application.services import (
     AuthService,
     CompositeNotifier,
+    PhotoService,
     RoleService,
+    S3Storage,
     UserService,
 )
 from src.application.services.profile import (
     ProfileService,
-)
-from src.core import (
-    load_config,
 )
 from src.infrastructure.database import (
     DBConnector,
@@ -28,6 +27,9 @@ from src.infrastructure.database.repositories import (
 from src.infrastructure.database.repositories.role import (
     RoleRepository,
 )
+from src.shared import (
+    load_config,
+)
 
 
 class Container(containers.DeclarativeContainer):
@@ -37,20 +39,29 @@ class Container(containers.DeclarativeContainer):
             "src.presentation.api.controllers.auth",
             "src.presentation.api.controllers.healthcheck",
             "src.presentation.api.controllers.role",
-            "src.presentation.api.controllers.profile"
+            "src.presentation.api.controllers.profile",
+            "src.presentation.api.controllers.photo"
         ]
     )
 
-    config = providers.Singleton(load_config)
-    db = providers.Singleton(DBConnector, db_url=config().db.construct_sqlalchemy_url())
+    config = providers.Singleton(load_config)()
+    db = providers.Singleton(DBConnector, db_url=config.db.construct_sqlalchemy_url())
     session = db.provided.get_db_session
-    redis = providers.Singleton(RedisConnector, url=config().db.construct_redis_dsn())
+    redis = providers.Singleton(RedisConnector, url=config.db.construct_redis_dsn())
+    s3 = providers.Singleton(
+        S3Storage,
+        service_name=config.s3.service_name,
+        aws_access_key_id=config.s3.aws_access_key_id,
+        aws_secret_access_key=config.s3.aws_secret_access_key,
+        endpoint_url=config.s3.endpoint_url,
+        region_name=config.s3.region_name,
+        bucket_name=config.s3.bucket_name
+    )
 
     blacklist_service = providers.Factory(
         JTIRedisStorage,
         redis_connector=redis,
     )
-
     user_repository = providers.Factory(
         UserRepository,
         session_factory=session,
@@ -88,4 +99,8 @@ class Container(containers.DeclarativeContainer):
     profile_service = providers.Factory(
         ProfileService,
         profile_repository=profile_repository,
+    )
+    photo_service = providers.Factory(
+        PhotoService,
+        s3=s3,
     )

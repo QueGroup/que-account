@@ -16,7 +16,9 @@ from .api import (
     auth_router,
     healthcheck_router,
     role_router,
-    user_router, profile_router,
+    user_router,
+    profile_router,
+    photo_router,
 )
 from .api.middlewares import (
     logging_middleware,
@@ -42,6 +44,9 @@ def setup_routes(app: FastAPI) -> None:
     )
     app.include_router(
         router=profile_router, prefix=f"{prefix}/profiles", tags=["Profile"]
+    )
+    app.include_router(
+        router=photo_router, prefix=f"{prefix}/photos", tags=["Photo"]
     )
     app.add_route("/metrics", handle_metrics)
 

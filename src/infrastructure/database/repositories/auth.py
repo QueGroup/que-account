@@ -23,14 +23,6 @@ from src.application.dto import (
 from src.application.queries import (
     AuthQuery,
 )
-from src.core import (
-    ex,
-)
-from src.core.types import (
-    CreateSchemaT,
-    ModelT,
-    SchemaT,
-)
 from src.domain.user import (
     entity,
 )
@@ -40,6 +32,12 @@ from src.infrastructure.database import (
 from src.infrastructure.services.security import (
     HashService,
     JWTService,
+)
+from src.shared import (
+    CreateSchemaT,
+    ModelT,
+    SchemaT,
+    ex,
 )
 
 

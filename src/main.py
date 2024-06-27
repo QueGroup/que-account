@@ -7,9 +7,6 @@ import logfire
 import structlog
 import uvicorn
 
-from src.core import (
-    load_config,
-)
 from src.infrastructure.log import (
     configure_logging,
 )
@@ -17,6 +14,9 @@ from src.presentation import (
     Container,
     setup_middlewares,
     setup_routes,
+)
+from src.shared import (
+    load_config,
 )
 
 logger = structlog.stdlib.get_logger()

@@ -9,11 +9,11 @@ from argon2.exceptions import (
     VerifyMismatchError,
 )
 
-from src.core import (
-    load_config,
-)
 from src.domain.auth import (
     IPasswordEncoder,
+)
+from src.shared import (
+    load_config,
 )
 
 config = load_config().security

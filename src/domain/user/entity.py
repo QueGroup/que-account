@@ -3,11 +3,11 @@ from datetime import (
     datetime,
 )
 
-from src.core import (
-    ex,
-)
 from src.infrastructure.services.security import (
     HashService,
+)
+from src.shared import (
+    ex,
 )
 
 

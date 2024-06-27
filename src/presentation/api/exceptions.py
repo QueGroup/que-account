@@ -3,7 +3,7 @@ from fastapi import (
     status,
 )
 
-from src.core import (
+from src.shared import (
     ex,
 )
 

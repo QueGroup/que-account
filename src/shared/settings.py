@@ -13,6 +13,7 @@ from sqlalchemy import (
 )
 
 
+# TODO: Разделить DBConfig на PSQLConfig и RedisConfig
 @dataclass(frozen=True, slots=True)
 class DbConfig:
     """
@@ -112,6 +113,34 @@ class DbConfig:
             redis_host=redis_host,
             redis_port=redis_port,
             redis_database=redis_database
+        )
+
+
+@dataclass(slots=True, frozen=True)
+class S3Config:
+    service_name: str
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    endpoint_url: str
+    region_name: str
+    bucket_name: str
+
+    @staticmethod
+    def from_env(env: Env) -> "S3Config":
+        service_name = env.str("SERVICE_NAME", "s3")
+        aws_access_key_id = env.str("AWS_ACCESS_KEY_ID")
+        aws_secret_access_key = env.str("AWS_SECRET_ACCESS_KEY")
+        endpoint_url = env.str("ENDPOINT_URL", "https://storage.yandexcloud.net")
+        region_name = env.str("REGION_NAME")
+        bucket_name = env.str("BUCKET_NAME")
+
+        return S3Config(
+            service_name=service_name,
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            endpoint_url=endpoint_url,
+            region_name=region_name,
+            bucket_name=bucket_name,
         )
 
 
@@ -241,6 +270,7 @@ class Config:
     security: Security
     settings: Settings
     misc: Miscellaneous
+    s3: S3Config
 
 
 def load_config(path: str = None) -> Config:
@@ -259,4 +289,5 @@ def load_config(path: str = None) -> Config:
         security=Security.from_env(env),
         settings=Settings.from_env(env),
         misc=Miscellaneous.from_env(env),
+        s3=S3Config.from_env(env),
     )

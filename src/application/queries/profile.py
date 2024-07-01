@@ -20,7 +20,7 @@ from src.application.persistence import (
 from src.infrastructure.database import (
     models,
 )
-from src.shared import (
+from src.shared.types import (
     UpdateSchemaT,
 )
 

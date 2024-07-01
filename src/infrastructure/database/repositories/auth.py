@@ -34,10 +34,12 @@ from src.infrastructure.services.security import (
     JWTService,
 )
 from src.shared import (
+    ex,
+)
+from src.shared.types import (
     CreateSchemaT,
     ModelT,
     SchemaT,
-    ex,
 )
 
 

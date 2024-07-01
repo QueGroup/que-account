@@ -9,7 +9,7 @@ from sqlalchemy import (
     Update,
 )
 
-from src.shared import (
+from src.shared.types import (
     UpdateSchemaT,
 )
 

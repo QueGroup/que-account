@@ -23,7 +23,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
 
-from src.shared import (
+from src.shared.types import (
     CreateSchemaT,
     ModelT,
     UpdateSchemaT,

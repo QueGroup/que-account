@@ -21,11 +21,10 @@ from src.infrastructure.database import (
 )
 from src.infrastructure.database.repositories import (
     AuthRepository,
+    PhotoRepository,
     ProfileRepository,
-    UserRepository,
-)
-from src.infrastructure.database.repositories.role import (
     RoleRepository,
+    UserRepository,
 )
 from src.shared import (
     load_config,
@@ -100,7 +99,12 @@ class Container(containers.DeclarativeContainer):
         ProfileService,
         profile_repository=profile_repository,
     )
+    photo_repository = providers.Factory(
+        PhotoRepository,
+        session_factory=session,
+    )
     photo_service = providers.Factory(
         PhotoService,
         s3=s3,
+        photo_repository=photo_repository
     )

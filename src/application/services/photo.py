@@ -19,6 +19,9 @@ from src.application import (
 from src.application.dto import (
     PhotoUploadResponse,
 )
+from src.infrastructure.database.repositories import (
+    PhotoRepository,
+)
 
 
 @dataclasses.dataclass
@@ -57,10 +60,9 @@ class S3Storage:
 
 
 class PhotoService:
-    def __init__(self, s3: S3Storage) -> None:
+    def __init__(self, s3: S3Storage, photo_repository: PhotoRepository) -> None:
         self.client = s3
-
-    # TODO: Надо добавлять remote_url в бд Photo
+        self.repository = photo_repository
 
     async def upload_file(self, user_id: int, file: UploadFile) -> PhotoUploadResponse:
         filename = f"{user_id}/{uuid.uuid4()}_{file.filename}"
@@ -70,6 +72,7 @@ class PhotoService:
         remote_url = (
             f"https://storage.yandexcloud.net/{self.client.bucket_name}/{filename}"
         )
+        await self.repository.create(user_id=user_id, remote_url=remote_url)
         return dto.PhotoUploadResponse(filename=filename, remote_url=remote_url)
 
     async def get_all_photos(self, user_id: int) -> list[dict[str, str]]:

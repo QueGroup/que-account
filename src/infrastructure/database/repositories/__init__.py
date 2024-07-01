@@ -4,6 +4,9 @@ from .auth import (
     DefaultAuthStrategy,
     TelegramAuthStrategy,
 )
+from .photo import (
+    PhotoRepository,
+)
 from .profile import (
     ProfileRepository,
 )
@@ -22,4 +25,5 @@ __all__ = (
     "DefaultAuthStrategy",
     "TelegramAuthStrategy",
     "ProfileRepository",
+    "PhotoRepository",
 )

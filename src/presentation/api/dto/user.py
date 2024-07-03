@@ -14,9 +14,10 @@ from pydantic import (
 
 from . import (
     ProfileResponse,
-)
-from .role import (
     RoleResponse,
+)
+from .photo import (
+    Photo,
 )
 
 
@@ -54,9 +55,9 @@ class UserUpdate(UserBase):
 class UserResponse(UserBase):
     id: int
     telegram_id: int | None = None
-    role_id: int | None = None
     role: RoleResponse | None = None
     profile: ProfileResponse | None = None
+    photos: list[Photo] | None = None
     days_since_created: int
     model_config = ConfigDict(
         from_attributes=True,

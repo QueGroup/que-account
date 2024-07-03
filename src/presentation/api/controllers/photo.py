@@ -11,6 +11,7 @@ from fastapi import (
     Depends,
     File,
     UploadFile,
+    status,
 )
 
 from src.application.services import (
@@ -18,6 +19,9 @@ from src.application.services import (
 )
 from src.infrastructure.database import (
     models,
+)
+from src.presentation.api import (
+    dto,
 )
 from src.presentation.api.providers import (
     Container,
@@ -27,7 +31,11 @@ from src.presentation.api.providers import (
 photo_router = APIRouter()
 
 
-@photo_router.post("/")
+@photo_router.post(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=dto.PhotoUploadResponse,
+)
 @inject
 async def upload_photo(
         file: UploadFile = File(...),
@@ -37,7 +45,11 @@ async def upload_photo(
     return await photo_service.upload_file(user_id=user.id, file=file)
 
 
-@photo_router.get("/")
+@photo_router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=dto.PhotosResponse,
+)
 @inject
 async def get_all_user_photos(
         user: models.User = Depends(get_current_user),

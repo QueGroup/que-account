@@ -8,6 +8,10 @@ from .auth import (
     UserTMELogin,
     ResetPassword,
 )
+from .photo import (
+    PhotoUploadResponse,
+    PhotosResponse,
+)
 from .profile import (
     ProfileCreate,
     ProfileUpdate,

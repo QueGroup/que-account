@@ -12,5 +12,4 @@ class PhotoList(BaseModel):
 
 
 class PhotoUploadResponse(BaseModel):
-    filename: str
     remote_url: str

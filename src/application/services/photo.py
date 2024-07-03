@@ -73,7 +73,7 @@ class PhotoService:
             f"https://storage.yandexcloud.net/{self.client.bucket_name}/{filename}"
         )
         await self.repository.create(user_id=user_id, remote_url=remote_url)
-        return dto.PhotoUploadResponse(filename=filename, remote_url=remote_url)
+        return dto.PhotoUploadResponse(remote_url=remote_url)
 
     async def get_all_photos(self, user_id: int) -> list[dict[str, str]]:
         photos = []

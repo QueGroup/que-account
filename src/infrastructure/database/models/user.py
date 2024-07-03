@@ -53,7 +53,7 @@ class User(models.Model):
         lazy="selectin",
     )
 
-    photos: Mapped[list["Photo"]] = relationship("Photo", back_populates="user")
+    photos: Mapped[list["Photo"]] = relationship("Photo", back_populates="user", lazy="selectin")
     profile: Mapped["Profile"] = relationship("Profile", uselist=False, back_populates="user", lazy="selectin")
 
     @property

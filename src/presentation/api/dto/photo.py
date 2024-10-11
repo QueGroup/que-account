@@ -6,6 +6,7 @@ from pydantic import (
 
 
 class Photo(BaseModel):
+    id: int
     user_id: int
     remote_url: str
     created_at: datetime.datetime
@@ -18,3 +19,7 @@ class PhotosResponse(BaseModel):
 
 class PhotoUploadResponse(BaseModel):
     remote_url: str
+
+
+class PhotoDeleteResponse(BaseModel):
+    photo_url: str

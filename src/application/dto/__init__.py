@@ -13,7 +13,8 @@ from .notification import (
     Message,
 )
 from .photo import (
-    Photo,
+    PhotoDB,
+    PhotoS3,
     PhotoList,
     PhotoUploadResponse,
 )
@@ -45,7 +46,8 @@ __all__ = (
     "Message",
     "ProfileUpdate",
     "ProfileCreate",
-    "Photo",
+    "PhotoDB",
+    "PhotoS3",
     "PhotoList",
     "PhotoUploadResponse",
 )

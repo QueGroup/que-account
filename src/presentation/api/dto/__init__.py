@@ -11,6 +11,7 @@ from .auth import (
 from .photo import (
     PhotoUploadResponse,
     PhotosResponse,
+    PhotoDeleteResponse,
 )
 from .profile import (
     ProfileCreate,
@@ -44,4 +45,5 @@ __all__ = (
     "ProfileResponse",
     "ProfileUpdate",
     "ProfileCreate",
+    "PhotoDeleteResponse",
 )

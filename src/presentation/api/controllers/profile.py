@@ -23,10 +23,14 @@ from src.infrastructure.database import (
 )
 from src.presentation.api import (
     dto,
+    exceptions,
 )
 from src.presentation.api.providers import (
     Container,
     get_current_user,
+)
+from src.shared import (
+    ex,
 )
 
 profile_router = APIRouter()
@@ -46,7 +50,6 @@ async def create_profile(
     return await profile_service.create_profile(profile_in=profile_in, user_id=user.id)
 
 
-# TODO: Добавить 404 ошибку, если профиля нет, чтоб сервак не выбрасывал сам 500
 @profile_router.get(
     "/{user_id}",
     response_model=dto.ProfileResponse,
@@ -58,7 +61,10 @@ async def get_profile(
         user_id: Annotated[int, Path],
         profile_service: ProfileService = Depends(Provide[Container.profile_service])
 ) -> models.Profile:
-    return await profile_service.get_profile_by_id(user_id=user_id)
+    try:
+        return await profile_service.get_profile_by_id(user_id=user_id)
+    except ex.ProfileNotFound:
+        raise exceptions.ProfileNotFoundError()
 
 
 @profile_router.patch(

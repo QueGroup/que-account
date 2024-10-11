@@ -10,6 +10,9 @@ from src.infrastructure.database import (
 from src.infrastructure.database.repositories import (
     ProfileRepository,
 )
+from src.shared import (
+    ex,
+)
 
 
 class ProfileService:
@@ -20,7 +23,10 @@ class ProfileService:
         return await self.repository.get_multi()
 
     async def get_profile_by_id(self, user_id: int) -> models.Profile | None:
-        return await self.repository.get_single(user_id=user_id)
+        profile = await self.repository.get_single(user_id=user_id)
+        if profile is None:
+            raise ex.ProfileNotFound()
+        return profile
 
     async def create_profile(self, profile_in: dto.ProfileCreate, user_id: int) -> models.Profile:
         profile_in = ProfileCreate(**profile_in.model_dump(), user_id=user_id)

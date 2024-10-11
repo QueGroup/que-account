@@ -8,30 +8,29 @@ from .auth import (
     UserTMELogin,
     ResetPassword,
 )
-from .notification import (
-    SendMessageResponse,
-    Message,
-)
 from .photo import (
-    PhotoDB,
-    PhotoS3,
-    PhotoList,
     PhotoUploadResponse,
+    PhotosResponse,
+    PhotoDeleteResponse,
 )
 from .profile import (
-    ProfileUpdate,
     ProfileCreate,
+    ProfileUpdate,
+    ProfileResponse,
 )
 from .role import (
     RoleCreate,
+    RoleResponse,
     RoleUpdate,
 )
 from .user import (
+    UserResponse,
     UserUpdate,
 )
 
 __all__ = (
     "UserUpdate",
+    "UserResponse",
     "UserRegistration",
     "JWTokens",
     "UserLogin",
@@ -41,13 +40,10 @@ __all__ = (
     "TokenData",
     "RoleCreate",
     "RoleUpdate",
+    "RoleResponse",
     "ResetPassword",
-    "SendMessageResponse",
-    "Message",
+    "ProfileResponse",
     "ProfileUpdate",
     "ProfileCreate",
-    "PhotoDB",
-    "PhotoS3",
-    "PhotoList",
-    "PhotoUploadResponse",
+    "PhotoDeleteResponse",
 )

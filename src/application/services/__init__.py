@@ -5,6 +5,10 @@ from .notification import (
     TelegramNotifierService,
     CompositeNotifier,
 )
+from .photo import (
+    S3Storage,
+    PhotoService,
+)
 from .role import (
     RoleService,
 )
@@ -18,4 +22,6 @@ __all__ = (
     "RoleService",
     "TelegramNotifierService",
     "CompositeNotifier",
+    "S3Storage",
+    "PhotoService",
 )

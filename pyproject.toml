@@ -30,6 +30,8 @@ starlette-exporter = "^0.21.0"
 logfire = "^0.30.0"
 opentelemetry-instrumentation-asgi = "^0.45b0"
 opentelemetry-instrumentation-fastapi = "^0.45b0"
+aioboto3 = "^13.0.1"
+python-multipart = "^0.0.9"
 
 
 [tool.poetry.group.dev.dependencies]

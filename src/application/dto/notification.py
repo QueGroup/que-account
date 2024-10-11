@@ -9,6 +9,11 @@ from pydantic import (
     Field,
 )
 
+__all__ = (
+    "Message",
+    "SendMessageResponse",
+)
+
 
 class Message(BaseModel):
     message_id: int

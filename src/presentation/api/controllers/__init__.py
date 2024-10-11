@@ -4,6 +4,12 @@ from .auth import (
 from .healthcheck import (
     healthcheck_router,
 )
+from .photo import (
+    photo_router,
+)
+from .profile import (
+    profile_router,
+)
 from .role import (
     role_router,
 )
@@ -16,4 +22,6 @@ __all__ = (
     "user_router",
     "role_router",
     "healthcheck_router",
+    "profile_router",
+    "photo_router",
 )

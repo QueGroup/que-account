@@ -134,7 +134,19 @@ class OldPasswordIncorrectError(HTTPException):
     def __init__(
             self,
             status_code: int = status.HTTP_400_BAD_REQUEST,
-            message: str = "Old password is incorrect"
+            message: str = "Old password is incorrect",
     ):
         detail = {"code": ex.AuthExceptionCodes.OLD_PASSWORD_INVALID, "message": message}
+        super().__init__(status_code=status_code, detail=detail)
+
+
+class ProfileNotFoundError(HTTPException):
+    """Custom error when profile does not exist."""
+
+    def __init__(
+            self,
+            status_code: int = status.HTTP_404_NOT_FOUND,
+            message: str = "Profile does not exist",
+    ):
+        detail = {"code": ex.AuthExceptionCodes.NOT_FOUND, "message": message}
         super().__init__(status_code=status_code, detail=detail)

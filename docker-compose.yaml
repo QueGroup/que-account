@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  postgres:
-    container_name: postgres
+  postgres-db:
+    container_name: postgres-db
     image: postgres:15.3-alpine
     ports:
       - "5439:5432"
@@ -35,7 +35,7 @@ services:
     env_file:
       - '.env'
     depends_on:
-      postgres:
+      postgres-db:
         condition: service_healthy
     networks:
       - custom

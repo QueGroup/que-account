@@ -1,10 +1,6 @@
 from pydantic import (
     BaseModel,
-)
-
-__all__ = (
-    "RoleCreate",
-    "RoleUpdate",
+    ConfigDict,
 )
 
 
@@ -18,3 +14,9 @@ class RoleCreate(RoleBase):
 
 class RoleUpdate(RoleBase):
     title: str | None = None
+
+
+class RoleResponse(RoleBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)

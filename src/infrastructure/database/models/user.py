@@ -19,6 +19,12 @@ from sqlalchemy.orm import (
 from . import (
     models,
 )
+from .photo import (
+    Photo,
+)
+from .profile import (
+    Profile,
+)
 from .role import (
     Role,
 )
@@ -41,11 +47,14 @@ class User(models.Model):
         back_populates="user",
         lazy="selectin",
     )
-    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id", ondelete="CASCADE", onupdate="CASCADE"), nullable=True)
-    role: Mapped[list["Role"]] = relationship(
+    role_id: Mapped[int] = mapped_column(ForeignKey("roles.id", ondelete="CASCADE"), nullable=True)
+    role: Mapped["Role"] = relationship(
         back_populates="users",
         lazy="selectin",
     )
+
+    photos: Mapped[list["Photo"]] = relationship("Photo", back_populates="user", lazy="selectin")
+    profile: Mapped["Profile"] = relationship("Profile", uselist=False, back_populates="user", lazy="selectin")
 
     @property
     def days_since_created(self) -> int:

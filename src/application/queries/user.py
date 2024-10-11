@@ -8,6 +8,9 @@ from sqlalchemy import (
     select,
     update,
 )
+from sqlalchemy.orm import (
+    joinedload,
+)
 
 from src.application import (
     dto,
@@ -25,12 +28,23 @@ from src.infrastructure.database import (
 
 class UserQuery(CRUDMixin[models.User, entity.User, dto.UserUpdate]):
     def _get_query(self, *args: Any, **kwargs: Any) -> Select[tuple[Any]]:
-        return select(self.model).filter(*args).filter_by(**kwargs)
+        return (
+            select(self.model)
+            .filter(*args)
+            .filter_by(**kwargs)
+        )
 
     def _get_all_query(
             self, skip: int = 0, limit: int = 10, *args: Any, **kwargs: Any
     ) -> Select[tuple[Any]]:
-        return select(self.model).offset(skip).limit(limit).filter(*args).filter_by(**kwargs)
+        return (
+            select(self.model)
+            .options(joinedload(self.model.photos))
+            .offset(skip)
+            .limit(limit)
+            .filter(*args)
+            .filter_by(**kwargs)
+        )
 
     def _update_query(self, pk: int, data_in: dto.UserUpdate, **kwargs: Any) -> Update:
         return (

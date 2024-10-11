@@ -132,12 +132,3 @@ class PhotoService:
 
     async def get_photo_by_id(self, photo_id: int) -> Any:
         return await self._repository.get(photo_id=photo_id)
-
-
-"""
-user = User(id=1, name="Alice")
-task_manager = TaskManager(user)
-task = Task(id=1, title="Complete project")
-task_manager.add_task(task)
-task_manager.get_tasks()
-"""

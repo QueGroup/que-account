@@ -32,6 +32,15 @@ class UserNotFound(DomainException):
 
 
 @dataclass(eq=False)
+class ProfileNotFound(DomainException):
+    status = 404
+
+    @property
+    def title(self) -> str:
+        return "Profile not found"
+
+
+@dataclass(eq=False)
 class UserAlreadyExists(DomainException):
     status = 409
     username: str | None = None
